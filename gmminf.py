@@ -13,6 +13,7 @@ class GMM(sklearn.mixture.GMM):
     def inference(self, in_dims, out_dims, value):
         in_dims = numpy.array(in_dims)
         out_dims = numpy.array(out_dims)
+        value = numpy.array(value)
     
         means = numpy.zeros((self.n_components, len(out_dims)))
         covars = numpy.zeros((self.n_components, len(out_dims), len(out_dims)))
@@ -42,6 +43,29 @@ class GMM(sklearn.mixture.GMM):
         res.means_ = means
         res.covars_ = covars
         return res
+
+    def get_display_ellipses2D(self, colors):
+        from matplotlib.patches import Ellipse
+
+        ellipses = []
+
+        for i, (weight, mean, covar) in enumerate(self):
+            (val, vect) = numpy.linalg.eig(covar)
+
+            el = Ellipse(mean,
+                         3.5 * numpy.sqrt(val[0]),
+                         3.5 * numpy.sqrt(val[1]),
+                         180. * numpy.arctan2(vect[1, 0], vect[0, 0]) / numpy.pi,
+                         fill=False,
+                         linewidth=2)
+
+            el.set_facecolor(colors[i])
+            el.set_fill(True)
+            el.set_alpha(0.5)
+
+            ellipses.append(el)
+
+        return ellipses
 
 if __name__ == '__main__':
     gmm = GMM(n_components=100, covariance_type='full')
