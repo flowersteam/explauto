@@ -53,15 +53,18 @@ class Imle(object):
         """ The number_of_experts property."""
         return self._delegate.get_number_of_experts()
 
-    @property
-    def psi0(self):
-        """ The foo property."""
-        return self._delegate.get_psi0()
+    def get_prediction_weight(self):
+        return self._delegate.getPredictionWeight()
 
-    @property
-    def wPsi(self):
-        """ The wPsi property."""
-        return self._delegate.get_wPsi()
+    # @property
+    # def psi0(self):
+    #     """ The foo property."""
+    #     return self._delegate.get_psi0()
+
+    # @property
+    # def wPsi(self):
+    #     """ The wPsi property."""
+    #     return self._delegate.get_wPsi()
     
 
 if __name__ == '__main__':
