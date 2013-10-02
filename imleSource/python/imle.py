@@ -11,13 +11,20 @@ class Imle(object):
 
         args = []
 
+        args.append(f('alpha', 0.995))
         args.append(list(f('Psi0', [1] * D)))
-        args.append(f('sigma0', 1.0))
-        args.append(f('wPsi', numpy.inf))
+        args.append(f('sigma0', 0.1))
+        args.append(f('wsigma', 2.0**d))
+        args.append(f('wSigma', 2.0**d))
+        args.append(f('wNu', 0.0))
+        args.append(f('wLambda', 0.1))
+        args.append(f('wPsi', 0.0))
         args.append(f('p0', 0.1))
         args.append(f('multiValuedSignificance', 0.95))
+        args.append(f('nSolMax', 8))
 
-        param = _imle.ImleParam(*args)
+        param = _imle.ImleParam()
+        param.set_param(*args)
 
         self._delegate = _imle.Imle(param)
 
@@ -38,6 +45,11 @@ class Imle(object):
             raise ValueError('check the inputs dimension')
 
         return numpy.array(self._delegate.predict_inverse(list(x)))
+
+
+    def get_joint_mu(self, k):
+        """ The mean of the kth component of the joint GMM."""
+        return numpy.array(self._delegate.get_joint_mu(k))
 
     @property
     def number_of_experts(self):

@@ -10,6 +10,7 @@
 #define D 3
 typedef imle<d, D> IMLE;
 
+
 class ImleParam {
 public:
     ImleParam();
@@ -37,6 +38,9 @@ public:
     
     boost::python::list predict(const boost::python::list &z);
     boost::python::list predictInverse(const boost::python::list &x);
+
+    boost::python::list getJointMu(int expert);
+    boost::python::list getJointSigma(int expert);
 
     int getNumberOfExperts();
 

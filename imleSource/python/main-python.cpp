@@ -17,6 +17,8 @@ BOOST_PYTHON_MODULE(_imle)
         .def("predict", &MyImle::predict)
         .def("predict_inverse", &MyImle::predictInverse)
 
+        .def("get_joint_mu", &MyImle::getJointMu)
+
         .def("get_number_of_experts", &MyImle::getNumberOfExperts)
 
         .def("getPredictionWeight", &MyImle::getPredictionWeight)
