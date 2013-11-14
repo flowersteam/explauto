@@ -5,10 +5,11 @@
 #include <string>
 
 #include "imle.hpp"
+#include "expert_public.hpp"
 
-#define d 7
-#define D 3
-typedef imle<d, D> IMLE;
+#define d 1
+#define D 1
+typedef imle<d, D, ::FastLinearExpert_public> IMLE;
 
 
 class ImleParam {
@@ -40,7 +41,10 @@ public:
     boost::python::list predictInverse(const boost::python::list &x);
 
     boost::python::list getJointMu(int expert);
-    boost::python::list getJointSigma(int expert);
+
+    boost::python::list getInvSigma(int expert);
+    boost::python::list getLambda(int expert);
+    boost::python::list getPsi(int expert);
 
     int getNumberOfExperts();
 

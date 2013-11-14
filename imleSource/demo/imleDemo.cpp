@@ -1,4 +1,5 @@
 #include "imle.hpp"
+#include "../python/expert_public.hpp"
 
 #include <string>
 #include <iostream>
@@ -29,7 +30,7 @@ int main(int argc, char **argv)
 
     const int d = 1;    //Input dimension
     const int D = 1;    //Output dimension
-    typedef imle<d,D> IMLE;
+    typedef imle<d,D,::FastLinearExpert_public> IMLE;
 
     //      IMLE Parameters
     IMLE::Param param;
@@ -112,5 +113,9 @@ int main(int argc, char **argv)
             cout << invSol[k] << ", ";
         cout << ")" << endl;
     }
+    //cout << "CMF" <<endl;
+    //IMLE::ZZ zz= imleObj.getExperts()[0].getSigma() ;
+    //double ddd = zz(0,0);
+    //cout << zz << " ; " << ddd << endl;
 }
 

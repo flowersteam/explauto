@@ -19,6 +19,12 @@ BOOST_PYTHON_MODULE(_imle)
 
         .def("get_joint_mu", &MyImle::getJointMu)
 
+	    .def("get_inv_sigma", &MyImle::getInvSigma)
+
+	    .def("get_lambda", &MyImle::getLambda)
+	    
+        .def("get_psi", &MyImle::getPsi)
+
         .def("get_number_of_experts", &MyImle::getNumberOfExperts)
 
         .def("getPredictionWeight", &MyImle::getPredictionWeight)

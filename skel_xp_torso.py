@@ -22,9 +22,9 @@ def opti2torso(pos):
     return numpy.array((-x, -z, -y))
 
 class Torso(object):
-    def __init__(self, dummy_robot=False, os='win', opti_addr='127.0.0.1'):
+    def __init__(self, dummy_robot=False, config_file='', opti_addr='127.0.0.1'):
         if not dummy_robot:
-            self.robot = pypot.robot.from_configuration('../torso-{}.xml'.format(os))
+            self.robot = pypot.robot.from_configuration(config_file)
             self.robot.start_sync()
 
         self.opti = opti.OptiTrackClient(opti_addr, 3883, ('left_hand', 'right_hand', 'goal'))

@@ -17,7 +17,7 @@ set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
 # ------------------- BUILDING -------------------------
 
 add_subdirectory ( "imle" )
-add_subdirectory( "demo" )
+#add_subdirectory( "demo" )
 add_subdirectory( "python" )
 
 

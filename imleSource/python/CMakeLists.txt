@@ -28,7 +28,7 @@ ENDIF()
 
 TARGET_LINK_LIBRARIES(imle ${PYTHON_LIBRARIES})
 
-INCLUDE_DIRECTORIES("/usr/local/lib/python2.7/site-packages/numpy/" "/usr/local/lib/python2.7/site-packages/numpy/core/include/")
+INCLUDE_DIRECTORIES("/usr/include/python2.7/" "/usr/lib/python2.7/dist-packages/numpy/" "/usr/lib/python2.7/dist-packages/numpy/core/include/")
 
 SET_TARGET_PROPERTIES(imle PROPERTIES OUTPUT_NAME "_imle" PREFIX "" SUFFIX ".so")
 

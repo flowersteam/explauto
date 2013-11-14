@@ -3,6 +3,7 @@
 
 #include "EigenSerialized.h"
 #include "ILearner.hpp"
+//#include "../python/myimle.h"
 
 /*
  * LinearExpert Interface
@@ -63,6 +64,7 @@ public:
     using LinearModel<d,D>::Psi;
     X invPsi;
 
+	//friend class MyImle;
 protected:
     // Boost serialization
     friend class boost::serialization::access;

@@ -111,18 +111,38 @@ boost::python::list MyImle::getJointMu(int expert) {
     return l;
 }
 
-boost::python::list MyImle::getJointSigma(int expert) {
-    IMLE::ZZ A=_imle.getExperts()[expert].Sigma;
-    boost::python::list l;
-    for(int i=0; i<d; i++)
-        l.append(_imle.getExperts()[expert].Nu[i]);
-
-    for(int i=0; i<D; i++)
-        l.append(_imle.getExperts()[expert].Mu[i]);
-
-    return l;
+boost::python::list MyImle::getInvSigma(int expert) {
+    IMLE::ZZ A=_imle.getExperts()[expert].getInvSigma();
+    boost::python::list ll;
+	for(int i=0; i<d; i++) {
+	    boost::python::list l;
+	    for(int j=0; i<d; i++)
+            l.append(A(i, j));
+	    ll.append(l);
+	}
+    return ll;
 }
 
+boost::python::list MyImle::getLambda(int expert) {
+    IMLE::XZ A=_imle.getExperts()[expert].getLambda();
+    boost::python::list ll;
+	for(int i=0; i<D; i++) {
+	    boost::python::list l;
+	    for(int j=0; i<d; i++)
+            l.append(A(i, j));
+	    ll.append(l);
+	}
+    return ll;
+}
+
+boost::python::list MyImle::getPsi(int expert) {
+    IMLE::X A=_imle.getExperts()[expert].getPsi();
+    boost::python::list l;
+	for(int i=0; i<D; i++) {
+		l.append(A(i));
+	}
+    return l;
+}
 
 int MyImle::getNumberOfExperts() {
     return _imle.getExperts().size();
