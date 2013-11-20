@@ -1,22 +1,26 @@
 import numpy
 
-import _imle
+#import _imle
 from gmminf import GMM
 
-d, D = 1, 1
+#d, D = 2, 1
 
 
 class Imle(object):
     def __init__(self, **kwargs):
         f = lambda key, default: kwargs[key] if key in kwargs else default
 
-        args = []
+	self.d=kwargs['in_ndims']
+	self.D=kwargs['out_ndims']
+	self._imle=__import__('_imle_'+str(self.d)+'_'+str(self.D))
 
+
+        args = []
         args.append(f('alpha', 0.995))
-        args.append(list(f('Psi0', [1] * D)))
+        args.append(list(f('Psi0', [1] * self.D)))
         args.append(f('sigma0', 0.1))
-        args.append(f('wsigma', 2.0**d))
-        args.append(f('wSigma', 2.0**d))
+        args.append(f('wsigma', 2.0**self.d))
+        args.append(f('wSigma', 2.0**self.d))
         args.append(f('wNu', 0.0))
         args.append(f('wLambda', 0.1))
         args.append(f('wPsi', 0.0))
@@ -24,25 +28,26 @@ class Imle(object):
         args.append(f('multiValuedSignificance', 0.95))
         args.append(f('nSolMax', 8))
 
-        param = _imle.ImleParam()
+	#exec 'import _'+str(in_ndims)+'_'+str(out_ndims)
+        param = self._imle.ImleParam()
         param.set_param(*args)
 
-        self._delegate = _imle.Imle(param)
+        self._delegate = self._imle.Imle(param)
 
     def update(self, z, x):
-        if len(x) != D or len(z) != d:
-            raise ValueError('check the inputs dimension')
+        if len(x) != self.D or len(z) != self.d:
+            raise ValueError('check the inputs dimension', len(x), self.D, len(z), self.d)
 
         self._delegate.update(list(z), list(x))
 
     def predict(self, z):
-        if len(z) != d:
+        if len(z) != self.d:
             raise ValueError('check the inputs dimension')
 
         return numpy.array(self._delegate.predict(list(z)))
 
     def predict_inverse(self, x):
-        if len(x) != D:
+        if len(x) != self.D:
             raise ValueError('check the inputs dimension')
 
         return numpy.array(self._delegate.predict_inverse(list(x)))
@@ -69,8 +74,8 @@ class Imle(object):
     def to_gmm(self):
         n=self.number_of_experts
         gmm=GMM(n_components=n, covariance_type='full')
-        gmm.means_=numpy.zeros((n,d+D))
-        gmm.covars_=numpy.zeros((n,d+D,d+D))
+        gmm.means_=numpy.zeros((n,self.d+self.D))
+        gmm.covars_=numpy.zeros((n,self.d+self.D,self.d+self.D))
         for k in range(n):
             gmm.means_[k,:]=self.get_joint_mu(k)
             gmm.covars_[k,:,:]=self.get_joint_sigma(k)
@@ -116,8 +121,8 @@ if __name__ == '__main__':
     i = Imle()
 
     for _ in range(100):
-        l1 = list(numpy.random.randn(7))
-        l2 = list(numpy.random.randn(3))
+        l1 = list(numpy.random.randn(i.d))
+        l2 = list(numpy.random.randn(i.D))
 
         i.update(l1, l2)
 

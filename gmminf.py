@@ -19,24 +19,27 @@ class GMM(sklearn.mixture.GMM):
         covars = numpy.zeros((self.n_components, len(out_dims), len(out_dims)))
         weights = numpy.zeros((self.n_components,))
         
-        for k, (weight_k, mean_k, covar_k) in enumerate(self):
-            sig_in = covar_k[ix_(in_dims, in_dims)]
-            inin_inv = numpy.matrix(sig_in).I
-            
-            means[k,:] = (mean_k[out_dims] + 
-                          (covar_k[ix_(out_dims, in_dims)] * 
-                           inin_inv * 
-                           (value - mean_k[ix_(in_dims)]).reshape(-1, 1)).T)
-                    
-            covars[k,:,:] = (covar_k[ix_(out_dims, out_dims)] - 
-                             covar_k[ix_(out_dims, in_dims)] * 
-                             inin_inv * 
-                             covar_k[ix_(in_dims, out_dims)])
-            
-            weights[k] = weight_k * Gaussian(mean_k[in_dims], sig_in).normal(value)
-            
-        weights /= sum(weights)
-        
+        if in_dims.size:
+            for k, (weight_k, mean_k, covar_k) in enumerate(self):
+                sig_in = covar_k[ix_(in_dims, in_dims)]
+                inin_inv = numpy.matrix(sig_in).I
+                out_in=covar_k[ix_(out_dims, in_dims)]
+                mu_in=mean_k[in_dims].reshape(-1,1)
+                means[k,:] = (mean_k[out_dims] + 
+                            (out_in * 
+                            inin_inv * 
+                            (value - mu_in)).T)
+                        
+                covars[k,:,:] = (covar_k[ix_(out_dims, out_dims)] - 
+                                out_in * 
+                                inin_inv * 
+                                covar_k[ix_(in_dims, out_dims)])
+                weights[k] = weight_k * Gaussian(mu_in.reshape(-1,), sig_in).normal(value.reshape(-1,))
+            weights /= sum(weights)
+        else:
+            means=self.means_[:,out_dims]
+            covars=self.covars_[ix_(range(self.n_components),out_dims,out_dims)]
+            weights=self.weights_
         res = GMM(n_components=self.n_components, 
                   covariance_type=self.covariance_type)
         res.weights_ = weights

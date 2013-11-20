@@ -116,8 +116,8 @@ boost::python::list MyImle::getInvSigma(int expert) {
     boost::python::list ll;
 	for(int i=0; i<d; i++) {
 	    boost::python::list l;
-	    for(int j=0; i<d; i++)
-            l.append(A(i, j));
+	    for(int j=0; j<d; j++)
+            	l.append(A(i, j));
 	    ll.append(l);
 	}
     return ll;
@@ -128,8 +128,8 @@ boost::python::list MyImle::getLambda(int expert) {
     boost::python::list ll;
 	for(int i=0; i<D; i++) {
 	    boost::python::list l;
-	    for(int j=0; i<d; i++)
-            l.append(A(i, j));
+	    for(int j=0; j<d; j++)
+            	l.append(A(i, j));
 	    ll.append(l);
 	}
     return ll;
