@@ -8,7 +8,14 @@ class Imle(object):
         for key, value in kwargs.items():
             setattr(self, key, value)
     def infer(self, in_dims,out_dims,x):
-        return self.gmm.inference(in_dims, out_dims, x).sample().T
+        if in_dims == self.s_dims and out_dims==self.m_dims:
+            try:
+                return self.imle.predict_inverse(x.flatten())[0].reshape(-1,1)
+            except RuntimeError as e:
+                print e
+                return self.imle.to_gmm().inference(in_dims, out_dims, x).sample().T
+        else:
+            return self.imle.to_gmm().inference(in_dims, out_dims, x).sample().T
     def update(self, m, s):
         self.imle.update(m.flatten(),s.flatten())
 
