@@ -23,9 +23,9 @@ class Imle(object):
         args.append(f('wSigma', 2.0**self.d))
         args.append(f('wNu', 0.0))
         args.append(f('wLambda', 0.1))
-        args.append(f('wPsi', 0.0))
+        args.append(f('wPsi', 2.0**self.d))
         args.append(f('p0', 0.1))
-        args.append(f('multiValuedSignificance', 0.95))
+        args.append(f('multiValuedSignificance', 0.8))
         args.append(f('nSolMax', 8))
 
 	#exec 'import _'+str(in_ndims)+'_'+str(out_ndims)
@@ -48,7 +48,7 @@ class Imle(object):
 
     def predict_inverse(self, x):
         if len(x) != self.D:
-            raise ValueError('check the inputs dimension')
+            raise ValueError('check the inputs dimension', len(x), self.D)
 
         return numpy.array(self._delegate.predict_inverse(list(x)))
 
