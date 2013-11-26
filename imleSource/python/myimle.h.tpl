@@ -7,8 +7,8 @@
 #include "imle.hpp"
 #include "expert_public.hpp"
 
-#define d 3
-#define D 1
+#define d $d
+#define D $D
 typedef imle<d, D, ::FastLinearExpert_public> IMLE;
 
 
@@ -32,11 +32,11 @@ public:
 };
 
 class MyImle {
-public: 
+public:
     MyImle(const ImleParam &param);
 
     void update(const boost::python::list &z, const boost::python::list &x);
-    
+
     boost::python::list predict(const boost::python::list &z);
     boost::python::list predictInverse(const boost::python::list &x);
 

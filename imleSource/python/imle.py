@@ -1,19 +1,39 @@
+import importlib
 import numpy
+import sys
+import os
 
 #import _imle
 from gmminf import GMM
 
 #d, D = 2, 1
 
+def load_imle(d, D):
+    bp = os.path.dirname(__file__)
+    bp = bp if bp else '.'
+    p = os.path.join(bp, '..', 'build', '{}_{}'.format(d, D), 'lib')
+
+    if not os.path.exists(p):
+        import subprocess
+        oldp = os.getcwd()
+        os.chdir(os.path.join(bp, '..'))
+        subprocess.call(["python", "compile.py", str(d), str(D)])
+        os.chdir(oldp)
+
+    sys.path.insert(0, p)
+    _imle = importlib.import_module('_imle')
+    del sys.path[0]
+
+    return _imle
+
 
 class Imle(object):
     def __init__(self, **kwargs):
         f = lambda key, default: kwargs[key] if key in kwargs else default
 
-	self.d=kwargs['in_ndims']
-	self.D=kwargs['out_ndims']
-	self._imle=__import__('_imle_'+str(self.d)+'_'+str(self.D))
-
+    	self.d = kwargs['in_ndims']
+    	self.D = kwargs['out_ndims']
+    	self._imle = load_imle(self.d, self.D)
 
         args = []
         args.append(f('alpha', 0.995))
@@ -82,7 +102,7 @@ class Imle(object):
         gmm.weights_= (1.*numpy.ones((n,)))/n
         return gmm
 
-        
+
     def get_sigma(self, k):
         """ The input covariance matrix of the kth component."""
         if k >= self.number_of_experts:
@@ -115,7 +135,7 @@ class Imle(object):
     def wPsi(self):
         """ The wPsi property."""
         return self._delegate.get_wPsi()
-    
+
 
 if __name__ == '__main__':
     i = Imle()
