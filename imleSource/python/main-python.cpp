@@ -28,6 +28,8 @@ BOOST_PYTHON_MODULE(_imle)
         .def("get_number_of_experts", &MyImle::getNumberOfExperts)
 
         .def("getPredictionWeight", &MyImle::getPredictionWeight)
+        .def("getPredictionVar", &MyImle::getPredictionVar)
+        .def("getPredictionJacobian", &MyImle::getPredictionJacobian)
 
         // .def("get_psi0", &MyImle::getPsi0)
         // .def("get_wPsi", &MyImle::getwPsi)

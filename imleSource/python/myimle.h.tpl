@@ -49,6 +49,8 @@ public:
     int getNumberOfExperts();
 
     boost::python::list getPredictionWeight();
+    boost::python::list getPredictionVar();
+    boost::python::list getPredictionJacobian();
 
     // boost::python::list getPsi0();
     // double getwPsi();

@@ -32,6 +32,7 @@ void ImleParam::set_param(double alpha,
     param.p0 = p0;
     param.multiValuedSignificance = multiValuedSignificance;
     param.nSolMax = nSolMax;
+    param.computeJacobian = true;
 }
 
 MyImle::MyImle(const ImleParam &param) {
@@ -155,6 +156,42 @@ boost::python::list MyImle::getPredictionWeight() {
         l.append(_imle.getPredictionWeight()[i]);
     }
     return l;
+}
+
+boost::python::list MyImle::getPredictionVar() {
+    ArrayMat A = _imle.getPredictionVar();
+    boost::python::list lll;
+
+    for (int k=0; k < A.size(); k++) {
+        boost::python::list ll;
+
+        for(int i=0; i < A[k].rows(); i++) {
+            boost::python::list l;
+            for(int j=0; j < A[k].cols(); j++)
+                l.append(A[k](i, j));
+            ll.append(l);
+        }
+        lll.append(ll);
+    }
+    return lll;
+}
+
+boost::python::list MyImle::getPredictionJacobian() {
+    ArrayMat A = _imle.getPredictionJacobian();
+    boost::python::list lll;
+
+    for (int k=0; k < A.size(); k++) {
+        boost::python::list ll;
+
+        for(int i=0; i < D; i++) {
+            boost::python::list l;
+            for(int j=0; j < d; j++)
+                l.append(A[k](i, j));
+            ll.append(l);
+        }
+        lll.append(ll);
+    }
+    return lll;
 }
 
 // boost::python::list MyImle::getPsi0() {
