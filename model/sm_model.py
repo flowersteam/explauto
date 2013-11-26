@@ -25,8 +25,9 @@ class ImleModel(SmModel):
             try:
                 sols = self.imle.predict_inverse(x.flatten())
                 return sols[np.random.randint(len(sols))].reshape(-1, 1)
+                return sols[0].reshape(-1, 1)
 
-            except RuntimeError as e:
+            except Exception as e:
                 print e
                 return self.imle.to_gmm().inference(in_dims, out_dims, x).sample().T
 
