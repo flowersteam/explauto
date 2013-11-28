@@ -1,5 +1,6 @@
 import numpy as np
 import imle as imle_
+from gmminf import GMM
 
 class SmModel(object):
     def __init__(self, m_dims, s_dims):
@@ -17,18 +18,25 @@ class ImleModel(SmModel):
     def __init__(self, m_dims, s_dims, sigma0, psi0):
         SmModel.__init__(self, m_dims, s_dims)
 
-        self.imle=imle_.Imle(in_ndims=len(m_dims), out_ndims=len(s_dims),
-                             sigma0=sigma0, Psi0=psi0)
+        self.imle = imle_.Imle(in_ndims=len(m_dims), out_ndims=len(s_dims),
+                               sigma0=sigma0, Psi0=psi0)
 
-    def infer(self, in_dims, out_dims,x):
+    def infer(self, in_dims, out_dims,x, mode = 'exploit'):
         if in_dims == self.s_dims and out_dims == self.m_dims:
             try:
-                sols = self.imle.predict_inverse(x.flatten())
-                return sols[np.random.randint(len(sols))].reshape(-1, 1)
-                return sols[0].reshape(-1, 1)
+                sols, covars, weights = self.imle.predict_inverse(x.flatten())
+                if mode == 'explore':
+                    gmm = GMM(n_components=len(sols), covariance_type='full')
+                    gmm.weights_ = weights / weights.sum()
+                    gmm.covars_ = covars
+                    gmm.means_ = sols
+
+                    return gmm.sample().reshape(-1,1)
+                elif mode =='exploit':
+                    return sols[0].reshape(-1, 1)
 
             except Exception as e:
-                print e
+                print e, 'blabla'
                 return self.imle.to_gmm().inference(in_dims, out_dims, x).sample().T
 
         elif in_dims == self.m_dims and out_dims==self.s_dims:

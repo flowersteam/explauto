@@ -21,7 +21,7 @@ def load_imle(d, D):
         os.chdir(oldp)
 
     sys.path.insert(0, p)
-    _imle = importlib.import_module('_imle')
+    _imle = importlib.import_module('_imle_' + str(d) + '_' + str(D))
     del sys.path[0]
 
     return _imle
@@ -64,13 +64,18 @@ class Imle(object):
         if len(z) != self.d:
             raise ValueError('check the inputs dimension')
 
-        return numpy.array(self._delegate.predict(list(z)))
+        return numpy.array(self._delegate.predict(list(z))), \
+            numpy.array(self._delegate.getPredictionVar()), \
+            numpy.array(self._delegate.getPredictionWeight()), \
+            numpy.array(self._delegate.getPredictionJacobian()) 
 
     def predict_inverse(self, x):
         if len(x) != self.D:
             raise ValueError('check the inputs dimension', len(x), self.D)
 
-        return numpy.array(self._delegate.predict_inverse(list(x)))
+        return numpy.array(self._delegate.predict_inverse(list(x))), \
+            numpy.array(self._delegate.getPredictionVar()), \
+            numpy.array(self._delegate.getPredictionWeight())
 
     def get_prediction_weight(self):
         return self._delegate.getPredictionWeight()
@@ -88,8 +93,8 @@ class Imle(object):
         Sigma=self.get_sigma(k)
         Lambda=self.get_lambda(k)
         SigmaLambdaT=Sigma.dot(Lambda.T)
-        LambdaSigma=Lambda.dot(Sigma)
-        return numpy.vstack((numpy.hstack((Sigma, SigmaLambdaT)), numpy.hstack((LambdaSigma, numpy.diag(self.get_psi(k)) + Lambda.dot(SigmaLambdaT)))))
+        #LambdaSigma=Lambda.dot(Sigma)
+        return numpy.vstack((numpy.hstack((Sigma, SigmaLambdaT)), numpy.hstack((SigmaLambdaT.T, numpy.diag(self.get_psi(k)) + Lambda.dot(SigmaLambdaT)))))
 
     def to_gmm(self):
         n=self.number_of_experts

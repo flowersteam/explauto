@@ -6,7 +6,7 @@ import os
 from string import Template
 
 # template_files = ('main-python.cpp', 'myimle.h')
-template_files = ('myimle.h', )
+template_files = ('myimle.h', 'CMakeLists.txt', 'main-python.cpp')
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -30,7 +30,9 @@ if __name__ == '__main__':
     os.makedirs(build_path)
 
     for template in template_files:
+	print template
         with open(os.path.join(src_path, template + '.tpl'), 'r') as f:
+	    print 'f = ', f
             s = Template(f.read()).substitute(d=d, D=D, name=fullname)
 
         with open(os.path.join(src_path, template), 'w') as f:

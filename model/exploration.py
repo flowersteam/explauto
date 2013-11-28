@@ -21,8 +21,8 @@ class Agent(object):
         self.sm_model.update(m, s)
 
     def explore(self, in_dims, out_dims):
-        x = self.i_model.sample(in_dims)
-        y = self.sm_model.infer(in_dims, out_dims, x)
+        x = self.i_model.sample()
+        y = self.sm_model.infer(in_dims, out_dims, x, mode='explore')
         self.ms[in_dims] = x
         self.ms[out_dims] = y
         m = self.ms[self.m_dims].reshape(len(self.m_dims), 1)
