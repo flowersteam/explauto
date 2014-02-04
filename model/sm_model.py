@@ -33,10 +33,12 @@ class ImleModel(SmModel):
 
                     return gmm.sample().reshape(-1,1)
                 elif mode =='exploit':
-                    return sols[0].reshape(-1, 1)
+                    #pred, _, _, jacob = self.imle.predict(sols[0])
+                    sol = sols[0]#.reshape(-1,1) + np.linalg.pinv(jacob[0]).dot(x - pred.reshape(-1,1))
+                    return sol
 
             except Exception as e:
-                print e, 'blabla'
+                print e
                 return self.imle.to_gmm().inference(in_dims, out_dims, x).sample().T
 
         elif in_dims == self.m_dims and out_dims==self.s_dims:

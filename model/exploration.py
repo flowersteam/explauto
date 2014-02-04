@@ -1,7 +1,7 @@
 import numpy as np
 
 class Agent(object):
-    def __init__(self, m_dims, s_dims, env, sm_model, i_model, competence):
+    def __init__(self, m_dims, s_dims, i_dims, inf_dims, env, sm_model, i_model, competence):
         """Initialize agent class
         Keyword arguments:
         m_dims -- the indices of motor values
@@ -18,7 +18,9 @@ class Agent(object):
         self.i_model = i_model
         self.competence = competence
         m, s = self.env.execute(np.zeros((len(self.m_dims), 1)))
+        self.ms = np.vstack((m, s))
         self.sm_model.update(m, s)
+        self.i_model.update(self.ms[i_dims,:], self.competence(self.i_model.bounds[0,:].reshape(-1,1), self.i_model.bounds[1,:].reshape(-1,1)))
 
     def explore(self, in_dims, out_dims):
         x = self.i_model.sample()

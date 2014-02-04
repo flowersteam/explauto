@@ -26,8 +26,8 @@ class ProgressInterest(InterestModel):
         InterestModel.__init__(self, bounds)
 
         self.imle = imle_.Imle(in_ndims=self.ndims+1, out_ndims=1,
-                               sigma0=1., Psi0=psi0)
-        self.scale_t = 1./sigma0
+                               sigma0=0.2**2., Psi0=psi0, p0=0.3, multiValuedSignificance=0.5)
+        self.scale_t = 2. * 0.2/numpy.sqrt(sigma0)
         self.t = 0.
         self.gmm = imle_.GMM(n_components=1, covariance_type='full')
         self.gmm.weights = [1.0]
@@ -52,10 +52,13 @@ class ProgressInterest(InterestModel):
         self.gmm = self.imle.to_gmm()
 
     def gmm_interest(self):
-        self.gmm.weights_ = numpy.array([self.gmm.covars_[k,0,-1] + 1e-100 for k in range(self.gmm.n_components)])
-        self.gmm.weights_[self.gmm.weights_ <= 1e-100] = 1e-100
-        self.gmm.weights_ /= numpy.array(self.gmm.weights_).sum()
-        return self.gmm.inference([0], range(1, self.ndims + 1), [(self.t)])
-
+        cov_t_c = numpy.array([self.gmm.covars_[k,0,-1] for k in range(self.gmm.n_components)])
+        cov_t_c = numpy.exp(cov_t_c)
+        #cov_t_c[cov_t_c <= 1e-100] = 1e-100
+        gmm_choice = self.gmm.inference([0], range(1, self.ndims + 1), [self.t])
+        gmm_choice.weights_ = cov_t_c
+        gmm_choice.weights_ /= numpy.array(gmm_choice.weights_).sum()
+        #gmm_choice = gmm_choice.inference([], [0], []) 
+        return gmm_choice
 
 
