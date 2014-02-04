@@ -1,7 +1,7 @@
 import numpy
 import sklearn.mixture
 
-from numpy import ix_, array, all
+from numpy import ix_, array
 
 from gaussian import Gaussian
 
