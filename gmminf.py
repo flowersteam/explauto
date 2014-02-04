@@ -15,44 +15,48 @@ class GMM(sklearn.mixture.GMM):
         for weight, mean, covar in zip(self.weights_, self.means_, self.covars_):
             yield (weight, mean, covar)
 
-    def inference(self, in_dims, out_dims, value):
-        new = not(all(array(in_dims)==self.in_dims) and all(array(out_dims)==self.out_dims))
-        if new:
-            print '1', array(in_dims), self.in_dims
-            self.in_dims = numpy.array(in_dims)
-            print '2', array(in_dims), self.in_dims
-            self.out_dims = numpy.array(out_dims)		
-            self.means_inf = numpy.zeros((self.n_components, len(self.out_dims)))
-            self.covars_inf = numpy.zeros((self.n_components, len(self.out_dims), len(self.out_dims)))
-            self.weights_inf = numpy.zeros((self.n_components,))
-			
-        if self.in_dims.size:
+    def probability(self, value):
+        p =0.
+        for k, (w, m, c) in enumerate(self):
+            p += w * Gaussian(m.reshape(-1,), c).normal(value.reshape(-1,))
+        return p
+
+
+    def inference(self, in_dims, out_dims, value=None):
+        in_dims = numpy.array(in_dims)
+        out_dims = numpy.array(out_dims)
+        value = numpy.array(value)
+    
+        means = numpy.zeros((self.n_components, len(out_dims)))
+        covars = numpy.zeros((self.n_components, len(out_dims), len(out_dims)))
+        weights = numpy.zeros((self.n_components,))
+        
+        if in_dims.size:
             for k, (weight_k, mean_k, covar_k) in enumerate(self):
-                if new:
-                    self.sig_in = covar_k[ix_(self.in_dims, self.in_dims)]
-                    self.inin_inv = numpy.matrix(self.sig_in).I
-                    self.out_in=covar_k[ix_(self.out_dims, self.in_dims)]
-                    self.mu_in=mean_k[self.in_dims].reshape(-1,1)
-                self.means_inf[k,:] = (mean_k[self.out_dims] + 
-                            (self.out_in * 
-                            self.inin_inv * 
-                            (value - self.mu_in)).T)
+                sig_in = covar_k[ix_(in_dims, in_dims)]
+                inin_inv = numpy.matrix(sig_in).I
+                out_in=covar_k[ix_(out_dims, in_dims)]
+                mu_in=mean_k[in_dims].reshape(-1,1)
+                means[k,:] = (mean_k[out_dims] + 
+                            (out_in * 
+                            inin_inv * 
+                            (value - mu_in)).T)
                         
-                self.covars_inf[k,:,:] = (covar_k[ix_(self.out_dims, self.out_dims)] - 
-                self.out_in * 
-                self.inin_inv * 
-                covar_k[ix_(self.in_dims, self.out_dims)])
-                self.weights_inf[k] = weight_k * Gaussian(self.mu_in.reshape(-1,), self.sig_in).normal(value.reshape(-1,))
-            self.weights_inf /= sum(self.weights_inf)
+                covars[k,:,:] = (covar_k[ix_(out_dims, out_dims)] - 
+                                out_in * 
+                                inin_inv * 
+                                covar_k[ix_(in_dims, out_dims)])
+                weights[k] = weight_k * Gaussian(mu_in.reshape(-1,), sig_in).normal(value.reshape(-1,))
+            weights /= sum(weights)
         else:
-            self.means_inf=self.means_[:,out_dims]
-            self.covars_inf=self.covars_[ix_(range(self.n_components),self.out_dims,self.out_dims)]
-            self.weights_inf=self.weights_
+            means=self.means_[:,out_dims]
+            covars=self.covars_[ix_(range(self.n_components),out_dims,out_dims)]
+            weights=self.weights_
         res = GMM(n_components=self.n_components, 
                   covariance_type=self.covariance_type)
-        res.weights_ = self.weights_inf
-        res.means_ = self.means_inf
-        res.covars_ = self.covars_inf
+        res.weights_ = weights
+        res.means_ = means
+        res.covars_ = covars
         return res
 
     def get_display_ellipses2D(self, colors):
