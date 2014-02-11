@@ -21,6 +21,11 @@ class GMM(sklearn.mixture.GMM):
             p += w * Gaussian(m.reshape(-1,), c).normal(value.reshape(-1,))
         return p
 
+    def sub_gmm(self, inds_k):
+        gmm = GMM(n_components=len(inds_k), covariance_type=self.covariance_type)
+        gmm.weights, gmm.means_, gmm.covars_ = self.weights_[inds_k], self.means_[inds_k,:], self.covars_[inds_k,:,:]
+        gmm.weights = gmm.weights / gmm.weights.sum()
+        return gmm
 
     def inference(self, in_dims, out_dims, value=None):
         in_dims = numpy.array(in_dims)
@@ -37,6 +42,7 @@ class GMM(sklearn.mixture.GMM):
                 inin_inv = numpy.matrix(sig_in).I
                 out_in=covar_k[ix_(out_dims, in_dims)]
                 mu_in=mean_k[in_dims].reshape(-1,1)
+                        
                 means[k,:] = (mean_k[out_dims] + 
                             (out_in * 
                             inin_inv * 
