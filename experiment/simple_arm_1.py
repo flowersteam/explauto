@@ -45,8 +45,8 @@ import sm_model as smm
 import i_model as im
 
 sm_model = smm.ImleModel(m_dims, s_dims, sigma0_sm, psi0_sm)
-i_model = im.RandomInterest(ms_bounds[:,i_dims])
+#i_model = im.RandomInterest(ms_bounds[:,i_dims])
 #i_model = im.ProgressInterest(ms_bounds[:,i_dims], sigma0_i, psi0_i)
-#i_model = im.GmmInterest(ms_bounds[:,i_dims], sigma0_i, psi0_i)
+i_model = im.GmmInterest(ms_bounds[:,i_dims], sigma0_i, psi0_i)
 
 ag=exploration.Agent(m_dims=m_dims, s_dims=s_dims, i_dims=i_dims, inf_dims=inf_dims, env=env, sm_model=sm_model, i_model=i_model, competence=competence)

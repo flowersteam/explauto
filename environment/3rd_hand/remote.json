@@ -1,0 +1,88 @@
+{
+  "controllers": {
+    "my_dxl_controller": {
+      "sync_read": false,
+      "attached_motors": [
+        "base",
+        "head"
+      ],
+      "port": "/dev/ttyUSB1"
+    }
+  },
+  "motorgroups": {
+    "base": ["base_pan", "base_tilt_lower", "base_tilt_upper"],
+    "head": ["head_pan", "head_tilt", "head_roll", "gripper"]
+  },
+  "motors": {
+    "base_pan": {
+      "offset": 22.5,
+      "type": "RX-64",
+      "id": 11,
+      "angle_limit": [
+        -67.5,
+        112.5
+      ],
+      "orientation": "direct"
+    },
+    "base_tilt_lower": {
+      "offset": 0.0,
+      "type": "RX-64",
+      "id": 12,
+      "angle_limit": [
+        -65.0,
+        65.0
+      ],
+      "orientation": "direct"
+    },
+    "base_tilt_upper": {
+      "offset": 0.0,
+      "type": "RX-64",
+      "id": 13,
+      "angle_limit": [
+        -65.0,
+        65.0
+      ],
+      "orientation": "direct"
+    },
+    "head_pan": {
+      "offset": 22.5,
+      "type": "RX-28",
+      "id": 14,
+      "angle_limit": [
+        -67.5,
+        112.5
+      ],
+      "orientation": "direct"
+    },
+    "head_tilt": {
+      "offset": 0.0,
+      "type": "RX-28",
+      "id": 15,
+      "angle_limit": [
+        -65.0,
+        65.0
+      ],
+      "orientation": "indirect"
+    },
+    "head_roll": {
+      "offset": -67.5,
+      "type": "RX-28",
+      "id": 16,
+      "angle_limit": [
+        -147.5,
+        12.5
+      ],
+      "orientation": "direct"
+    },
+    "gripper": {
+      "orientation": "indirect",
+      "type": "RX-28",
+      "id": 17,
+      "angle_limit": [
+        -30.0,
+        20.0
+      ],
+      "offset": -20.0
+    }
+  }
+}
