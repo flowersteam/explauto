@@ -22,6 +22,18 @@ class Agent(object):
         self.sm_model.update(m, s)
         self.i_model.update(self.ms[i_dims,:], self.competence(self.i_model.bounds[0,:].reshape(-1,1), self.i_model.bounds[1,:].reshape(-1,1)))
 
+    def produce(self):
+        self.x = self.i_model.sample()
+        self.y = self.sm_model.infer(in_dims, out_dims, x, mode='explore')
+        self.ms[in_dims] = x
+        self.ms[out_dims] = y
+        return self.ms[self.m_dims].reshape(len(self.m_dims), 1)  
+        
+    def perceive(self, m, s): 
+        self.comp = self.competence(self.ms[self.s_dims], s)
+        self.sm_model.update(m, s)
+        self.i_model.update(self.x, self.comp)
+        
     def explore(self, in_dims, out_dims):
         x = self.i_model.sample()
         y = self.sm_model.infer(in_dims, out_dims, x, mode='explore')
