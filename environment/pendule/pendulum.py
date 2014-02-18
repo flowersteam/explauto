@@ -133,13 +133,14 @@ preds = array(preds).reshape(-1,2)
 print mean([linalg.norm(preds[i,:] - res[t, -2:]) for i,t in enumerate(test_inds)])
 
 
-# gmmpend=model.to_gmm().inference(range(0,3), range(3,5),array([0.0,0.0,0.0]))
-gmmpend=model.inference(range(0,3), range(3,5),array([0.0,0.0,0.0]))
+gmmpend=model.to_gmm().inference(range(0,3), range(3,5),array([0.0,0.0,0.0]).reshape(-1,1))
+
+# gmmpend=model.inference(range(0,3), range(3,5),array([0.0,0.0,0.0]))
 
 print "proba"
 # print gmmpend.probability(array([0.0,0.0,0.0,0.0,0.1]))
 
-# print gmmpend.probability(array([0.0,0.0]))
+print gmmpend.probability(array([0.0,0.0]))
 
 # <codecell>
 
