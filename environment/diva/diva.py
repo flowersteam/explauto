@@ -1,14 +1,23 @@
 import pymatlab
 
-class diva_synth:
-    def __init__(self, diva_path):
+class DivaSynth:
+    def __init__(self, diva_path, sample_rate):
         self.session = pymatlab.session_factory()
         self.session.run('path(' + diva_path + ', path)')
+        self.session.putvalue('sr', [sample_rate])
 
     def execute(self, art):
         self.session.putvalue('art', art)
         self.session.run('[aud, som, outline] = diva_synth(art, \'audsom\')')
-        return self.session.getvalue('aud')
+        self.aud = self.session.getvalue('aud')
+        self.som = self.session.getvalue('som')
+        self.vt = self.session.getvalue('outline')
+        return self.aud
+
+    def sound_wave(self, art):
+        self.session.putvalue('art', art)
+        self.session.run('wave = diva_synth(art, \'sound\', sr)')
+        return self.session.getvalue('wave')
     
     def stop(self):
         del self.session

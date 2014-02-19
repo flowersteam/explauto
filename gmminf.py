@@ -26,6 +26,34 @@ class GMM(sklearn.mixture.GMM):
         gmm.weights, gmm.means_, gmm.covars_ = self.weights_[inds_k], self.means_[inds_k,:], self.covars_[inds_k,:,:]
         gmm.weights = gmm.weights / gmm.weights.sum()
         return gmm
+        
+    def conditional(self, in_dims, out_dims):
+        self.in_dims = numpy.array(in_dims)
+        self.out_dims = numpy.array(out_dims)
+        means = numpy.zeros((self.n_components, len(out_dims)))
+        covars = numpy.zeros((self.n_components, len(out_dims), len(out_dims)))
+        weights = numpy.zeros((self.n_components,)) 
+        sig_in = []
+        inin_inv = []
+        out_in = []
+        mu_in = []
+        for k, (weight_k, mean_k, covar_k) in enumerate(self):
+            sig_in.append(covar_k[ix_(in_dims, in_dims)])
+            inin_inv.append(numpy.matrix(sig_in).I)
+            out_in.append(covar_k[ix_(out_dims, in_dims)])
+            mu_in.append(mean_k[in_dims].reshape(-1,1))
+                    
+            means[k,:] = (mean_k[out_dims] + 
+                        (out_in * 
+                        inin_inv * 
+                        (value - mu_in)).T)
+                    
+            covars[k,:,:] = (covar_k[ix_(out_dims, out_dims)] - 
+                            out_in * 
+                            inin_inv * 
+                            covar_k[ix_(in_dims, out_dims)])
+            weights[k] = weight_k * Gaussian(mu_in.reshape(-1,), sig_in).normal(value.reshape(-1,))
+        weights /= sum(weights)
 
     def inference(self, in_dims, out_dims, value=None):
         in_dims = numpy.array(in_dims)
