@@ -1,37 +1,35 @@
 import itertools
+import numpy
 
 import pypot.robot
-import pypot.primitive
+
+from pypot.primitive import LoopPrimitive
 
 
 class Arm(object):
     motors_name = ['base_pan', 'base_tilt_lower', 'base_tilt_upper',
                    'head_pan', 'head_tilt', 'head_roll', 'gripper']
 
-    def __init__(self, json_file):
+    def __init__(self, json_file, opti):
         self.robot = pypot.robot.from_json(json_file)
+        self.robot.start_sync()
 
         for m in self.motors:
             setattr(self, m.name, m)
 
         self.imitation = None
-        self.started = False
+
+        self.opti = opti
 
     def setup(self):
-        if not self.started:
-            self.robot.start_sync()
-            self.started = True
-
-        for m in self.motors:
-            m.compliant = False
-
+        self.compliant = False
         self.goto_position(Arm.rest_position, 2)
 
     def record_position(self):
         return dict([(str(m.name), m.present_position) for m in self.motors])
 
-    def goto_position(self, position, dt):
-        self.robot.goto_position(position, dt)
+    def goto_position(self, position, dt, wait=False):
+        self.robot.goto_position(position, dt, wait)
 
     def imitate(self, imited):
         self.imitation = CopyPrimitive(self, imited, 50, max_speed=50)
@@ -43,15 +41,39 @@ class Arm(object):
     def hold(self):
         self._tighten(0)
 
-    def close(self):
+    def close_gripper(self):
         self._tighten(10)
 
-    def release(self):
+    def open_gripper(self):
         self._tighten(50)
+
+    @property
+    def compliant(self):
+        return self.robot.compliant
+
+    @compliant.setter
+    def compliant(self, value):
+        self.robot.compliant = value
 
     @property
     def motors(self):
         return self.robot.motors
+
+    @property
+    def joints(self):
+        return numpy.array([m.present_position for m in self.motors])
+
+    def _get_opti_obj(self, obj_name):
+        obj = self.opti.recent_tracked_objects[obj_name]
+        return numpy.hstack((obj.position, obj.orientation))
+
+    @property
+    def tip(self):
+        return self._get_opti_obj('gripper')
+
+    @property
+    def magicwand(self):
+        return self._get_opti_obj('wand')
 
     def _tighten(self, pos, max_speed=50):
         self.gripper.moving_speed = max_speed
@@ -69,9 +91,9 @@ class Arm(object):
         'gripper': 10.0}
 
 
-class CopyPrimitive(pypot.primitive.LoopPrimitive):
+class CopyPrimitive(LoopPrimitive):
     def __init__(self, imitor, imited, freq, max_speed=50):
-        pypot.primitive.LoopPrimitive.__init__(self, imitor.robot, freq)
+        LoopPrimitive.__init__(self, imitor.robot, freq)
 
         self.imitor = imitor
         self.imited = imited
@@ -80,10 +102,28 @@ class CopyPrimitive(pypot.primitive.LoopPrimitive):
             m.moving_speed = max_speed
 
     def update(self):
-        pypot.primitive.LoopPrimitive.update(self)
-
         for name in self.imited.motors_name:
             m_imited = getattr(self.imited, name)
             m_imitor = getattr(self.imitor, name)
 
             m_imitor.goal_position = m_imited.present_position
+
+
+class RecordPrimitive(LoopPrimitive):
+    def __init__(self, arm, freq):
+        LoopPrimitive.__init__(self, arm.robot, freq)
+        self.arm = arm
+
+    def start(self):
+        self._data = []
+        LoopPrimitive.start(self)
+
+    def update(self):
+        try:
+            self._data.append(numpy.hstack((self.arm.joints, self.arm.tip)))
+        except KeyError:
+            pass
+
+    @property
+    def data(self):
+        return numpy.array(self._data)
