@@ -30,6 +30,7 @@ class Agent(object):
         return self.ms[self.m_dims].reshape(len(self.m_dims), 1)  
         
     def perceive(self, m, s): 
+        # Todo: put competence function in i_model.py and call it from i_model
         self.comp = self.competence(self.ms[self.s_dims], s)
         self.sm_model.update(m, s)
         self.i_model.update(self.x, self.comp)

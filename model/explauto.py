@@ -23,6 +23,8 @@ class Explauto(object):
         self.hist_len = len(self.exp.i_dims) + len(self.exp.inf_dims) + self.exp.m_ndims + self.exp.s_ndims + 1
 
     def run(self):
+        in_env = self.ag.produce()
+        out_env = self.env.execute(in_env)
         return np.vstack(self.exp.ag.explore(self.exp.i_dims,self.exp.inf_dims)).reshape(-1) 
         #return np.array([np.vstack(self.exp.ag.explore(self.exp.i_dims,self.exp.inf_dims)).T for _ in range(n_runs)])
         
