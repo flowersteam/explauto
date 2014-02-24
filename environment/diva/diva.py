@@ -1,10 +1,11 @@
 import pymatlab
+import numpy as np
 
 class DivaSynth:
-    def __init__(self, diva_path, sample_rate):
+    def __init__(self, diva_path, sample_rate = 11025):
         self.session = pymatlab.session_factory()
-        self.session.run('path(' + diva_path + ', path)')
-        self.session.putvalue('sr', [sample_rate])
+        self.session.run('path(\'' + diva_path + '\', path)')
+        self.session.putvalue('sr', np.array([sample_rate]))
 
     def execute(self, art):
         self.session.putvalue('art', art)
@@ -16,7 +17,9 @@ class DivaSynth:
 
     def sound_wave(self, art):
         self.session.putvalue('art', art)
-        self.session.run('wave = diva_synth(art, \'sound\', sr)')
+        self.session.run('sr = sr(1)')
+        print self.session.getvalue('sr')
+        self.session.run('wave = diva_synth(art, \'sound\')')
         return self.session.getvalue('wave')
     
     def stop(self):

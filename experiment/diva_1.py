@@ -29,7 +29,7 @@ psi0_i = [0.2 ** 2]
 
 class Env:
     def __init__(self, diva_path):
-        self.synth = diva.diva_synth(diva_path)
+        self.synth = diva.DivaSynth(diva_path)
     def execute(self,m):
         m = maximum(m.flatten(), ms_bounds[0:1,m_dims])
         m = minimum(m.flatten(), ms_bounds[1:2,m_dims])
