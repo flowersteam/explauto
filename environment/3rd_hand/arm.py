@@ -97,9 +97,11 @@ class CopyPrimitive(LoopPrimitive):
 
         self.imitor = imitor
         self.imited = imited
+        self.max_speed = max_speed
 
+    def setup(self):
         for m in self.imitor.motors:
-            m.moving_speed = max_speed
+            m.moving_speed = self.max_speed
 
     def update(self):
         for name in self.imited.motors_name:
@@ -114,9 +116,8 @@ class RecordPrimitive(LoopPrimitive):
         LoopPrimitive.__init__(self, arm.robot, freq)
         self.arm = arm
 
-    def start(self):
+    def setup(self):
         self._data = []
-        LoopPrimitive.start(self)
 
     def update(self):
         try:
