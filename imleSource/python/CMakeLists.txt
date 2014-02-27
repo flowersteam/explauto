@@ -20,18 +20,18 @@ set( LIBS ${LIBS} ${Boost_LIBRARIES})
   SET(Boost_USE_STATIC_RUNTIME OFF)
   FIND_PACKAGE(Boost COMPONENTS python)
 
-  ADD_LIBRARY(imle_2_6 SHARED myimle.cpp main-python.cpp)
-  TARGET_LINK_LIBRARIES(imle_2_6 ${Boost_LIBRARIES})
+  ADD_LIBRARY(imle_2_3 SHARED myimle.cpp main-python.cpp)
+  TARGET_LINK_LIBRARIES(imle_2_3 ${Boost_LIBRARIES})
 ELSEIF(NOT Boost_FOUND)
   MESSAGE(FATAL_ERROR "Unable to find correct Boost version. Did you set BOOST_ROOT?")
 ENDIF()
 
-TARGET_LINK_LIBRARIES(imle_2_6 ${PYTHON_LIBRARIES})
+TARGET_LINK_LIBRARIES(imle_2_3 ${PYTHON_LIBRARIES})
 
 INCLUDE_DIRECTORIES("/usr/include/python2.7/" "/usr/lib/python2.7/dist-packages/numpy/" "/usr/lib/python2.7/dist-packages/numpy/core/include/")
 
-SET_TARGET_PROPERTIES(imle_2_6 PROPERTIES OUTPUT_NAME "_imle_2_6" PREFIX "" SUFFIX ".so")
+SET_TARGET_PROPERTIES(imle_2_3 PROPERTIES OUTPUT_NAME "_imle_2_3" PREFIX "" SUFFIX ".so")
 
 
 include_directories(${INCLUDE})
-target_link_libraries(imle_2_6 ${LIBS})
+target_link_libraries(imle_2_3 ${LIBS})

@@ -13,7 +13,7 @@ class DivaSynth:
         self.aud = self.session.getvalue('aud')
         self.som = self.session.getvalue('som')
         self.vt = self.session.getvalue('outline')
-        return self.aud
+        return self.aud, self.som, self.vt
 
     def sound_wave(self, art):
         self.session.putvalue('art', art)

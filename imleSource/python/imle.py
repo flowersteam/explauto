@@ -4,7 +4,7 @@ import sys
 import os
 
 #import _imle
-from gmminf import GMM
+from model.gmminf import GMM
 
 #d, D = 2, 1
 
