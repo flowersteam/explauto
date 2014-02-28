@@ -11,7 +11,7 @@ class Gaussian(object):
     that is NOT handled.
     """
 
-    def __init__(self, mu, sigma) :
+    def __init__(self, mu, sigma):
         """
         Creates the Gaussian with the given parameters.
         @param mu : mean, given as (d,) matrix
@@ -75,7 +75,7 @@ class Gaussian(object):
         (mu2, mu1) = split_vector(self.mu, dims)
         d_inv = numpy.linalg.inv(d)
         mu = mu1 + numpy.dot(numpy.dot(b, d_inv), v - mu2) 
-        sigma = a - numpy.dot(b, numpy.dot(numpy.linalg.inv(d), c))
+        sigma = a - numpy.dot(b, numpy.dot(d_inv, c))
         return Gaussian(mu, sigma)
     # TODO :  use a representation that allows different values of v
     #    without computing schur each time.

@@ -19,11 +19,14 @@ class Agent(object):
         self.i_model = i_model
         self.competence = competence
         self.to_bootstrap = True
+        self.choices = np.zeros((10000, len(i_dims)))
+        self.comps = np.zeros((10000, 1))
+        self.t = 0
 
     def bootstrap(self):
         self.ms[self.m_dims] =np.zeros((len(self.m_dims), 1))
-        self.ms[self.s_dims] = self.i_model.bounds[0,:].reshape(-1,1)
-        self.x = self.ms[self.i_dims,:]
+        #self.ms[self.s_dims] = self.i_model.bounds[0,:].reshape(-1,1)
+        self.x =np.array(self.i_model.bounds[0,:].reshape(-1,1))
         self.to_bootstrap = False
         return self.ms[self.m_dims].T
 
@@ -33,19 +36,22 @@ class Agent(object):
         #self.i_model.update(self.ms[i_dims,:], self.competence(self.i_model.bounds[0,:].reshape(-1,1), self.i_model.bounds[1,:].reshape(-1,1)))
 
     def produce(self):
-        if self.to_bootstrap:
-            return self.bootstrap()
+        #if self.to_bootstrap:
+            #return self.bootstrap()
         self.x = self.i_model.sample()
         self.y = self.sm_model.infer(self.i_dims, self.inf_dims, self.x)
         self.ms[self.i_dims] = self.x
         self.ms[self.inf_dims] = self.y
+        self.choices[self.t,:] = self.x
         return self.ms[self.m_dims].T        
 
     def perceive(self, ms): 
         # Todo: put competence function in i_model.py and call it from i_model
         self.comp = self.competence(self.ms[self.s_dims], ms[self.s_dims])
+        self.comps[self.t] = self.comp
         self.sm_model.update(self.ms[self.m_dims], ms[self.s_dims])
         self.i_model.update(self.x, self.comp)
+        self.t += 1
         
     #def explore(self, in_dims, out_dims):
         #x = self.i_model.sample()

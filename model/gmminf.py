@@ -55,6 +55,13 @@ class GMM(sklearn.mixture.GMM):
             weights[k] = weight_k * Gaussian(mu_in.reshape(-1,), sig_in).normal(value.reshape(-1,))
         weights /= sum(weights)
 
+        def p(value):
+            # hard copy of useful matrices local to the function
+            pass
+
+        return p
+
+
     def inference(self, in_dims, out_dims, value=None):
         in_dims = numpy.array(in_dims)
         out_dims = numpy.array(out_dims)

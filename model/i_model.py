@@ -1,8 +1,9 @@
 import numpy
-
+from collections import deque
 import imle as imle_
 from gmminf import GMM
 import utils
+from copy import deepcopy
 
 class InterestModel(object):
     def __init__(self, bounds):
@@ -107,6 +108,26 @@ class GmmInterest(InterestModel):
         gmm_choice.weights_ /= numpy.array(gmm_choice.weights_).sum()
         #gmm_choice = gmm_choice.inference([], [0], []) 
         return gmm_choice
+
+class DiscreteProgressInterest(InterestModel):
+    def __init__(self, x_card, win_size):
+        InterestModel.__init__(self, numpy.array([0, x_card]).reshape(-1,1))
+        self.t = win_size
+        queue =  deque([[t, numpy.random.rand()] for t in range(win_size)], maxlen = win_size)
+        self.queues = [deepcopy(queue) for _ in range(x_card)]
+        #self.queues = [ deque([[t, numpy.random.rand()] for t in range(win_size)], maxlen = win_size) for _ in range(x_card)]
+        #self.queues = [ deque([[t, 1.] for t in range(win_size)], maxlen = win_size) for _ in range(x_card)]
+
+    def progress(self):
+        return numpy.array([numpy.cov(q, rowvar=0)[1,1] for q in self.queues])
+
+    def sample(self):
+        w = 1e-10 + abs(self.progress())
+        return utils.discrete_random_draw(w)
+
+    def update(self, x, comp):
+        self.queues[int(x)].append([self.t, comp])
+        self.t += 1
 
 
 class BayesOptInterest(InterestModel):
