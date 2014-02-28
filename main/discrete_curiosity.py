@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import sys
 sys.path.append('../')
 from environment.toys.discrete_1d_progress import *
 from agent import Agent
@@ -9,7 +10,7 @@ from model.competence import competence_bool
 from experiment import Experiment
 
 m_card = 3
-s_card = 4
+s_card = 3
 env = Discrete1dProgress(dict(m_ndims = 1, s_ndims = 1, m_card = m_card, s_card = s_card))
 
 bounds = ((0, m_card), (0, s_card))
