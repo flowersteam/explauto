@@ -9,9 +9,11 @@ class Discrete1dProgress(Environment):
     def next_state(self):
         m = self.state[0]
         if m == 0:
-            s = randint(self.s_card)
-        elif m == 1 or m == 2:
-            s = m + 1
-        else:
-            s = self.s_card - 1
+            s = 0
+        elif m == self.s_card - 1:
+            s = m
+        elif m == 1:
+            s = randint(self.s_card - 1)
+        #else:
+            #s = self.s_card - 1
         self.state[1] = s
