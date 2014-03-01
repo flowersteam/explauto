@@ -8,12 +8,22 @@ class Discrete1dProgress(Environment):
         self.s_card = config_dict['s_card']
     def next_state(self):
         m = self.state[0]
+
+        #if m == 0:
+            #s = 2
+        #elif m == 1:
+            #s = m
+        #elif m == 2:
+            #s = randint(2)
         if m == 0:
             s = 0
-        elif m == self.s_card - 1:
-            s = m
         elif m == 1:
-            s = randint(self.s_card - 1)
-        #else:
-            #s = self.s_card - 1
+            s = randint(2)
+        elif m <= 4:
+            s = 2
+        elif m == 5:
+            s = 3
+        elif m == 6:
+            s = randint(2) + 4
+
         self.state[1] = s

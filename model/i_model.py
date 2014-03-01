@@ -112,22 +112,24 @@ class GmmInterest(InterestModel):
 class DiscreteProgressInterest(InterestModel):
     def __init__(self, x_card, win_size):
         InterestModel.__init__(self, numpy.array([0, x_card]).reshape(-1,1))
-        self.t = win_size
-        queue =  deque([[t, numpy.random.rand()] for t in range(win_size)], maxlen = win_size)
+        self.win_size = win_size
+        #self.t = [win_size] * self.xcard
+        queue =  deque([0. for t in range(win_size)], maxlen = win_size)
         self.queues = [deepcopy(queue) for _ in range(x_card)]
         #self.queues = [ deque([[t, numpy.random.rand()] for t in range(win_size)], maxlen = win_size) for _ in range(x_card)]
         #self.queues = [ deque([[t, 1.] for t in range(win_size)], maxlen = win_size) for _ in range(x_card)]
 
     def progress(self):
-        return numpy.array([numpy.cov(q, rowvar=0)[1,1] for q in self.queues])
+        return numpy.array([numpy.cov(zip(range(self.win_size), q), rowvar=0)[0,1] for q in self.queues])
 
     def sample(self):
-        w = 1e-10 + abs(self.progress())
+        w =  abs(self.progress())
+        w = numpy.exp(3. * w) / numpy.exp(3.)
         return utils.discrete_random_draw(w)
 
     def update(self, x, comp):
-        self.queues[int(x)].append([self.t, comp])
-        self.t += 1
+        self.queues[int(x)].append(comp)
+        #self.t[x] += 1
 
 
 class BayesOptInterest(InterestModel):
