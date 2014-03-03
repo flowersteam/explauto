@@ -22,7 +22,7 @@ def get_config(m_ndims, s_ndims, sensorimotor, interest):
         raise
     interest[2]['i_dims'] = i_dims
     if interest[0] == 'random':
-        im = i_model.RandomInterest(**interest[2][i_dims,:].T)
+        im = i_model.RandomInterest(**interest[2])
     elif interest[0] == 'discrete_progress':
         im = i_model.DiscreteProgressInterest(**interest[2])
     else:

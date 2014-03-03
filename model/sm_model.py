@@ -48,14 +48,14 @@ class ImleModel(SmModel):
     def infer(self, in_dims, out_dims,x):
         if in_dims == self.s_dims and out_dims == self.m_dims:
             try:
-                sols, covars, weights = self.imle.predict_inverse(x.flatten())
+                sols, covars, weights = self.imle.predict_inverse(x)
                 if self.mode == 'explore':
                     gmm = GMM(n_components=len(sols), covariance_type='full')
                     gmm.weights_ = weights / weights.sum()
                     gmm.covars_ = covars
                     gmm.means_ = sols
 
-                    return gmm.sample().reshape(-1,1)
+                    return gmm.sample()
                 elif self.mode == 'exploit':
                     #pred, _, _, jacob = self.imle.predict(sols[0])
                     sol = sols[0]#.reshape(-1,1) + np.linalg.pinv(jacob[0]).dot(x - pred.reshape(-1,1))
@@ -63,15 +63,15 @@ class ImleModel(SmModel):
 
             except Exception as e:
                 print e
-                return self.imle.to_gmm().inference(in_dims, out_dims, x).sample().T
+                return self.imle.to_gmm().inference(in_dims, out_dims, x).sample()
 
         #elif in_dims == self.m_dims and out_dims==self.s_dims:
             #return self.imle.predict(x.flatten()).reshape(-1,1)
         else:
-            return self.imle.to_gmm().inference(in_dims, out_dims, x).sample().T
+            return self.imle.to_gmm().inference(in_dims, out_dims, x).sample()
 
     def update(self, m, s):
-        self.imle.update(m.flatten(), s.flatten())
+        self.imle.update(m, s)
 
 class ImleGmmModel(ImleModel):
     def update_gmm(self):

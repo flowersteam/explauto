@@ -17,8 +17,8 @@ class InterestModel(object):
 class RandomInterest(InterestModel):
     def __init__(self, i_dims, bounds):
         InterestModel.__init__(self, i_dims)
-        self.bounds = bounds
-        self.ndims = bounds.shape[1]
+        self.bounds = bounds[:, i_dims]
+        #self.ndims = bounds.shape[1]
 
     def sample(self):
         return utils.rand_bounds(self.bounds)
