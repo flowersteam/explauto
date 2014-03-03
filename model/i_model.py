@@ -135,7 +135,7 @@ class DiscreteProgressInterest(InterestModel):
 
     def sample(self):
         w =  abs(self.progress())
-        w = numpy.exp(2. * w) / numpy.exp(2.)
+        w = numpy.exp(3. * w) / numpy.exp(3.)
         return utils.discrete_random_draw(w)
 
     def update(self, xy, ms):
