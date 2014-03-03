@@ -23,3 +23,4 @@ class Environment(object):
 
     def write(self, data):
         self.state[self.inds_in] = data
+

@@ -6,26 +6,30 @@ import utils
 from copy import deepcopy
 
 class InterestModel(object):
-    def __init__(self, bounds):
+    def __init__(self, i_dims):
+        self.i_dims = i_dims
+    def sample(self):
+        raise NotImplementedError
+
+    def update(self, xy, ms):
+        raise NotImplementedError
+
+class RandomInterest(InterestModel):
+    def __init__(self, i_dims, bounds):
+        InterestModel.__init__(self, i_dims)
         self.bounds = bounds
         self.ndims = bounds.shape[1]
 
     def sample(self):
-        raise NotImplementedError
-
-    def update(self, x, comp):
-        raise NotImplementedError
-
-class RandomInterest(InterestModel):
-    def sample(self):
         return utils.rand_bounds(self.bounds)
 
-    def update(self, x, comp):
+    def update(self, xy, ms):
         pass
 
 class ProgressInterest(InterestModel):
-    def __init__(self, bounds, sigma0, psi0):
-        InterestModel.__init__(self, bounds)
+    def __init__(self, i_dims, bounds, sigma0, psi0, measure):
+        InterestModel.__init__(self, i_dims)
+        self.measure = measure
 
         self.imle = imle_.Imle(in_ndims=self.ndims+1, out_ndims=1,
                                sigma0=0.2**2., Psi0=psi0, p0=0.3, multiValuedSignificance=0.5)
@@ -44,11 +48,12 @@ class ProgressInterest(InterestModel):
         x = numpy.minimum(x, self.bounds[1, :])
         return x.T
 
-    def update(self, x, comp):
-        self.imle.update(numpy.hstack(([self.t], x.flatten())), [comp])
+    def update(self, xy, ms):
+        measure = self.measure(xy, ms)
+        self.imle.update(numpy.hstack(([self.t], x.flatten())), [measure])
         self.t += self.scale_t
         self.update_gmm()
-        return self.t, x, comp
+        return self.t, xy[self.i_dims], measure
 
     def update_gmm(self):
         self.gmm = self.imle.to_gmm()
@@ -64,9 +69,10 @@ class ProgressInterest(InterestModel):
         return gmm_choice
 
 class GmmInterest(InterestModel):
-    def __init__(self, bounds, sigma0, psi0):
-        InterestModel.__init__(self, bounds)
+    def __init__(self, i_dims, bounds, sigma0, psi0, measure):
+        InterestModel.__init__(self, i_dims)
 
+        self.measure = measure
         self.scale_t = 2. * 0.2/numpy.sqrt(sigma0)
         self.t = 0.
         self.gmm = GMM(n_components=12, covariance_type='full')
@@ -85,15 +91,16 @@ class GmmInterest(InterestModel):
         x = numpy.minimum(x, self.bounds[1, :])
         return x.T
 
-    def update(self, x, comp):
+    def update(self, xy, ms):
+        measure = self.measure(xy, ms)
         if len(self.data) > self.nb_data:
             self.data.remove(self.data[0])
-        self.data.append(numpy.hstack(([self.t], x.flatten(), [comp])))
+        self.data.append(numpy.hstack(([self.t], x.flatten(), [measure])))
         self.t += self.scale_t
         if abs(self.t % (self.nb_data * self.scale_t / 4.)) < self.scale_t:
             print 'upd', self.t 
             self.update_gmm()
-        return self.t, x, comp
+        return self.t, xy[self.i_dims], measure
 
     def update_gmm(self):
         self.gmm =  GMM(n_components=12, covariance_type='full')
@@ -110,35 +117,42 @@ class GmmInterest(InterestModel):
         return gmm_choice
 
 class DiscreteProgressInterest(InterestModel):
-    def __init__(self, x_card, win_size):
-        InterestModel.__init__(self, numpy.array([0, x_card]).reshape(-1,1))
+    def __init__(self, i_dims, x_card, win_size, measure):
+        InterestModel.__init__(self, i_dims)
+        self.measure = measure
         self.win_size = win_size
         #self.t = [win_size] * self.xcard
         queue =  deque([0. for t in range(win_size)], maxlen = win_size)
         self.queues = [deepcopy(queue) for _ in range(x_card)]
         #self.queues = [ deque([[t, numpy.random.rand()] for t in range(win_size)], maxlen = win_size) for _ in range(x_card)]
         #self.queues = [ deque([[t, 1.] for t in range(win_size)], maxlen = win_size) for _ in range(x_card)]
+        self.choices = numpy.zeros((10000, len(i_dims)))
+        self.comps = numpy.zeros(10000)
+        self.t = 0
 
     def progress(self):
         return numpy.array([numpy.cov(zip(range(self.win_size), q), rowvar=0)[0,1] for q in self.queues])
 
     def sample(self):
         w =  abs(self.progress())
-        w = numpy.exp(3. * w) / numpy.exp(3.)
+        w = numpy.exp(2. * w) / numpy.exp(2.)
         return utils.discrete_random_draw(w)
 
-    def update(self, x, comp):
-        self.queues[int(x)].append(comp)
-        #self.t[x] += 1
+    def update(self, xy, ms):
+        measure = self.measure(xy, ms)
+        self.queues[int(xy[self.i_dims])].append(measure)
+        self.choices[self.t,:] = xy[self.i_dims]
+        self.comps[self.t] = measure
+        self.t += 1
 
 
 class BayesOptInterest(InterestModel):
-    def __init__(self, bounds):
-        InterestModel.__init__(self, bounds)
+    def __init__(self, i_dims):
+        InterestModel.__init__(self, i_dims)
         data = []
 
     def sample(self):
         raise NotImplementedError
 
-    def update(self, x, comp):
+    def update(self, x, arg_measure):
         raise NotImplementedError

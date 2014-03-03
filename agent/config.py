@@ -1,10 +1,9 @@
 from model import sm_model, i_model
 from numpy import array
 
-def get_config(m_ndims, s_ndims, ms_bounds, sensorimotor, interest, competence):
+def get_config(m_ndims, s_ndims, sensorimotor, interest):
     m_dims = range(m_ndims)
     s_dims = range(-s_ndims, 0)
-    ms_bounds = array(ms_bounds)
     if sensorimotor[0] == 'imle':
         smm = sm_model.ImleModel(m_dims, s_dims, **sensorimotor[1])
     elif sensorimotor[0] == 'discrete':
@@ -21,8 +20,9 @@ def get_config(m_ndims, s_ndims, ms_bounds, sensorimotor, interest, competence):
     else:
         print interest[1], ' is not a valid interest space'
         raise
+    interest[2]['i_dims'] = i_dims
     if interest[0] == 'random':
-        im = i_model.RandomInterest(ms_bounds[i_dims,:].T)
+        im = i_model.RandomInterest(**interest[2][i_dims,:].T)
     elif interest[0] == 'discrete_progress':
         im = i_model.DiscreteProgressInterest(**interest[2])
     else:
@@ -35,6 +35,6 @@ def get_config(m_ndims, s_ndims, ms_bounds, sensorimotor, interest, competence):
             'i_dims' : i_dims,
             'inf_dims' : inf_dims,
             'sm_model' : smm,
-            'i_model' : im,
-            'competence' : competence
+            'i_model' : im
+            #'competence' : competence
             }
