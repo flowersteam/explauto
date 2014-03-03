@@ -57,7 +57,7 @@ class Agent(object):
         self.pre_perception()
         #self.comp = self.competence(self.ms[self.s_dims], ms[self.s_dims])
         #self.comps[self.t] = self.comp
-        self.sm_model.update(self.ms[self.m_dims], ms[self.s_dims])
+        self.sm_model.update(ms[self.m_dims], ms[self.s_dims])
         self.i_model.update(self.ms, ms)
         #self.t += 1
         
