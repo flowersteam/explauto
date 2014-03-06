@@ -1,17 +1,17 @@
 from numpy import array, minimum, maximum, zeros
 
 class Environment(object):
-    def __init__(self, config_dict):
-        self.m_ndims = config_dict['m_ndims']
-        self.n_sdims = config_dict['s_ndims']
+    def __init__(self, ndims):
+        self.ndims = ndims
+        #self.n_sdims = config_dict['s_ndims']
         #self.bounds = array(config['bounds'])
         #self.default = array(config['default'])
         #self.inds_read = array(range(config['s_ndims']))
         #self.inds_write = array(range(config['m_ndims']))
         #self.ms_bounds = hstack((array(self.m_bounds), array(self.s_bounds)))
-        self.state = zeros(config_dict['m_ndims'] + config_dict['s_ndims'])
+        self.state = zeros(ndims)
 
-    def next_state(self):
+    def next_state(self, ag_state):
         raise NotImplementedError
 
     #def post_processing(self):

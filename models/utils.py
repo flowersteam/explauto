@@ -21,6 +21,20 @@ def discrete_random_draw(data,nb=1):
     custm = stats.rv_discrete(name='custm', values=(xk, data))
     return custm.rvs(size=nb)
 
+def rk4(x, h, y, f):
+    """
+        Code from http://doswa.com/2009/04/21/improved-rk4-implementation.html
+        :param int x: curent time 
+        :param float h: time step (dt)
+        :param list y: [position, velocity]
+        :params function f: velocity, accelation[x+h] = f(x, state)
+        :return int t, list state: x+h, next state
+    """
+    k1 = h * f(x, y)
+    k2 = h * f(x + 0.5*h, y + 0.5*k1)
+    k3 = h * f(x + 0.5*h, y + 0.5*k2)
+    k4 = h * f(x + h, y + k3)
+    return x + h, y + (k1 + 2*(k2 + k3) + k4)/6.0
 
 #class IncrementalVariance(object):
     #def __init__(self):

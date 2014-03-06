@@ -4,14 +4,14 @@ import sys
 import os
 
 #import _imle
-from model.gmminf import GMM
+from .gmminf import GMM
 
 #d, D = 2, 1
 
-def load_imle(d, D):
+def load_imle(imle_path, d, D):
     bp = os.path.dirname(__file__)
     bp = bp if bp else '.'
-    p = os.path.join(bp, '..', 'build', '{}_{}'.format(d, D), 'lib')
+    p = os.path.join(bp, imle_path, 'build', '{}_{}'.format(d, D), 'lib')
 
     if not os.path.exists(p):
         import subprocess
@@ -28,12 +28,12 @@ def load_imle(d, D):
 
 
 class Imle(object):
-    def __init__(self, **kwargs):
+    def __init__(self, imle_path, **kwargs):
         f = lambda key, default: kwargs[key] if key in kwargs else default
 
     	self.d = kwargs['in_ndims']
     	self.D = kwargs['out_ndims']
-    	self._imle = load_imle(self.d, self.D)
+    	self._imle = load_imle(imle_path, self.d, self.D)
 
         args = []
         args.append(f('alpha', 0.995))
