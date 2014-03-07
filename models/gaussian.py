@@ -11,16 +11,21 @@ class Gaussian(object):
     that is NOT handled.
     """
 
-    def __init__(self, mu, sigma):
+    def __init__(self, mu, sigma, inv_sigma = False):
         """
         Creates the Gaussian with the given parameters.
         @param mu : mean, given as (d,) matrix
         @param sigma : covariance matrix
+        @param inv_sigma : boolean indicating if sigma is the inverse covariance matrix or not (default: False)
         """
         self.mu = mu
-        self.sigma = sigma
+        if not inv_sigma:
+            self.sigma = sigma
+            self.inv = numpy.linalg.inv(self.sigma)
+        else:
+            self.sigma = numpy.linalg.inv(sigma)
+            self.inv = self.sigma
         self.det = numpy.absolute(numpy.linalg.det(self.sigma))
-        self.inv = numpy.linalg.inv(self.sigma)
 
     def generate(self, number=None) :
         """Generates vectors from the Gaussian.
@@ -71,8 +76,8 @@ class Gaussian(object):
             probability is taken. v shape is defined by the size
             of the set of dims.
         """
-        (d, c, b, a) = split_matrix(self.sigma, dims)
-        (mu2, mu1) = split_vector(self.mu, dims)
+        (d, c, b, a) = numpy.split_matrix(self.sigma, dims)
+        (mu2, mu1) = numpy.split_vector(self.mu, dims)
         d_inv = numpy.linalg.inv(d)
         mu = mu1 + numpy.dot(numpy.dot(b, d_inv), v - mu2) 
         sigma = a - numpy.dot(b, numpy.dot(d_inv, c))

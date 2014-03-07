@@ -15,7 +15,7 @@ It is crossed-platform and has been tested on Linux, Windows and Mac OS.
 Do not hesitate to contact us if you want to get involved!
 
 ## Scientific grounding ##
-Explauto's scientific roots trace back from Intelligent Adaptive Curiosity algorithmic architecture (REFKaplan Oudeyer), which has been extended to a more general family of autonomous exploration architecture by (REF Baranes) and recently expressed as a compact and unified formalism (REF Moulin-Frier Oudeyer). 
+Explauto's scientific roots trace back from Intelligent Adaptive Curiosity algorithmic architecture (REF Kaplan Oudeyer (lien vers hal)), which has been extended to a more general family of autonomous exploration architecture by (REF Baranes) and recently expressed as a compact and unified formalism (REF Moulin-Frier Oudeyer). 
 
 
 ## Documentation ##

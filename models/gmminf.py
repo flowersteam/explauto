@@ -2,8 +2,33 @@ import numpy
 import sklearn.mixture
 
 from numpy import ix_, array
+from numpy.linalg import inv
 
 from gaussian import Gaussian
+
+
+def schur_complement(mat, row, col):
+    """ compute the schur complement of the matrix block mat[row:,col:] of the matrix mat """
+    a = mat[:row, :col]
+    b = mat[:row, col:]
+    c = mat[row:, :col]
+    d = mat[row:, col:]
+    return a - b.dot(d.I).dot(c)
+
+def conditional(mean, covar, dims_in, dims_out, covariance_type='full'):
+    """ Return a function f such that f(x) = p(dims_out | dims_in = x) (f actually returns the mean and covariance of the conditional distribution
+    """
+    in_in = covar[ix_(dims_in, dims_in)]
+    in_out = covar[ix_(dims_in, dims_out)]
+    out_in = covar[ix_(dims_out, dims_in)]
+    out_out = covar[ix_(dims_out, dims_out)]
+    in_in_inv = inv(in_in)
+    out_in_dot_in_in_inv = out_in.dot(in_in_inv)
+
+    cond_covar = out_out - out_in_dot_in_in_inv.dot(in_out)
+    cond_mean = lambda x: mean[dims_out] + out_in_dot_in_in_inv*(x - mean[dims_in])
+    return lambda x: [cond_mean(x), cond_covar]
+
 
 class GMM(sklearn.mixture.GMM):
     def __init__(self, **kwargs):
@@ -28,6 +53,13 @@ class GMM(sklearn.mixture.GMM):
         return gmm
         
     def conditional(self, in_dims, out_dims):
+        conditionals = []
+        for k, (weight_k, mean_k, covar_k) in enumerate(self):
+            conditionals.append(conditional(mean_k, covar_k))
+        
+
+
+
         self.in_dims = numpy.array(in_dims)
         self.out_dims = numpy.array(out_dims)
         means = numpy.zeros((self.n_components, len(out_dims)))
