@@ -19,8 +19,8 @@ class Environment(object):
         #self.state = maximum(self.state, self.bounds[:,0])
 
     def read(self):
-        return self.state[self.inds_out]
+        return self.state[self.readable]
 
     def write(self, data):
-        self.state[self.inds_in] = data
+        self.state[self.writable] = data
 

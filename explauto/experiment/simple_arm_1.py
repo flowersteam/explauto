@@ -1,3 +1,15 @@
+
+
+
+
+
+
+
+
+# remove everything below this line asap
+return
+
+
 import sys
 from numpy import array, zeros, ones, hstack, maximum, minimum, pi 
 from numpy.random import randn

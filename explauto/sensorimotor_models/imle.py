@@ -8,7 +8,7 @@ class ImleModel(SmModel):
     """
         This class wraps the IMLE model from Bruno Damas ( http://users.isr.ist.utl.pt/~bdamas/IMLE ) into a sensorimotor model class to be used by ..agent.agent
         """
-    def __init__(self, imle_path, m_dims, s_dims, sigma0, psi0, mode='explore'):
+    def __init__(self, m_dims, s_dims, sigma0, psi0, mode='explore'):
         """ :param list m_dims: indices of motor dimensions
             :param list_ndims: indices of sensory dimensions
             :param float sigma0: a priori variance of the linear models on motor dimensions
@@ -19,7 +19,7 @@ class ImleModel(SmModel):
         self.m_dims = m_dims
         self.s_dims = s_dims
         self.mode = mode
-        self.imle = imle_.Imle(imle_path=imle_path, in_ndims=len(m_dims), out_ndims=len(s_dims),
+        self.imle = imle_.Imle(in_ndims=len(m_dims), out_ndims=len(s_dims),
                                sigma0=sigma0, Psi0=psi0)
 
     def infer(self, in_dims, out_dims, x):

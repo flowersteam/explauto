@@ -1,5 +1,5 @@
 from sm_model import SmModel
-from ..models.utils import discrete_random_draw
+from ..utils import discrete_random_draw
 
 class LidstoneModel(SmModel):
     def __init__(self, m_card, s_card, lambd = 1):

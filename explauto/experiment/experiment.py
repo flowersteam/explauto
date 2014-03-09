@@ -1,10 +1,10 @@
 from numpy import zeros
 class Experiment(object):
-    def __init__(self, env, ag, inds_in, inds_out, n_records = 100000):
+    def __init__(self, env, ag, n_records = 100000):
         self.env = env
         self.ag = ag
-        env.inds_in = inds_in
-        env.inds_out = inds_out
+        #env.inds_in = inds_in
+        #env.inds_out = inds_out
         self.records = zeros((n_records, env.state.shape[0]))
         self.i_rec = 0
 

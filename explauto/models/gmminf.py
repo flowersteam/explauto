@@ -155,6 +155,13 @@ class GMM(sklearn.mixture.GMM):
 
         return ellipses
 
+    def plotProjection(self, axes, dims):
+        COLORS = ['r', 'g', 'b', 'k', 'm']*10000
+        els = self.inference([], dims, []).get_display_ellipses2D(COLORS)
+        for el in els:
+            axes.add_patch(el)
+        axes.axis('tight')
+
 if __name__ == '__main__':
     gmm = GMM(n_components=100, covariance_type='full')
 

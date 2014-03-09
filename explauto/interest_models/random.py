@@ -1,5 +1,5 @@
 from interest_model import InterestModel
-from ..models.utils import rand_bounds
+from ..utils import rand_bounds
 
 
 class RandomInterest(InterestModel):

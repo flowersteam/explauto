@@ -8,6 +8,8 @@ from .gmminf import GMM
 
 #d, D = 2, 1
 
+imle_path = './imleSource'
+
 def load_imle(imle_path, d, D):
     bp = os.path.dirname(__file__)
     bp = bp if bp else '.'
@@ -28,7 +30,7 @@ def load_imle(imle_path, d, D):
 
 
 class Imle(object):
-    def __init__(self, imle_path, **kwargs):
+    def __init__(self,  imle_path=imle_path, **kwargs):
         f = lambda key, default: kwargs[key] if key in kwargs else default
 
     	self.d = kwargs['in_ndims']
