@@ -1,13 +1,15 @@
 from numpy.random import randint
-from environment import Environment
+from ..environment import Environment
 
 class Discrete1dProgress(Environment):
     def __init__(self, config_dict):
-        Environment.__init__(self, config_dict)
+        Environment.__init__(self, ndims = 2)
         self.m_card = config_dict['m_card']
         self.s_card = config_dict['s_card']
-    def next_state(self):
-        m = self.state[0]
+        self.writable = [0]
+        self.readable = [0, 1]
+    def next_state(self, ag_state):
+        m = ag_state
 
         #if m == 0:
             #s = 2
@@ -26,4 +28,5 @@ class Discrete1dProgress(Environment):
         elif m == 6:
             s = randint(2) + 4
 
+        self.state[0] = m
         self.state[1] = s

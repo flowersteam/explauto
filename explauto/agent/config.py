@@ -1,6 +1,7 @@
 #from .. import sm_model, i_model
 from numpy import array
 
+#def discrete_active_goal(lambd = 0.01, m_card = 7, s_card = 7, win_size = 10, 
   
 def imle_config(sensorimotor, interest, sigma0, psi0, **kwargs): # m_mins, m_maxs, s_mins, s_maxs):
     m_mins, m_maxs, s_mins, s_maxs = [kwargs[attr] for attr in ['m_mins', 'm_maxs', 's_mins', 's_maxs']]
@@ -39,7 +40,8 @@ def get_config(m_ndims, s_ndims, sensorimotor, interest):
         from ..interest_models.random import RandomInterest
         im = RandomInterest(**interest[2])
     elif interest[0] == 'discrete_progress':
-        im = i_model.DiscreteProgressInterest(**interest[2])
+        from ..interest_models import DiscreteProgressInterest
+        im = DiscreteProgressInterest(**interest[2])
     else:
         print interest[0], ' is not a valid interest model'
         raise

@@ -21,7 +21,7 @@ class Agent(object):
         self.to_bootstrap = True
         #self.choices = np.zeros((10000, len(i_dims)))
         #self.comps = np.zeros((10000, 1))
-        #self.t = 0
+        self.t = 0
         self.state = np.zeros(len(self.ms_dims))
 
     #def bootstrap(self):
@@ -37,7 +37,9 @@ class Agent(object):
         #self.i_model.update(self.ms[i_dims,:], self.competence(self.i_model.bounds[0,:].reshape(-1,1), self.i_model.bounds[1,:].reshape(-1,1)))
 
     def next_state(self, env_state):
-        self.perceive(env_state)
+        if self.t > 0:
+            self.perceive(env_state)
+        self.t += 1
         return self.produce()
 
     def post_production(self):

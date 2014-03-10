@@ -1,5 +1,5 @@
 
-from environment import Environment
+from ..environment import Environment
 from numpy.random import rand
 from functools import partial
 
