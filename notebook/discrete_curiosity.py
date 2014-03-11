@@ -14,7 +14,7 @@ from explauto.experiment import Experiment
 
 m_card = 7
 s_card = 7
-env = Discrete1dProgress(dict(m_card = m_card, s_card = s_card))
+env = Discrete1dProgress(m_card = m_card, s_card = s_card)
 
 # <codecell>
 
