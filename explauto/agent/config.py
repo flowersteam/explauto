@@ -1,7 +1,9 @@
 #from .. import sm_model, i_model
 from numpy import array
+from ..interest_models import competences
 
-#def discrete_active_goal(lambd = 0.01, m_card = 7, s_card = 7, win_size = 10, 
+def discrete_active_goal_config(m_card = 7, s_card = 7, lambd = 0.01, win_size = 10, measure = competences.competence_bool):
+    return get_config(1, 1, ['discrete', dict(m_card=m_card, s_card=s_card, lambd = lambd)], ['discrete_progress', 'goal', dict(x_card=s_card, win_size=win_size, measure = measure)])
   
 def imle_config(sensorimotor, interest, sigma0, psi0, **kwargs): # m_mins, m_maxs, s_mins, s_maxs):
     m_mins, m_maxs, s_mins, s_maxs = [kwargs[attr] for attr in ['m_mins', 'm_maxs', 's_mins', 's_maxs']]

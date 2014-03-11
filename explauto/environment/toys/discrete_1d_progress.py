@@ -2,10 +2,10 @@ from numpy.random import randint
 from ..environment import Environment
 
 class Discrete1dProgress(Environment):
-    def __init__(self, config_dict):
+    def __init__(self, **kwargs):
         Environment.__init__(self, ndims = 2)
-        self.m_card = config_dict['m_card']
-        self.s_card = config_dict['s_card']
+        self.m_card = kwargs['m_card']
+        self.s_card = kwargs['s_card']
         self.writable = [0]
         self.readable = [0, 1]
     def next_state(self, ag_state):
