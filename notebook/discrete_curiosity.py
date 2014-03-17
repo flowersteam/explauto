@@ -4,7 +4,7 @@
 # <codecell>
 from numpy import zeros
 import sys
-sys.path.append('../')
+
 from explauto.environment.toys.discrete_1d_progress import Discrete1dProgress
 from explauto.agent import Agent, get_config
 from explauto.interest_models.competences import competence_bool
