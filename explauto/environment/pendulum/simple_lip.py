@@ -18,9 +18,9 @@
 ########################################################################
 
 
-from numpy import *
-from scipy import *
-import pylab as P
+from numpy import pi, sin
+#from scipy import *
+#import pylab as P
 
 
 
