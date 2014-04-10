@@ -26,7 +26,7 @@ def conditional(mean, covar, dims_in, dims_out, covariance_type='full'):
     out_in_dot_in_in_inv = out_in.dot(in_in_inv)
 
     cond_covar = out_out - out_in_dot_in_in_inv.dot(in_out)
-    cond_mean = lambda x: mean[dims_out] + out_in_dot_in_in_inv*(x - mean[dims_in])
+    cond_mean = lambda x: mean[dims_out] + out_in_dot_in_in_inv.dot(x - mean[dims_in])
     return lambda x: [cond_mean(x), cond_covar]
 
 
@@ -55,7 +55,16 @@ class GMM(sklearn.mixture.GMM):
     def conditional(self, in_dims, out_dims):
         conditionals = []
         for k, (weight_k, mean_k, covar_k) in enumerate(self):
-            conditionals.append(conditional(mean_k, covar_k))
+            conditionals.append(conditional(mean_k, covar_k, in_dims, out_dims, self.covariance_type))
+        cond_weights = lambda v: [weight_k * Gaussian(mean_k[in_dims].reshape(-1,), covar_k[ix_(in_dims, in_dims)]).normal(v.reshape(-1,)) for k, (weight_k, mean_k, covar_k) in enumerate(self)]
+        def res(v):
+            gmm = GMM(n_components=self.n_components, covariance_type=self.covariance_type, random_state=self.random_state, thresh=self.thresh, min_covar=self.min_covar, n_iter=self.n_iter, n_init=self.n_init, params=self.params, init_params=self.init_params)
+            gmm.weights_ = cond_weights(v)
+            means_covars = [f(v) for f in conditionals]
+            gmm.means_ = array([mc[0] for mc in means_covars]).reshape(self.n_components, -1)
+            gmm._set_covars(array([mc[1] for mc in means_covars]))
+            return gmm
+        return res
         
 
 
@@ -102,18 +111,16 @@ class GMM(sklearn.mixture.GMM):
         means = numpy.zeros((self.n_components, len(out_dims)))
         covars = numpy.zeros((self.n_components, len(out_dims), len(out_dims)))
         weights = numpy.zeros((self.n_components,))
-        
         if in_dims.size:
             for k, (weight_k, mean_k, covar_k) in enumerate(self):
                 sig_in = covar_k[ix_(in_dims, in_dims)]
                 inin_inv = numpy.matrix(sig_in).I
                 out_in=covar_k[ix_(out_dims, in_dims)]
                 mu_in=mean_k[in_dims].reshape(-1,1)
-                        
                 means[k,:] = (mean_k[out_dims] + 
                             (out_in * 
                             inin_inv * 
-                            (value - mu_in)).T)
+                            (value.reshape(-1,1) - mu_in)).T)
                         
                 covars[k,:,:] = (covar_k[ix_(out_dims, out_dims)] - 
                                 out_in * 

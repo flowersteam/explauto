@@ -1,11 +1,14 @@
 import pymatlab
 import numpy as np
+import os
 
 class DivaSynth:
     def __init__(self, diva_path, sample_rate = 11025):
         self.session = pymatlab.session_factory()
         self.session.run('path(\'' + diva_path + '\', path)')
         self.session.putvalue('sr', np.array([sample_rate]))
+        diva_path = os.path.abspath(diva_path)
+        self.session.run(['path(\'', diva_path, '\', path)'])
 
     def execute(self, art):
         self.session.putvalue('art', art)

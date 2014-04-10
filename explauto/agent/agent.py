@@ -1,7 +1,7 @@
 import numpy as np
 
 class Agent(object):
-    def __init__(self, m_dims, s_dims, i_dims, inf_dims, sm_model, i_model):
+    def __init__(self, sm_model, i_model, conf):
         """Initialize agent class
         Keyword arguments:
         m_dims -- the indices of motor values
@@ -9,12 +9,12 @@ class Agent(object):
         sm_model -- the sensorimotor model
         i_model -- the interest model
         """
-        self.m_dims = m_dims
-        self.s_dims = s_dims
+        self.m_dims = conf.m_dims
+        self.s_dims = conf.s_dims
         self.ms_dims = self.m_dims + self.s_dims
         self.ms = np.zeros(len(self.ms_dims))
-        self.i_dims = i_dims
-        self.inf_dims = inf_dims
+        self.i_dims = conf.expl_dims
+        self.inf_dims = conf.inf_dims
         self.sm_model = sm_model
         self.i_model = i_model
         #self.competence = competence
@@ -52,6 +52,7 @@ class Agent(object):
         #if self.to_bootstrap:
             #return self.bootstrap()
         self.x = self.i_model.sample()
+        #print self.x
         self.y = self.sm_model.infer(self.i_dims, self.inf_dims, self.x)
         self.ms[self.i_dims] = self.x
         self.ms[self.inf_dims] = self.y

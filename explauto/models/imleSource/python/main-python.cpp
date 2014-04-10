@@ -5,7 +5,7 @@
 
 using namespace boost::python;
 
-BOOST_PYTHON_MODULE(_imle_2_3)
+BOOST_PYTHON_MODULE(_imle_8_2)
 {
     class_<ImleParam>("ImleParam", init<>())
         .def("set_param", &ImleParam::set_param)

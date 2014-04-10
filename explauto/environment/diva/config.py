@@ -32,6 +32,10 @@ def get_config(m_ndims, s_ndims, m_used, s_used):
     return {
             'm_ndims' : m_ndims,
             's_ndims' : s_ndims,
+            'm_mins' : array([articulator_bounds[d][0] for d in m_used]),
+            'm_maxs' : array([articulator_bounds[d][1] for d in m_used]),
+            's_mins' : array([auditory_bounds[d][0] for d in s_used]),
+            's_maxs' : array([auditory_bounds[d][1] for d in s_used]),
             'bounds' : tuple([bounds[d] for d in m_used + s_used]),
             'default' :  default,
             'm_used' : m_used,

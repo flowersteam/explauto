@@ -1,6 +1,6 @@
 from ..models.gaussian import Gaussian
 from numpy import linspace, array, arange, tile, dot, zeros, hstack
-from ..models.utils import rk4
+from ..utils import rk4
 
 class BasisFunctions(object):
     def __init__(self, n_basis, duration, dt, sigma):

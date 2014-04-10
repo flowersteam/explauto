@@ -1,0 +1,32 @@
+from numpy import array
+from .sm_model import SmModel
+import models
+from models.learner import Learner
+
+class NonParametric(SmModel):
+    """This class wraps the non-parametric forward and inverse models implemented by Fabien Benureau, in order to fit into the Explauto framework. Original code by Fabien available here: https://github.com/humm/models
+    """
+    def __init__(self, conf, fwd = 'LWLR', inv = 'L-BFGS-B', **learner_kwargs):
+        for attr in ['m_ndims', 's_ndims', 'm_dims', 's_dims', 'm_mins', 'm_maxs', 's_mins', 's_maxs']:
+            setattr(self, attr, getattr(conf, attr)) 
+        #self.m_ndims = len(self.m_mins)
+        #self.s_ndims = len(self.s_mins)
+        #self.m_dims = range(self.m_ndims)
+        #self.s_dims = range(-self.s_ndims, 0)
+        Mfeats = tuple(range(self.m_ndims))
+        Sfeats = tuple(range(-self.s_ndims,0))
+        Mbounds = tuple((self.m_mins[d], self.m_maxs[d]) for d in range(self.m_ndims))
+        self.model = Learner(Mfeats, Sfeats, Mbounds, fwd, inv, **learner_kwargs)
+
+    def infer(self, in_dims, out_dims, x):
+        if in_dims == self.m_dims and out_dims == self.s_dims: # forward
+            return array(self.model.predict_effect(tuple(x)))
+        elif in_dims == self.s_dims and out_dims == self.m_dims: # inverse
+            return array(self.model.infer_order(tuple(x)))
+        else:
+            print("NonParameticModel only implements forward (M -> S) and inverse (S -> M) model, not general prediction")
+            raise NotImplementedError
+
+    def update(self, m, s):
+        self.model.add_xy(tuple(m), tuple(s))
+

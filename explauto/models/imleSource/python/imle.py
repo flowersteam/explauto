@@ -4,11 +4,11 @@ import sys
 import os
 
 #import _imle
-from .gmminf import GMM
+#from .gmminf import GMM
 
 #d, D = 2, 1
 
-imle_path = './imleSource'
+imle_path = '..'
 
 def load_imle(imle_path, d, D):
     bp = os.path.dirname(__file__)
@@ -16,11 +16,7 @@ def load_imle(imle_path, d, D):
     p = os.path.join(bp, imle_path, 'build', '{}_{}'.format(d, D), 'lib')
 
     if not os.path.exists(p):
-        import subprocess
-        oldp = os.getcwd()
-        os.chdir(os.path.join(bp, '..'))
-        subprocess.call(["python", "compile.py", str(d), str(D)])
-        os.chdir(oldp)
+        raise ImportError('Compile IMLE for dim ({}, {}) first, by running "python compile.py {} {}" in {}'.format(d, D, d, D, os.path.abspath(os.path.join(bp,imle_path))))
 
     sys.path.insert(0, p)
     _imle = importlib.import_module('_imle_' + str(d) + '_' + str(D))
@@ -98,16 +94,16 @@ class Imle(object):
         #LambdaSigma=Lambda.dot(Sigma)
         return numpy.vstack((numpy.hstack((Sigma, SigmaLambdaT)), numpy.hstack((SigmaLambdaT.T, numpy.diag(self.get_psi(k)) + Lambda.dot(SigmaLambdaT)))))
 
-    def to_gmm(self):
-        n=self.number_of_experts
-        gmm=GMM(n_components=n, covariance_type='full')
-        gmm.means_=numpy.zeros((n,self.d+self.D))
-        gmm.covars_=numpy.zeros((n,self.d+self.D,self.d+self.D))
-        for k in range(n):
-            gmm.means_[k,:]=self.get_joint_mu(k)
-            gmm.covars_[k,:,:]=self.get_joint_sigma(k)
-        gmm.weights_= (1.*numpy.ones((n,)))/n
-        return gmm
+    #def to_gmm(self):
+        #n=self.number_of_experts
+        #gmm=GMM(n_components=n, covariance_type='full')
+        #gmm.means_=numpy.zeros((n,self.d+self.D))
+        #gmm.covars_=numpy.zeros((n,self.d+self.D,self.d+self.D))
+        #for k in range(n):
+            #gmm.means_[k,:]=self.get_joint_mu(k)
+            #gmm.covars_[k,:,:]=self.get_joint_sigma(k)
+        #gmm.weights_= (1.*numpy.ones((n,)))/n
+        #return gmm
 
 
     def get_sigma(self, k):

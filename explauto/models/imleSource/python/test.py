@@ -1,26 +1,28 @@
-import sys
-sys.path.append('../build/lib')
-
 import imle
+from numpy.random import randn
 
-param = imle.ImleParam([0.1] * 3, 1.0,
-                       100.0,
-                       0.3,
-                       0.9)
-i = imle.Imle(param)
+d = 3
+D = 2
 
-import numpy
+model = imle.Imle(in_ndims=d, out_ndims=D, sigma0=0.1, Psi0=[0.01]*2)
+
+# look at imleSource/python/imle.py for all possible parameters and their default values
 
 for _ in range(100):
-    l1 = list(numpy.random.randn(7))
-    l2 = list(numpy.random.randn(3))
+    model.update(randn(d), randn(D))
 
-    i.update(l1, l2)
+# get the number of models
+model.number_of_experts
 
+# get the mean of the 1st model
+print 'mean of the 1st model' 
+print model.get_joint_mu(0)
 
-print i.predict(range(7))
-print i.predict(range(7))
-print i.predict(range(7))
+print 'covariance of the 3nd model'
+print model.get_joint_mu(2)
 
+print 'forward prediction'
+print model.predict([0., 0.2, -0.1])
 
-print i.predict_inverse([4, 5, 6])
+print 'inverse prediction'
+print model.predict_inverse([0.1, 0.3])

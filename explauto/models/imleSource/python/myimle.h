@@ -7,8 +7,8 @@
 #include "imle.hpp"
 #include "expert_public.hpp"
 
-#define d 2
-#define D 3
+#define d 8
+#define D 2
 typedef imle<d, D, ::FastLinearExpert_public> IMLE;
 
 

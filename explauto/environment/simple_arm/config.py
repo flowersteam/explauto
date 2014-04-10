@@ -47,5 +47,5 @@ class SimpleArmEnvironment(Environment):
         self.state[:self.m_ndims] = bounds_min_max(m, self.m_mins, self.m_maxs)
         res = array(simple_arm.forward(self.state[:self.m_ndims], self.lengths))
         res += self.noise * randn(*res.shape)
-        self.state[-s_ndims:] = res
+        self.state[-self.s_ndims:] = res
         

@@ -4,6 +4,7 @@ from ...utils.utils import bounds_min_max
 from ...agent.motor_primitive import BasisFunctions
 import simple_lip 
 from numpy.random import randn
+from copy import copy
 
 
 class PendulumEnvironment(Environment):
@@ -21,14 +22,14 @@ class PendulumEnvironment(Environment):
         self.writable =  range(self.m_ndims)
         self.x0 = [-pi, 0.]
         self.dt = 0.25
-        sekf.bf = BasisFunctions(self.m_ndims, 150*self.dt, self.dt, 4.)
+        self.bf = BasisFunctions(self.m_ndims, 70*self.dt, self.dt, 4.)
 
 
     def next_state(self, ag_state):
         m = ag_state
         self.state[:self.m_ndims] = bounds_min_max(m, self.m_mins, self.m_maxs)
-        s = self.x0
-        for u in bf.trajectory(self.state[:self.m_ndims]).flatten():
+        s = copy(self.x0)
+        for u in self.bf.trajectory(self.state[:self.m_ndims]).flatten():
             s = simple_lip.simulate(s, [u], self.dt)
         res = array(s)
         res += self.noise * randn(*res.shape)
