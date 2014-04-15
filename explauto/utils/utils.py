@@ -1,9 +1,9 @@
 import numpy as np
 from scipy import stats
 
-def rand_bounds(bounds):
-    widths=bounds[1,:] - bounds[0,:]
-    return (widths * np.random.rand(bounds.shape[1]) + bounds[0,:])
+def rand_bounds(bounds, n=1):
+    widths = np.tile(bounds[1,:] - bounds[0,:], (n, 1))
+    return widths * np.random.rand(n, bounds.shape[1]) + np.tile(bounds[0,:], (n, 1))
 
 def bounds_min_max(v, mins, maxs):
     res = np.minimum(v, maxs)

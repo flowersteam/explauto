@@ -10,5 +10,8 @@ class SmModel(object):
     def update(self, m, s):
         raise NotImplementedError
 
+    def bootstrap(self, orders, stimuli):
+        for i, m in enumerate(orders):
+            self.update(m, stimuli[i,:])
 
 

@@ -139,7 +139,7 @@ class GMM(sklearn.mixture.GMM):
         res.covars_ = covars
         return res
 
-    def get_display_ellipses2D(self, colors):
+    def ellipses2D(self, colors):
         from matplotlib.patches import Ellipse
 
         ellipses = []
@@ -162,12 +162,27 @@ class GMM(sklearn.mixture.GMM):
 
         return ellipses
 
-    def plotProjection(self, axes, dims):
+    def ellipses3D(self):
+        from ..utils.ellipsoid import ellipsoid_3d
+        ellipsoids = []
+        for k, (weight_k, mean_k, covar_k) in enumerate(self):
+            ellipsoids.append(ellipsoid_3d(mean_k, covar_k))
+        return ellipsoids
+
+    def plotProjection(self, ax, dims):
         COLORS = ['r', 'g', 'b', 'k', 'm']*10000
-        els = self.inference([], dims, []).get_display_ellipses2D(COLORS)
-        for el in els:
-            axes.add_patch(el)
-        axes.axis('tight')
+        gmm_proj = self.inference([], dims, [])
+        if len(dims) == 2:
+            els = gmm_proj.ellipses2D(COLORS)
+            for el in els:
+                ax.add_patch(el)
+        elif len(dims) == 3:
+            ellipsoids = gmm_proj.ellipses3D()
+            for x,y,z in ellipsoids:
+                ax.plot_wireframe(x, y, z,  rstride=4, cstride=4, color='b', alpha=0.2)
+        else:
+            print "Can only print 2D or 3D ellipses"
+        ax.axis('tight')
 
 if __name__ == '__main__':
     gmm = GMM(n_components=100, covariance_type='full')

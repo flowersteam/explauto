@@ -24,3 +24,15 @@ class Environment(object):
     def write(self, data):
         self.state[self.writable] = data
 
+    def dataset(self, orders):
+        n = orders.shape[0]
+        m_ndims = orders.shape[1]
+        data = zeros((n, self.ndims))
+        data[:, :m_ndims] = orders
+        for i, m in enumerate(orders):
+            self.next_state(m)
+            data[i, m_ndims:] = self.state[m_ndims:]
+        return data
+
+
+
