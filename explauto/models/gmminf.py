@@ -169,7 +169,7 @@ class GMM(sklearn.mixture.GMM):
             ellipsoids.append(ellipsoid_3d(mean_k, covar_k))
         return ellipsoids
 
-    def plotProjection(self, ax, dims):
+    def plotProjection(self, ax, dims, label=False):
         COLORS = ['r', 'g', 'b', 'k', 'm']*10000
         gmm_proj = self.inference([], dims, [])
         if len(dims) == 2:
@@ -182,7 +182,10 @@ class GMM(sklearn.mixture.GMM):
                 ax.plot_wireframe(x, y, z,  rstride=4, cstride=4, color='b', alpha=0.2)
         else:
             print "Can only print 2D or 3D ellipses"
-        ax.axis('tight')
+        for k, (w, m, c) in enumerate(gmm_proj):
+            ax.text( * tuple(m), s=str(k))
+        if label:
+            ax.axis('tight')
 
 if __name__ == '__main__':
     gmm = GMM(n_components=100, covariance_type='full')
