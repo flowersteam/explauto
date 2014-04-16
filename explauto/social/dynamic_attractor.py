@@ -1,6 +1,8 @@
-from ..models.gmminf import GMM
 from numpy import zeros, matrix, array, hstack
 from sklearn.preprocessing import MinMaxScaler
+
+from ..models.gmminf import GMM
+
 
 class DynamicAttractor(object):
     def __init__(self, ndims, n_components, dt, kv, kp, **kwargsGMM):
@@ -10,26 +12,28 @@ class DynamicAttractor(object):
         self.kp = kp
         self.dt = dt
         self.scaler = MinMaxScaler(feature_range=(-0.1, 0.1))
+
     def fit(self, data):
         #scaled_data = self.scaler.fit_transform(data)
         #self.gmm.fit(scaled_data)
         self.gmm.fit(data)
+
     def next_state(self, pos, spd):
         h = self.gmm.predict_proba(hstack((pos, spd)).reshape(1, -1))
-        #print pos[0], spd[0]
-        #print h
+        # print pos[0], spd[0]
+        # print h
         next_pos = zeros(self.ndims)
         next_spd = zeros(self.ndims)
         for k, (w, m, c) in enumerate(self.gmm):
-            m_pos = matrix(m[:self.ndims].reshape(-1,1))
-            m_spd = matrix(m[-self.ndims:].reshape(-1,1))
+            m_pos = matrix(m[:self.ndims].reshape(-1, 1))
+            m_spd = matrix(m[-self.ndims:].reshape(-1, 1))
             c_pos = matrix(c[:self.ndims, :self.ndims])
             c_spd = matrix(c[-self.ndims:, -self.ndims:])
             c_pos_spd = matrix(c[:self.ndims, -self.ndims:])
             c_spd_pos = matrix(c[-self.ndims:, :self.ndims])
-            next_pos += (h[:,k] * array(m_pos + c_pos_spd * c_spd.I * (spd.reshape(-1,1) - m_spd))).flatten()
-            next_spd += (h[:,k] * array(m_spd + c_spd_pos * c_pos.I * (pos.reshape(-1,1) - m_pos))).flatten()
-        return next_pos, next_spd 
+            next_pos += (h[:, k] * array(m_pos + c_pos_spd * c_spd.I * (spd.reshape(-1, 1) - m_spd))).flatten()
+            next_spd += (h[:, k] * array(m_spd + c_spd_pos * c_pos.I * (pos.reshape(-1, 1) - m_pos))).flatten()
+        return next_pos, next_spd
 
     def command(self, pos, spd):
         #pos_spd = self.scaler.transform(hstack((pos_, spd_)))
