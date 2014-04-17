@@ -1,5 +1,7 @@
 from numpy import zeros
-class Experiment(object):
+from ..utils.observer import Observable
+
+class Experiment(Observable):
     def __init__(self, env, ag, n_records = 100000):
         self.env = env
         self.ag = ag

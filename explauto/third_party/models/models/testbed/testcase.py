@@ -1,15 +1,16 @@
 """Two function to generate set of test."""
 
 import random
-import pandas
+#import pandas
 
 def uniform_motor_testcases(robot, n):
     """Generates n test uniformly distributed in the motor space"""
     tb = []
     for i in range(n):
-        order = pandas.Series([random.uniform(mi_min, mi_max)
-                               for mi_min, mi_max in robot.m_bounds],
-                              index = robot.m_feats)
+        #order = pandas.Series([random.uniform(mi_min, mi_max)
+        #                       for mi_min, mi_max in robot.m_bounds],
+        #                      index = robot.m_feats)
+        order = [random.uniform(mi_min, mi_max) for mi_min, mi_max in robot.m_bounds]                            
         effect = robot.execute_order(order)
         tb.append((order, effect))
     return tb

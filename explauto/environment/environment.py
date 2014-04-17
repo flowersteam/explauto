@@ -1,15 +1,20 @@
 from numpy import array, minimum, maximum, zeros
+from ..utils.config import Configuration 
 
 class Environment(object):
-    def __init__(self, ndims):
-        self.ndims = ndims
+    def __init__(self, **kwargs):
+        conf = Configuration(kwargs)
+        for k,v in conf.iteritems():
+            setattr(self, k, v)
+        #self.ndims = kwargs['ndims']
+        #self.params = kwargs
         #self.n_sdims = config_dict['s_ndims']
         #self.bounds = array(config['bounds'])
         #self.default = array(config['default'])
         #self.inds_read = array(range(config['s_ndims']))
         #self.inds_write = array(range(config['m_ndims']))
         #self.ms_bounds = hstack((array(self.m_bounds), array(self.s_bounds)))
-        self.state = zeros(ndims)
+        self.state = zeros(self.ndims)
 
     def next_state(self, ag_state):
         raise NotImplementedError

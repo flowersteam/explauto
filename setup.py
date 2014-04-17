@@ -42,6 +42,6 @@ setup(name='explauto',
       author='Moulin-Frier Clement, Pierre Rouanet',
       author_email='clement.moulinfrier@gmail.com',
       description='Python Library for Autonomous Exploration',
-      url='https://github.com/poppy-project/pypot'
+      url='https://github.com/flowersteam/explauto'
       #license='GNU GENERAL PUBLIC LICENSE Version 3',
       )

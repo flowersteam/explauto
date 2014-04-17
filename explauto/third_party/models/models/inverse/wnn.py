@@ -74,4 +74,4 @@ class ESWNNInverseModel(WeightedNNInverseModel):
 
     def _weights(self, index, dists, sigma_sq, y_desired):
         sigma_sq=(dists**2).sum()/len(dists)
-        return WeigthedNNInverseModel._weights(self, index, dists, sigma_sq, y_desired)
+        return WeightedNNInverseModel._weights(self, index, dists, sigma_sq, y_desired)
