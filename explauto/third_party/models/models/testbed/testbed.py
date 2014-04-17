@@ -2,7 +2,7 @@
 
 import numpy as np
 
-import toolbox
+from ....toolbox import toolbox
 from . import testcase
 
 class Testbed(object):

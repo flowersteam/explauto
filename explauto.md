@@ -9,6 +9,9 @@
 * environment pypot (voir meme poppy)
 * doc !!!
 
+* faire les deps. pour les différents env.
+* remove 3rd-hand env?
+
 ## Poster ICDL
 * Intro
     * ICDL 2013

@@ -3,7 +3,7 @@
 import random
 import numpy as np
 
-import toolbox
+from ....toolbox import toolbox
 from . import inverse
 
 from ..forward.lwr import LWLRForwardModel
@@ -20,7 +20,7 @@ class OptimizedInverseModel(inverse.InverseModel):
         fm.dataset = dataset
         im = cls.from_forward(fm, constraints = constraints, **kwargs)
         return im
-    
+
     @classmethod
     def from_forward(cls, fmodel, constraints = (), **kwargs):
         """Construst an inverse model from a forward model and constraints.
@@ -31,29 +31,29 @@ class OptimizedInverseModel(inverse.InverseModel):
 
     def __init__(self, dim_x, dim_y, constraints = (), **kwargs):
         """Construst an inverse model from a dimensions and constraints set
-        Default to a LWR model for the forward model. 
+        Default to a LWR model for the forward model.
         """
         inverse.InverseModel.__init__(self, dim_x, dim_y, **kwargs)
         self.fmodel = LWLRForwardModel(dim_x, dim_y, **kwargs)
         self._setuplimits(constraints)
 
-  
+
     def _setuplimits(self, constraints):
         """Setup the limits for every initialiser."""
         self.constraints = tuple(constraints)
         assert len(self.constraints) == self.fmodel.dim_x
         self.y_desired = None
-            
-    
-    # Will be useful for chained lenvs... 
+
+
+    # Will be useful for chained lenvs...
 
     # def _setuplimits(self, constraints):
     #     """Setup the limits for every initialiser."""
     #     self.limits      = tuple([float('inf'), float('-inf')] for _ in range(self.fmodel.dim_x - len(constraints)))
     #     self.constraints = tuple(constraints) + self.limits
-    # 
+    #
     #     self.y_desired = None
-    
+
     # def _relax(x, factor):
     #     if x >= 0:
     #         return x*factor
@@ -69,14 +69,14 @@ class OptimizedInverseModel(inverse.InverseModel):
     #             limin, limax = self.limits[il]
     #             self.limits[il][0] = min(xi, limin)
     #             self.limits[il][0] = max(xi, limax)
-    #             l = self.limits[il][1] - self.limits[il][0]       
-    # 
+    #             l = self.limits[il][1] - self.limits[il][0]
+    #
     #             self.constraints[i][0] = self.limits[il][0] - relax*l
-    #             self.constraints[i][1] = self.limits[il][1] + relax*l            
+    #             self.constraints[i][1] = self.limits[il][1] + relax*l
 
     def _error(self, x):
         """Error function.
-        Once self.y_desired has been defined, compute the error 
+        Once self.y_desired has been defined, compute the error
         of input x using the forward model.
         """
         #print 'x', x

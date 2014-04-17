@@ -9,7 +9,7 @@ import math
 import numpy as np
 #np.set_printoptions(precision=6, linewidth=300)
 
-import toolbox
+from ....toolbox import toolbox
 from ..dataset import Dataset
 from .forward import ForwardModel
 

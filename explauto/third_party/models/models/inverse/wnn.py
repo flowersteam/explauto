@@ -10,8 +10,8 @@ import math
 import random
 import numpy as np
 
-import toolbox
-import models.forward
+from ....toolbox import toolbox
+from ..forward import AverageNNForwardModel
 from . import inverse
 
 relax = 0.0 # no relaxation
@@ -29,7 +29,7 @@ class WeightedNNInverseModel(inverse.InverseModel):
                       the one of the inverse model. Not ideal. #FIXME
         """
         self.k      = k or 3*dim_x
-        self.fmodel = models.forward.AverageNNForwardModel(dim_x, dim_y, sigma = sigma, k = self.k, **kwargs)
+        self.fmodel = AverageNNForwardModel(dim_x, dim_y, sigma = sigma, k = self.k, **kwargs)
         self.sigma  = sigma
 
     def infer_x(self, y, sigma = None, k = None, **kwargs):

@@ -2,8 +2,8 @@
 import random
 import numpy as np
 
-import toolbox
-import models.forward
+from ....toolbox import toolbox
+from ..forward import NNForwardModel
 from . import inverse
 
 relax = 0.0 # no relaxation
@@ -19,7 +19,7 @@ class NNInverseModel(inverse.InverseModel):
         @param k  the number of neighbors to consider for averaging
         """
         inverse.InverseModel.__init__(self, dim_x, dim_y, **kwargs)
-        self.fmodel = models.forward.NNForwardModel(dim_x, dim_y, **kwargs)
+        self.fmodel = NNForwardModel(dim_x, dim_y, **kwargs)
 
     def infer_x(self, y):
         """Infer probable x from input y
