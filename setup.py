@@ -11,26 +11,15 @@ def version():
 
 
 setup(name='explauto',
-      version='0.1',
+      version=version(),
       packages=find_packages(),
 
-      install_requires=['numpy', 'scipy', 'sklearn', 'pandas'],
+      install_requires=['numpy', 'scipy', 'scikit-learn', 'pandas'],
 
       extra_require={
           'diva': ['pymatlab'],
           'imle': [],
       },
-      #   extras_require={
-      #       'tools': [],  # Extras require: PyQt4 (not a PyPi packet)
-      #       'doc': ['sphinx', 'sphinx-bootstrap-theme'],
-      #       'server': ['bottle', 'tornado', 'zmq']
-      #   },
-
-      #   entry_points={
-      #       'gui_scripts': [
-      #           'herborist = pypot.tools.herborist.herborist:main [tools]',
-      #           ],
-      #   },
 
       setup_requires=['setuptools_git >= 0.3', ],
 

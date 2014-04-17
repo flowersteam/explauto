@@ -1,1 +1,1 @@
-from config import SimpleArmEnvironment, test_config
+from .config import SimpleArmEnvironment, test_config

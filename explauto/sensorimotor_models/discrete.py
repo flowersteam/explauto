@@ -1,13 +1,16 @@
-from sm_model import SmModel
-from ..utils import discrete_random_draw
 from numpy import zeros
 
+from .sm_model import SmModel
+from ..utils import discrete_random_draw
+
+
 class LidstoneModel(SmModel):
-    def __init__(self, m_card, s_card, lambd = 1):
+    def __init__(self, m_card, s_card, lambd=1):
         self.k = m_card * s_card
         self.counts = zeros((m_card, s_card))
         self.lambd = lambd
         self.n = 0.
+
     def joint_distr(self):
         return (self.counts + self.lambd) / (self.n + self.k * self.lambd)
 

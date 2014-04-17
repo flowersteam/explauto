@@ -3,14 +3,12 @@
 ## Code
 * pip install + setup propre
     * virer IMLE
-    * integrer truc Fabien
 * coder evaluation, visualisation
 * logs
 * environment pypot (voir meme poppy)
 * doc !!!
 
-* faire les deps. pour les différents env.
-* remove 3rd-hand env?
+* LearningProgress depend de IMLE ?
 
 ## Poster ICDL
 * Intro
@@ -24,3 +22,6 @@
     * visualising the results
 * Case study comparing motor vs goal babling on a poppy robot
 * Conclusion : ca defonce random grave :-)
+
+## BUG
+* undefined x in update of LearningProgress

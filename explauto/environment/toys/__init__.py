@@ -1,2 +1,1 @@
-
-from hierarchical_mild import HierarchicalMild
+from .hierarchical_mild import HierarchicalMild
