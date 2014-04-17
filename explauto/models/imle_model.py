@@ -3,7 +3,13 @@ import os
 path = os.path.dirname(os.path.abspath(__file__))
 imle_path = os.path.join(path, 'imleSource/python')
 sys.path.append(imle_path)
-import imle
+try:
+    import imle
+except ImportError:
+    print 'To use this model, you have to install IMLE first'
+    print 'Please check the doc.'
+    raise
+
 from .gmminf import GMM
 from numpy import zeros, ones
 

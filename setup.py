@@ -14,11 +14,12 @@ setup(name='explauto',
       version='0.1',
       packages=find_packages(),
 
-      install_requires=['numpy', 'pandas'],
+      install_requires=['numpy', 'scipy', 'sklearn', 'pandas'],
 
       extra_require={
-          '3rdhand': ['pypot']
-      }
+          'diva': ['pymatlab'],
+          'imle': [],
+      },
       #   extras_require={
       #       'tools': [],  # Extras require: PyQt4 (not a PyPi packet)
       #       'doc': ['sphinx', 'sphinx-bootstrap-theme'],

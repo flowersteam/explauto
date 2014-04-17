@@ -1,6 +1,6 @@
 #import numpy as np
 from .sm_model import SmModel
-from ..models import imle as imle_
+from ..models import imle_model as imle_
 from ..models.gmminf import GMM
 
 
@@ -14,7 +14,7 @@ class ImleModel(SmModel):
             :param float sigma0: a priori variance of the linear models on motor dimensions
             :param list psi0: a priori variance of the gaussian noise on each sensory dimensions
             :param string mode: either 'exploit' or 'explore' (default 'explore') to choose if the infer(.) method will return the most likely output or will sample according to the output probability.
-            .. note:: 
+            .. note::
             """
         self.m_dims = m_dims
         self.s_dims = s_dims
