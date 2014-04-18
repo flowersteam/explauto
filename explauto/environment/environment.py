@@ -4,6 +4,9 @@ from ..utils.config import Configuration
 
 
 class Environment(object):
+    """ Abstract class to define environments. 
+        :param array m_mins, m_maxs, s_mins, s_maxs: bounds of the motor (m) and sensory (s) spaces
+    """  
     def __init__(self, **kwargs):
         conf = Configuration(kwargs)
         for k, v in conf.iteritems():
@@ -20,6 +23,9 @@ class Environment(object):
         self.state = zeros(self.ndims)
 
     def next_state(self, ag_state):
+        """
+    
+        """
         raise NotImplementedError
 
     # def post_processing(self):
