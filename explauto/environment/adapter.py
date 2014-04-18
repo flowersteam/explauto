@@ -1,7 +1,5 @@
 """ Adaptors to Fabien Benureau's models library. """
 
-from ..third_party.models.models import testbed
-
 
 def configuration(env_or_ag):
     s_feats = tuple(range(env_or_ag.s_ndims))

@@ -7,7 +7,7 @@
 * logs
 * environment pypot (voir meme poppy)
 * doc !!!
-
+* python 3 ????
 * LearningProgress depend de IMLE ?
 
 ## Poster ICDL
