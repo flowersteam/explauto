@@ -1,4 +1,5 @@
-#import numpy as np
+# import numpy as np
+
 from .sm_model import SmModel
 from ..models import imle_model as imle_
 from ..models.gmminf import GMM
@@ -34,26 +35,27 @@ class ImleModel(SmModel):
 
                     return gmm.sample()
                 elif self.mode == 'exploit':
-                    #pred, _, _, jacob = self.imle.predict(sols[0])
-                    sol = sols[0]#.reshape(-1,1) + np.linalg.pinv(jacob[0]).dot(x - pred.reshape(-1,1))
+                    # pred, _, _, jacob = self.imle.predict(sols[0])
+                    sol = sols[0]  # .reshape(-1,1) + np.linalg.pinv(jacob[0]).dot(x - pred.reshape(-1,1))
                     return sol
 
             except Exception as e:
                 print e
                 return self.imle.to_gmm().inference(in_dims, out_dims, x).sample()
 
-        #elif in_dims == self.m_dims and out_dims==self.s_dims:
-            #return self.imle.predict(x.flatten()).reshape(-1,1)
+        # elif in_dims == self.m_dims and out_dims==self.s_dims:
+        #     return self.imle.predict(x.flatten()).reshape(-1,1)
         else:
             return self.imle.to_gmm().inference(in_dims, out_dims, x).sample()
 
     def update(self, m, s):
         self.imle.update(m, s)
 
+
 class ImleGmmModel(ImleModel):
     def update_gmm(self):
         self.gmm = self.imle.to_gmm()
 
-    def infer(self, in_dims,out_dims,x):
+    def infer(self, in_dims, out_dims, x):
         self.update_gmm()
         return self.gmm.inference(in_dims, out_dims, x).sample().T

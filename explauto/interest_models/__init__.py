@@ -1,1 +1,1 @@
-from learning_progress import DiscreteProgressInterest
+from .learning_progress import DiscreteProgressInterest
