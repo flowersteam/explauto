@@ -1,6 +1,6 @@
 from numpy import array
 
-from ..interest_models import competences
+from ..interest_model import competences
 # from .. import sm_model, i_model
 
 
@@ -34,14 +34,14 @@ def get_config(m_ndims, s_ndims, sensorimotor, interest):
 
     if sensorimotor[0] == 'imle':
         try:
-            from ..sensorimotor_models.imle import ImleModel
+            from ..sensorimotor_model.imle import ImleModel
             smm = ImleModel(m_dims=m_dims, s_dims=s_dims, **sensorimotor[1])
         except:
             print ('cannot import or instanciate ImleModel, '
                    'please check your installation (compilation, path...)')
             raise
     elif sensorimotor[0] == 'discrete':
-        from ..sensorimotor_models import discrete
+        from ..sensorimotor_model import discrete
         smm = discrete.LidstoneModel(**sensorimotor[1])
     else:
         raise ValueError('{} is not a valid sensorimotor model'.format(sensorimotor[0]))
@@ -58,10 +58,10 @@ def get_config(m_ndims, s_ndims, sensorimotor, interest):
     interest[2]['i_dims'] = i_dims
 
     if interest[0] == 'random':
-        from ..interest_models.random import RandomInterest
+        from ..interest_model.random import RandomInterest
         im = RandomInterest(**interest[2])
     elif interest[0] == 'discrete_progress':
-        from ..interest_models import DiscreteProgressInterest
+        from ..interest_model import DiscreteProgressInterest
         im = DiscreteProgressInterest(**interest[2])
     else:
         raise ValueError('{} is not a valid interest model'.format(interest[0]))

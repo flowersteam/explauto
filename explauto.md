@@ -9,6 +9,10 @@
 * doc !!!
 * python 3 ????
 * LearningProgress depend de IMLE ?
+* faire des packages pour chaque interest/sensorimotor models
+* faire AgentFactory? bonne idée ?
+* regarder env_config ?
+
 
 ## Poster ICDL
 * Intro

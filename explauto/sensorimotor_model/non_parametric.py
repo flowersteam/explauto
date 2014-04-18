@@ -29,3 +29,7 @@ class NonParametric(SmModel):
 
     def update(self, m, s):
         self.model.add_xy(tuple(m), tuple(s))
+
+
+sensorimotor_model = NonParametric
+configurations = {'default': {'fwd': 'LWLR', 'inv': 'L-BFGS-B'}}

@@ -32,13 +32,13 @@ test_config = dict(m_ndims=m_ndims,
 class SimpleArmEnvironment(Environment):
     # def __init__(self, m_ndims, s_ndims, m_mins, m_maxs, length_ratio, noise):
     def __init__(self, **kwargs):
+        Environment.__init__(self, **kwargs)
+
         for attr in ['m_mins', 'm_maxs', 's_mins', 's_maxs', 'length_ratio', 'noise']:
             setattr(self, attr, kwargs[attr])
 
         self.m_ndims = len(self.m_mins)
         self.s_ndims = len(self.s_mins)
-
-        Environment.__init__(self, ndims=self.m_ndims + self.s_ndims)
 
         # self.m_mins = m_mins
         # self.m_maxs = m_maxs

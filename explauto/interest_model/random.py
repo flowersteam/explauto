@@ -14,3 +14,7 @@ class RandomInterest(InterestModel):
 
     def update(self, xy, ms):
         pass
+
+
+interest_model = RandomInterest
+configurations = {'default': {}}

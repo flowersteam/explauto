@@ -185,3 +185,11 @@ class BayesOptInterest(InterestModel):
 
     def update(self, x, arg_measure):
         raise NotImplementedError
+
+# TODO: clean when package for each InterestModel
+from .competences import competence_exp
+
+interest_model = GmmInterest
+configurations = {'default': {'measure': competence_exp,
+                              'n_samples': 40,
+                              'n_components': 6}}

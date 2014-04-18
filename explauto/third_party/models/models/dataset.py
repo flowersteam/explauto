@@ -291,11 +291,12 @@ class ScaledDataset(Dataset):
 
 
 
-try:
-    from cdataset import cDataset
-    pDataset = Dataset # keeping the python version accessible
-    Dataset = cDataset
-except ImportError:
-    import traceback
-    traceback.print_exc()
-    print("warning: cdataset.cDataset import error, defaulting to (slower) python implementation.")
+# TODO: a logger plus propre
+# try:
+#     from cdataset import cDataset
+#     pDataset = Dataset # keeping the python version accessible
+#     Dataset = cDataset
+# except ImportError:
+#     import traceback
+#     traceback.print_exc()
+#     print("warning: cdataset.cDataset import error, defaulting to (slower) python implementation.")
