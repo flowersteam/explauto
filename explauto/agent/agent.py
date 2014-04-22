@@ -20,29 +20,20 @@ class Agent(Observable):
         Observable.__init__(self)
 
         conf = Configuration(conf_dict)
-        for k, v in conf.iteritems():
-            setattr(self, k, v)
+        for k in ['ndims', 'm_dims', 's_dims']:
+            setattr(self, k, conf[k])
 
-        # self.m_dims = conf.m_dims
-        # self.s_dims = conf.s_dims
-        # self.ms_dims = self.m_dims + self.s_dims
         self.ms = np.zeros(self.ndims)
-        # self.expl_dims = conf.expl_dims
-        # self.inf_dims = conf.inf_dims
-
         self.expl_dims = expl_dims
         self.inf_dims = inf_dims
 
-        # self.sensorimotor_model = sm_model
-        # self.interest_model = i_model
-
         self.sensorimotor_model = sm_model_cls(conf, **sm_model_config)
-        self.interest_model = im_model_cls(self.expl_dims, conf['bounds'], **im_model_config)
+        self.interest_model = im_model_cls(self.expl_dims,
+                                           conf['bounds'],
+                                           **im_model_config)
 
         # self.competence = competence
         self.to_bootstrap = True
-        # self.choices = np.zeros((10000, len(i_dims)))
-        # self.comps = np.zeros((10000, 1))
         self.t = 0
         self.state = np.zeros(self.ndims)
 
@@ -84,8 +75,6 @@ class Agent(Observable):
 
         self.ms[self.expl_dims] = self.x
         self.ms[self.inf_dims] = self.y
-
-        # self.choices[self.t,:] = self.x
 
         self.post_production()
 
