@@ -47,9 +47,8 @@ class Environment(Observable):
     def read(self):
         return self.state[self.readable]
 
-    def write(self, data):
-        print '****** SALUT *****'
-        self.state[self.writable] = data
+    # def write(self, data):
+    #     self.state[self.writable] = data
 
     def dataset(self, orders):
         n = orders.shape[0]

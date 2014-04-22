@@ -1,8 +1,9 @@
-from ..environment import Environment
-from diva import DivaSynth
 from collections import namedtuple
 from numpy import hstack, array
+
+from ..environment import Environment
 from ...utils import bounds_min_max
+from .diva import DivaSynth
 
 diva_path = '../../../DIVAsimulink/'
 
@@ -15,14 +16,14 @@ articulator_bounds = tuple((-1., 1.) for _ in range(len(articulator_names)))
 somato_bounds = tuple((-1., 1.) for _ in range(len(somato_names)))
 auditory_bounds = ((0., 200.), (0., 1000.), (500., 3000.), (2000., 4000.))
 
-bounds = articulator_bounds + auditory_bounds 
+bounds = articulator_bounds + auditory_bounds
 
 # high pressure and voicing to ensure phonation
 articulator_default = [0.] * 11 + [0.7] * 2
 
 auditory_default = [100., 500., 1500., 3000.]
 
-default = articulator_default + auditory_default 
+default = articulator_default + auditory_default
 
 art1__7 = tuple(range(7))  #the 7 principal articulators
 F1_F2 = (-3, -2)
@@ -59,4 +60,3 @@ class DivaEnvironment(Environment):
         self.state[:self.m_ndims] = self.art[self.m_used]
         #self.state[-self.s_ndims:] = hstack((res[0], res[1]))[self.s_used]
         self.state[-self.s_ndims:] = res[self.s_used]
-

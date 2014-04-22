@@ -3,14 +3,14 @@
 ## Code
 * pip install + setup propre
     * virer IMLE
+    * LearningProgress depend de IMLE ?
+
 * coder evaluation, visualisation
 * environment pypot (voir meme poppy)
 * doc !!!
 * python 3 ????
-* LearningProgress depend de IMLE ?
 * faire des packages pour chaque interest/sensorimotor models
 * faire AgentFactory? bonne idée ?
-* regarder env_config ?
 
 
 ## Poster ICDL
