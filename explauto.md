@@ -4,7 +4,6 @@
 * pip install + setup propre
     * virer IMLE
 * coder evaluation, visualisation
-* logs
 * environment pypot (voir meme poppy)
 * doc !!!
 * python 3 ????

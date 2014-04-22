@@ -1,13 +1,16 @@
 from numpy import zeros
 
 from ..utils.config import Configuration
+from ..utils.observer import Observable
 
 
-class Environment(object):
-    """ Abstract class to define environments. 
+class Environment(Observable):
+    """ Abstract class to define environments.
         :param array m_mins, m_maxs, s_mins, s_maxs: bounds of the motor (m) and sensory (s) spaces
-    """  
+    """
     def __init__(self, **kwargs):
+        Observable.__init__(self)
+
         conf = Configuration(kwargs)
         for k, v in conf.iteritems():
             setattr(self, k, v)
@@ -22,10 +25,19 @@ class Environment(object):
         # self.ms_bounds = hstack((array(self.m_bounds), array(self.s_bounds)))
         self.state = zeros(self.ndims)
 
-    def next_state(self, ag_state):
-        """
-    
-        """
+    def update(self, ag_state):
+        m = self.compute_motor_command(ag_state)
+        self.state[:self.m_ndims] = m
+        self.emit('motor', m)
+
+        s = self.compute_sensori_effect()
+        self.state[-self.s_ndims:] = s
+        self.emit('sensori', s)
+
+    def compute_motor_command(self, ag_state):
+        raise NotImplementedError
+
+    def compute_sensori_effect(self):
         raise NotImplementedError
 
     # def post_processing(self):
@@ -36,6 +48,7 @@ class Environment(object):
         return self.state[self.readable]
 
     def write(self, data):
+        print '****** SALUT *****'
         self.state[self.writable] = data
 
     def dataset(self, orders):

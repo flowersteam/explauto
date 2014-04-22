@@ -2,9 +2,10 @@ import numpy as np
 
 
 from ..utils.config import Configuration
+from ..utils.observer import Observable
 
 
-class Agent(object):
+class Agent(Observable):
     def __init__(self,
                  im_model_cls, im_model_config, expl_dims,
                  sm_model_cls, sm_model_config, inf_dims,
@@ -16,6 +17,8 @@ class Agent(object):
         sm_model -- the sensorimotor model
         i_model -- the interest model
         """
+        Observable.__init__(self)
+
         conf = Configuration(conf_dict)
         for k, v in conf.iteritems():
             setattr(self, k, v)
@@ -74,7 +77,10 @@ class Agent(object):
         #     return self.bootstrap()
 
         self.x = self.interest_model.sample()
+        self.emit('choice', self.x.flatten())
+
         self.y = self.sensorimotor_model.infer(self.expl_dims, self.inf_dims, self.x)
+        self.emit('inference', self.y)
 
         self.ms[self.expl_dims] = self.x
         self.ms[self.inf_dims] = self.y

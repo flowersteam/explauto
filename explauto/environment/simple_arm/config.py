@@ -47,9 +47,11 @@ class SimpleArmEnvironment(Environment):
         self.readable = range(self.m_ndims + self.s_ndims)
         self.writable = range(self.m_ndims)
 
-    def next_state(self, ag_state):
-        m = ag_state
-        self.state[:self.m_ndims] = bounds_min_max(m, self.m_mins, self.m_maxs)
+    def compute_motor_command(self, ag_state):
+        motor_cmd = ag_state
+        return bounds_min_max(motor_cmd, self.m_mins, self.m_maxs)
+
+    def compute_sensori_effect(self):
         res = array(simple_arm.forward(self.state[:self.m_ndims], self.lengths))
         res += self.noise * randn(*res.shape)
-        self.state[-self.s_ndims:] = res
+        return res
