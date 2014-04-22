@@ -9,7 +9,7 @@ class Agent(Observable):
     def __init__(self,
                  im_model_cls, im_model_config, expl_dims,
                  sm_model_cls, sm_model_config, inf_dims,
-                 conf_dict):
+                 m_mins, m_maxs, s_mins, s_maxs):
         """Initialize agent class
         Keyword arguments:
         m_dims -- the indices of motor values
@@ -19,23 +19,21 @@ class Agent(Observable):
         """
         Observable.__init__(self)
 
-        conf = Configuration(conf_dict)
-        for k in ['ndims', 'm_dims', 's_dims']:
-            setattr(self, k, conf[k])
+        self.conf = Configuration(m_mins, m_maxs, s_mins, s_maxs)
 
-        self.ms = np.zeros(self.ndims)
+        self.ms = np.zeros(self.conf.ndims)
         self.expl_dims = expl_dims
         self.inf_dims = inf_dims
 
-        self.sensorimotor_model = sm_model_cls(conf, **sm_model_config)
+        self.sensorimotor_model = sm_model_cls(self.conf, **sm_model_config)
         self.interest_model = im_model_cls(self.expl_dims,
-                                           conf['bounds'],
+                                           self.conf.bounds,
                                            **im_model_config)
 
         # self.competence = competence
         self.to_bootstrap = True
         self.t = 0
-        self.state = np.zeros(self.ndims)
+        self.state = np.zeros(self.conf.ndims)
 
     # def bootstrap(self):
     #     self.ms[self.m_dims] =np.zeros(len(self.m_dims))
@@ -78,7 +76,7 @@ class Agent(Observable):
 
         self.post_production()
 
-        return self.ms[self.m_dims]
+        return self.ms[self.conf.m_dims]
 
     def perceive(self, ms):
         # Todo: put competence function in i_model.py and call it from i_model
@@ -87,18 +85,6 @@ class Agent(Observable):
         # self.comp = self.competence(self.ms[self.s_dims], ms[self.s_dims])
         # self.comps[self.t] = self.comp
 
-        self.sensorimotor_model.update(ms[self.m_dims], ms[self.s_dims])
+        self.sensorimotor_model.update(ms[self.conf.m_dims], ms[self.conf.s_dims])
         self.interest_model.update(self.ms, ms)
         # self.t += 1
-
-    # def explore(self, in_dims, out_dims):
-    #     x = self.interest_model.sample()
-    #     y = self.sensorimotor_model.infer(in_dims, out_dims, x)
-    #     self.ms[in_dims] = x
-    #     self.ms[out_dims] = y
-    #     m = self.ms[self.m_dims].reshape(len(self.m_dims), 1)
-    #     m, s = self.env.execute(m)
-    #     comp = self.competence(self.ms[self.s_dims], s)
-    #     self.sensorimotor_model.update(m, s)
-    #     self.interest_model.update(x, comp)
-    #     return x, y, m, s, comp
