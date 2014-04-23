@@ -4,7 +4,7 @@ import pypot.robot
 
 from .. import Environment
 from ...utils import bounds_min_max
-from ...explauto import ExplautoEnvironmentUpdateError
+from ... import ExplautoEnvironmentUpdateError
 
 
 class PypotEnvironment(Environment):
