@@ -1,4 +1,5 @@
 import logging
+import threading
 
 from numpy import zeros, array
 from collections import defaultdict
@@ -30,6 +31,8 @@ class Experiment(Observer):
         self.env.subscribe('motor', self)
         self.env.subscribe('sensori', self)
 
+        self._running = threading.Event()
+
     def bootstrap(self, n):
         while n > 0:
             m = rand_bounds(self.ag.conf.m_bounds)[0]
@@ -42,7 +45,22 @@ class Experiment(Observer):
             except ExplautoEnvironmentUpdateError:
                 pass
 
-    def run(self, n_iter=1):
+    def run(self, n_iter, bg=False):
+        self._running.set()
+
+        if bg:
+            self._t = threading.Thread(target=lambda: self._run(n_iter))
+            self._t.start()
+        else:
+            self._run(n_iter)
+
+    def wait(self):
+        self._t.join()
+
+    def stop(self):
+        self._running.clear()
+
+    def _run(self, n_iter=1):
         for t in range(n_iter):
             # if i_rec in evaluate_at:
             #     self.evaluation.evaluate(self.env, self.ag, self.testset, self.
@@ -59,6 +77,11 @@ class Experiment(Observer):
             # self.i_rec += 1
 
             self.update_logs()
+
+            if not self._running.is_set():
+                break
+
+        self._running.clear()
 
     def update_logs(self):
         while not self.notifications.empty():
