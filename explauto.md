@@ -11,7 +11,6 @@
 * python 3 ????
 * faire des packages pour chaque interest/sensorimotor models
 * faire AgentFactory? bonne idée ?
-* exp.run in background
 
 
 
