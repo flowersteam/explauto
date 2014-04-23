@@ -1,0 +1,3 @@
+
+class ExplautoEnvironmentUpdateError(Exception):
+    pass
