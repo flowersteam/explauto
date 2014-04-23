@@ -18,6 +18,7 @@ setup(name='explauto',
 
       extra_require={
           'diva': ['pymatlab'],
+          'pypot': ['pypot'],
           'imle': [],
       },
 

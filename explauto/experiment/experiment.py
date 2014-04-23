@@ -1,4 +1,5 @@
 import logging
+import threading
 
 from numpy import zeros, array
 from collections import defaultdict
@@ -24,19 +25,42 @@ class Experiment(Observer):
 
         self._logs = defaultdict(list)
         self.counts = defaultdict(int)
-        
+
         self.ag.subscribe('choice', self)
         self.ag.subscribe('inference', self)
         self.env.subscribe('motor', self)
         self.env.subscribe('sensori', self)
 
-    def bootstrap(self, n):
-        orders = rand_bounds(self.ag.conf.m_bounds, n)
-        for m in orders:
-            self.env.execute(m)
-            self.ag.perceive(self.env.state)
+        self._running = threading.Event()
 
-    def run(self, n_iter=1):
+    def bootstrap(self, n):
+        while n > 0:
+            m = rand_bounds(self.ag.conf.m_bounds)[0]
+
+            try:
+                self.env.update(m)
+                self.ag.perceive(self.env.state)
+                n -= 1
+
+            except ExplautoEnvironmentUpdateError:
+                pass
+
+    def run(self, n_iter, bg=False):
+        self._running.set()
+
+        if bg:
+            self._t = threading.Thread(target=lambda: self._run(n_iter))
+            self._t.start()
+        else:
+            self._run(n_iter)
+
+    def wait(self):
+        self._t.join()
+
+    def stop(self):
+        self._running.clear()
+
+    def _run(self, n_iter=1):
         for t in range(n_iter):
             # if i_rec in evaluate_at:
             #     self.evaluation.evaluate(self.env, self.ag, self.testset, self.
@@ -46,12 +70,18 @@ class Experiment(Observer):
                 self.ag.perceive(self.env.state)
             except ExplautoEnvironmentUpdateError:
                 logger.warning('Environment update error at time %d with '
-                               'motor command %s. This iteration wont be used to update agent models', t, m)
+                               'motor command %s. '
+                               'This iteration wont be used to update agent models', t, m)
 
             # self.records[self.i_rec, :] = self.env.state
             # self.i_rec += 1
 
             self.update_logs()
+
+            if not self._running.is_set():
+                break
+
+        self._running.clear()
 
     def update_logs(self):
         while not self.notifications.empty():
@@ -79,7 +109,7 @@ class Experiment(Observer):
         """ 2D or 3D scatter plot
             :param dict topic_dims: dictionary of the form {topic : dims, ...}, where topic is a string and dims is a list of dimensions to be plotted for that topic.
             :param int t: time indexes to be plotted
-            :param axes ax: matplotlib axes (use Axes3D if 3D data) 
+            :param axes ax: matplotlib axes (use Axes3D if 3D data)
             :param dict kwargs_plot: argument to be passed to matplotlib's plot function, e.g. the style of the plotted points 'or'
         """
         plot_specs = {'marker': 'o', 'linestyle': 'None'}
@@ -92,6 +122,3 @@ class Experiment(Observer):
         data = self.pack(topic_dims, t)
         # ax.plot(data[:, 0], data[:, 1], style)
         ax.plot(*(data.T), **plot_specs)
-
-
-
