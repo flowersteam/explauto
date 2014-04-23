@@ -1,10 +1,11 @@
+import logging
+
 from numpy import zeros, array
 from collections import defaultdict
 
-from ..utils.observer import Observer
-
 from .. import ExplautoEnvironmentUpdateError
-import logging
+from ..utils.observer import Observer
+from ..utils import rand_bounds
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +30,12 @@ class Experiment(Observer):
         self.env.subscribe('motor', self)
         self.env.subscribe('sensori', self)
 
+    def bootstrap(self, n):
+        orders = rand_bounds(self.ag.conf.m_bounds, n)
+        for m in orders:
+            self.env.execute(m)
+            self.ag.perceive(self.env.state)
+
     def run(self, n_iter=1):
         for t in range(n_iter):
             # if i_rec in evaluate_at:
@@ -39,7 +46,7 @@ class Experiment(Observer):
                 self.ag.perceive(self.env.state)
             except ExplautoEnvironmentUpdateError:
                 logger.warning('Environment update error at time %d with '
-                               'motor command %s', t, m)
+                               'motor command %s. This iteration wont be used to update agent models', t, m)
 
             # self.records[self.i_rec, :] = self.env.state
             # self.i_rec += 1
@@ -68,20 +75,23 @@ class Experiment(Observer):
                 data.append(self.logs[topic][t, d])
         return array(data).T
 
-    def scatter_plot(self, ax, topic_dims, t=None, style ='o'):
+    def scatter_plot(self, ax, topic_dims, t=None, **kwargs_plot):
         """ 2D or 3D scatter plot
             :param dict topic_dims: dictionary of the form {topic : dims, ...}, where topic is a string and dims is a list of dimensions to be plotted for that topic.
             :param int t: time indexes to be plotted
             :param axes ax: matplotlib axes (use Axes3D if 3D data) 
-            :param str style: style of the plotted points, e.g. 'or'
+            :param dict kwargs_plot: argument to be passed to matplotlib's plot function, e.g. the style of the plotted points 'or'
         """
-        inds = 0
+        plot_specs = {'marker': 'o', 'linestyle': 'None'}
+        plot_specs.update(kwargs_plot)
+        t_bound = float('inf')
         if t is None:
             for topic, _ in topic_dims:
-                inds = min(inds, self.counts[topic])
-            t = inds
+                t_bound = min(t_bound, self.counts[topic])
+            t = range(t_bound)
         data = self.pack(topic_dims, t)
-        ax.plot(data[:, 0], data[:, 1], style)
+        # ax.plot(data[:, 0], data[:, 1], style)
+        ax.plot(*(data.T), **plot_specs)
 
 
 
