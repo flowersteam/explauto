@@ -1,17 +1,20 @@
 # Explauto
 
 ## Code
+* coder evaluation
+* faire des packages pour chaque interest/sensorimotor models
+* grid search (e.g. goal vs motor babling)
+    * faire AgentFactory? bonne idée ?
+
+* doc
+* notebook
+
 * pip install + setup propre
     * virer IMLE
     * LearningProgress depend de IMLE ?
 
-* coder evaluation, visualisation
-* environment pypot (voir meme poppy)
-* doc !!!
+* environment pypot (a nettoyer)
 * python 3 ????
-* faire des packages pour chaque interest/sensorimotor models
-* faire AgentFactory? bonne idée ?
-
 
 
 ## Poster ICDL
@@ -26,6 +29,3 @@
     * visualising the results
 * Case study comparing motor vs goal babling on a poppy robot
 * Conclusion : ca defonce random grave :-)
-
-## BUG
-* undefined x in update of LearningProgress
