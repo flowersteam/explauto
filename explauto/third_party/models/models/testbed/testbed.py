@@ -12,19 +12,20 @@ class Testbed(object):
         """"""
         return cls(robot, imodel = learner.imodel)
 
-    def __init__(self, robot, fmodel = None, imodel = None):
+    def __init__(self, robot, learner):
         """
         @param fmodel  forward model. If not provided, will look for the
                        'fmodel' attribute in the inverse model.
         @param imodel  inverse model. optional if forward model is provided.
                        (and run_inverse is not called !)
         """
-        assert fmodel is not None or imodel is not None
+        self.learner = learner
+        #assert fmodel is not None or imodel is not None
         self.robot = robot
-        self.fmodel = fmodel
-        if fmodel is None:
-            self.fmodel = imodel.fmodel
-        self.imodel = imodel
+        #self.fmodel = fmodel
+        #if fmodel is None:
+        #    self.fmodel = imodel.fmodel
+        #   self.imodel = imodel
         self.testcases = []
 
     # Training
@@ -70,7 +71,8 @@ class Testbed(object):
         """
         errors = []
         for order, effect in self.testcases:
-            predicted_effect = self.fmodel.predict_y(order)
+            #predicted_effect = self.fmodel.predict_y(order)
+            predicted_effect = self.learner.predict_effect(order)
             errors.append(toolbox.dist(predicted_effect, effect))
         return errors
 
@@ -81,7 +83,8 @@ class Testbed(object):
         assert self.imodel is not None
         errors = []
         for order, effect in self.testcases:
-            predicted_order = self.imodel.infer_x(effect)[0]
+            #predicted_order = self.imodel.infer_x(effect)[0]
+            predicted_order = self.learner.infer_order(effect)
             obtained_effect = self.robot.execute_order(predicted_order)
             errors.append(toolbox.dist(obtained_effect, effect))
         return errors
