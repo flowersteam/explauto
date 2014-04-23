@@ -17,10 +17,11 @@ class Environment(Observable):
     def update(self, ag_state):
         m = self.compute_motor_command(ag_state)
         self.state[:self.conf.m_ndims] = m
-        self.emit('motor', m)
 
         s = self.compute_sensori_effect()
         self.state[-self.conf.s_ndims:] = s
+
+        self.emit('motor', m)
         self.emit('sensori', s)
 
     def compute_motor_command(self, ag_state):
