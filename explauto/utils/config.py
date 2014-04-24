@@ -13,7 +13,8 @@ class Configuration(object):
         self.ndims = self.m_ndims + self.s_ndims
 
         self.m_dims = range(self.m_ndims)
-        self.s_dims = range(-self.s_ndims, 0)
+        self.s_dims = range(self.m_ndims, self.ndims)
+        self.dims = self.m_dims + self.s_dims
 
         self.m_bounds = vstack((self.m_mins, self.m_maxs))
         self.s_bounds = vstack((self.s_mins, self.s_maxs))

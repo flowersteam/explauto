@@ -1,27 +1,31 @@
 import logging
 import threading
 
-from numpy import zeros, array
+from numpy import zeros, array, mean, std, cumsum
 from collections import defaultdict
 
 from .. import ExplautoEnvironmentUpdateError
 from ..utils.observer import Observer
+from ..evaluation import Evaluation
 from ..utils import rand_bounds
 
 logger = logging.getLogger(__name__)
 
 
 class Experiment(Observer):
-    def __init__(self, env, ag, n_records=100000, evaluate_at=[]):
+    def __init__(self, env, ag, evaluate_at=[]):
         Observer.__init__(self)
 
         self.env = env
         self.ag = ag
         # env.inds_in = inds_in
         # env.inds_out = inds_out
-        self.records = zeros((n_records, env.state.shape[0]))
-        self.i_rec = 0
+        # self.records = zeros((n_records, env.state.shape[0]))
+        # self.i_rec = 0
         self.evaluate_at = evaluate_at
+        if evaluate_at:
+            self.evaluation = Evaluation(ag, env)
+            self.eval_errors = []
 
         self._logs = defaultdict(list)
         self.counts = defaultdict(int)
@@ -66,6 +70,8 @@ class Experiment(Observer):
         for t in range(n_iter):
             # if i_rec in evaluate_at:
             #     self.evaluation.evaluate(self.env, self.ag, self.testset, self.
+            if t in self.evaluate_at:
+                self.eval_errors.append(self.evaluation.evaluate())
             m = self.ag.produce()
             try:
                 self.env.update(m)
@@ -124,3 +130,11 @@ class Experiment(Observer):
         data = self.pack(topic_dims, t)
         # ax.plot(data[:, 0], data[:, 1], style)
         ax.plot(*(data.T), **plot_specs)
+
+    def plot_learning_curve(self, ax):
+        if not self.evaluate_at:
+            print 'no evaluation available, you need to specify the evaluate_at argument when constructing the experiment'
+            return
+        avg_err = mean(array(self.eval_errors), axis=1)
+        std_err = std(array(self.eval_errors), axis=1)
+        ax.errorbar(cumsum(self.evaluate_at), avg_err, yerr=std_err)
