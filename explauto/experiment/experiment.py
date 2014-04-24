@@ -9,6 +9,12 @@ from ..utils.observer import Observer
 from ..evaluation import Evaluation
 from ..utils import rand_bounds
 
+from ..agent import Agent
+from ..environment import environments
+from ..interest_model import interest_models
+from ..sensorimotor_model import sensorimotor_models
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -46,7 +52,13 @@ class Experiment(Observer):
             except ExplautoEnvironmentUpdateError:
                 pass
 
-    def run(self, n_iter, bg=False):
+    def run(self, n_iter=-1, bg=False):
+        if n_iter == -1:
+            if not self.eval_at:
+                raise ValueError('Set n_iter or define evaluate_at.')
+
+            n_iter = self.eval_at[-1] + 1
+
         self._running.set()
 
         if bg:
@@ -61,7 +73,7 @@ class Experiment(Observer):
     def stop(self):
         self._running.clear()
 
-    def _run(self, n_iter=1):
+    def _run(self, n_iter):
         # To clear messages received outside a run, typically those from the evaluation
         self.notifications.queue.clear()
         for t in range(n_iter):
@@ -140,3 +152,29 @@ class Experiment(Observer):
         avg_err = mean(array(self.eval_errors), axis=1)
         std_err = std(array(self.eval_errors), axis=1)
         ax.errorbar(cumsum(self.eval_at), avg_err, yerr=std_err)
+
+    @classmethod
+    def from_settings(cls, environment, babbling, interest_model, sensorimotor_model,
+                      environment_config='default',
+                      interest_model_config='default',
+                      sensorimotor_model_config='default'):
+
+        env_cls, env_configs = environments[environment]
+        config = env_configs[environment_config]
+
+        env = env_cls(**config)
+
+        im_cls, im_configs = interest_models[interest_model]
+        sm_cls, sm_configs = sensorimotor_models[sensorimotor_model]
+
+        if babbling not in ['goal', 'motor']:
+            raise ValueError("babbling argument must be in ['goal', 'motor']")
+
+        expl_dims = env.conf.m_dims if (babbling == 'motor') else env.conf.s_dims
+        inf_dims = env.conf.s_dims if (babbling == 'motor') else env.conf.m_dims
+
+        agent = Agent(im_cls, im_configs[interest_model_config], expl_dims,
+                      sm_cls, sm_configs[sensorimotor_model_config], inf_dims,
+                      env.conf.m_mins, env.conf.m_maxs, env.conf.s_mins, env.conf.s_maxs)
+
+        return cls(env, agent)

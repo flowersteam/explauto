@@ -1,10 +1,7 @@
 # Explauto
 
 ## Code
-* coder evaluation
 * faire des packages pour chaque interest/sensorimotor models
-* grid search (e.g. goal vs motor babling)
-    * faire AgentFactory? bonne idée ?
 
 * doc
 * notebook
