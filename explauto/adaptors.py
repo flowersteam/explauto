@@ -1,5 +1,7 @@
 """ Adaptors to Fabien Benureau's models library. """
 
+from numpy import array
+
 
 def configuration(env_or_ag):
     s_feats = tuple(range(env_or_ag.conf.s_ndims))
@@ -27,8 +29,8 @@ class Learner(object):
         self.ag.sensorimotor_model.update(x, y)
 
     def infer_order(self, goal, **kwargs):
-        return self.ag.sensorimotor_model.infer(self.ag.conf.s_dims, self.ag.conf.m_dims, goal)
+        return self.ag.sensorimotor_model.infer(self.ag.conf.s_dims, self.ag.conf.m_dims, array(goal))
 
     def predict_effect(self, order, **kwargs):
-        return self.ag.sensorimotor_model.infer(self.ag.conf.m_dims, self.ag.conf.s_dims, order)
+        return self.ag.sensorimotor_model.infer(self.ag.conf.m_dims, self.ag.conf.s_dims, array(order))
 

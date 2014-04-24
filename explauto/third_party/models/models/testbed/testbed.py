@@ -80,7 +80,7 @@ class Testbed(object):
         """Run the tests. Note that the robot will execute an order for every test.
         @return list of error of each tests
         """
-        assert self.imodel is not None
+        #assert self.imodel is not None
         errors = []
         for order, effect in self.testcases:
             #predicted_order = self.imodel.infer_x(effect)[0]

@@ -61,6 +61,8 @@ class Experiment(Observer):
         self._running.clear()
 
     def _run(self, n_iter=1):
+        # To clear messages received outside a run, typically those from the evaluation
+        self.notifications.queue.clear()
         for t in range(n_iter):
             # if i_rec in evaluate_at:
             #     self.evaluation.evaluate(self.env, self.ag, self.testset, self.
