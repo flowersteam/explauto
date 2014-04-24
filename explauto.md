@@ -2,6 +2,7 @@
 
 ## Code
 * faire des packages pour chaque interest/sensorimotor models
+* passer de thread a process
 
 * doc
 * notebook
