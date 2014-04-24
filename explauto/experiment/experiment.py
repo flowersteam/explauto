@@ -22,10 +22,7 @@ class Experiment(Observer):
         # env.inds_out = inds_out
         # self.records = zeros((n_records, env.state.shape[0]))
         # self.i_rec = 0
-        self.evaluate_at = evaluate_at
-        if evaluate_at:
-            self.evaluation = Evaluation(ag, env)
-            self.eval_errors = []
+        self.eval_at = []
 
         self._logs = defaultdict(list)
         self.counts = defaultdict(int)
@@ -70,7 +67,7 @@ class Experiment(Observer):
         for t in range(n_iter):
             # if i_rec in evaluate_at:
             #     self.evaluation.evaluate(self.env, self.ag, self.testset, self.
-            if t in self.evaluate_at:
+            if t in self.eval_at:
                 self.eval_errors.append(self.evaluation.evaluate())
             m = self.ag.produce()
             try:
@@ -113,6 +110,11 @@ class Experiment(Observer):
                 data.append(self.logs[topic][t, d])
         return array(data).T
 
+    def evaluate_at(self, eval_at):
+        self.eval_at = eval_at
+        self.evaluation = Evaluation(self.ag, self.env)
+        self.eval_errors = []
+
     def scatter_plot(self, ax, topic_dims, t=None, **kwargs_plot):
         """ 2D or 3D scatter plot
             :param dict topic_dims: dictionary of the form {topic : dims, ...}, where topic is a string and dims is a list of dimensions to be plotted for that topic.
@@ -137,4 +139,4 @@ class Experiment(Observer):
             return
         avg_err = mean(array(self.eval_errors), axis=1)
         std_err = std(array(self.eval_errors), axis=1)
-        ax.errorbar(cumsum(self.evaluate_at), avg_err, yerr=std_err)
+        ax.errorbar(cumsum(self.eval_at), avg_err, yerr=std_err)
