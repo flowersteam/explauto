@@ -1,7 +1,7 @@
 import logging
 import threading
 
-from numpy import zeros, array, mean, std, cumsum
+from numpy import array, mean, std
 from collections import defaultdict
 
 from .. import ExplautoEnvironmentUpdateError
@@ -9,7 +9,7 @@ from ..utils.observer import Observer
 from ..evaluation import Evaluation
 from ..utils import rand_bounds
 
-from ..utils import density_image
+# from ..utils import density_image
 from ..agent import Agent
 from ..environment import environments
 from ..interest_model import interest_models
