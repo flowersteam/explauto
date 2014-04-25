@@ -19,6 +19,10 @@ logger = logging.getLogger(__name__)
 
 
 class Experiment(Observer):
+    """ This class can be used to do experiments...
+    No kidding...
+    
+    """
     def __init__(self, env, ag, evaluate_at=[]):
         Observer.__init__(self)
 
