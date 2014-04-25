@@ -1,4 +1,5 @@
-from numpy import array, pi
+from numpy import array, pi, hstack
+from copy import copy
 
 from .simple_arm import SimpleArmEnvironment
 
@@ -16,5 +17,11 @@ test_config = dict(m_mins=m_mins,
                    noise=0.02
                    )
 
+hd_config = copy(test_config)
+hd_config['m_mins'] = array([-pi/6.] * 20)
+hd_config['m_maxs'] = -1. * hd_config['m_mins']
+hd_config['s_mins'] = array([0., -0.8])
+hd_config['s_maxs'] = array([1., 0.8])
+
 environment = SimpleArmEnvironment
-configurations = {'default': test_config}
+configurations = {'default': test_config, 'high_dimensional': hd_config}

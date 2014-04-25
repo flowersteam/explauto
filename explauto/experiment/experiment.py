@@ -74,13 +74,12 @@ class Experiment(Observer):
         self._running.clear()
 
     def _run(self, n_iter):
-        # To clear messages received outside a run, typically those from the evaluation
-        self.notifications.queue.clear()
         for t in range(n_iter):
-            # if i_rec in evaluate_at:
-            #     self.evaluation.evaluate(self.env, self.ag, self.testset, self.
             if t in self.eval_at:
                 self.eval_errors.append(self.evaluation.evaluate())
+
+            # To clear messages received from the evaluation
+            self.notifications.queue.clear()
             m = self.ag.produce()
             try:
                 self.env.update(m)
@@ -122,9 +121,12 @@ class Experiment(Observer):
                 data.append(self.logs[topic][t, d])
         return array(data).T
 
-    def evaluate_at(self, eval_at):
+    def evaluate_at(self, eval_at, evaluation = None):
         self.eval_at = eval_at
-        self.evaluation = Evaluation(self.ag, self.env)
+        if evaluation is None:
+            self.evaluation = Evaluation(self.ag, self.env)
+        else:
+            self.evaluation = evaluation
         self.eval_errors = []
 
     def scatter_plot(self, ax, topic_dims, t=None, **kwargs_plot):
@@ -151,7 +153,7 @@ class Experiment(Observer):
             return
         avg_err = mean(array(self.eval_errors), axis=1)
         std_err = std(array(self.eval_errors), axis=1)
-        ax.errorbar(cumsum(self.eval_at), avg_err, yerr=std_err)
+        ax.errorbar(self.eval_at, avg_err, yerr=std_err)
 
     @classmethod
     def from_settings(cls, environment, babbling, interest_model, sensorimotor_model,

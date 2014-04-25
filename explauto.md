@@ -5,6 +5,9 @@
 * passer de thread a process
 
 * doc
+    * Michu (PR)
+    * Messy (CMF)
+    * 
 * notebook
 
 * pip install + setup propre
@@ -24,6 +27,7 @@
 * Utilisation
     * setting an environment, a SM and an interest model
     * running an experiment
+    * setting and running an experiment pool
     * visualising the results
 * Case study comparing motor vs goal babling on a poppy robot
 * Conclusion : ca defonce random grave :-)
