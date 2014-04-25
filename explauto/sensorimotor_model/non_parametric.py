@@ -17,6 +17,7 @@ class NonParametric(SmModel):
         mbounds = tuple((self.bounds[0, d], self.bounds[1, d]) for d in range(self.m_ndims))
 
         self.model = Learner(mfeats, sfeats, mbounds, fwd, inv, **learner_kwargs)
+        self.mode = '' # in case mode = 'expore' or 'exploit' is asked at a higher level
 
     def infer(self, in_dims, out_dims, x):
         if in_dims == self.m_dims and out_dims == self.s_dims:  # forward
@@ -32,4 +33,9 @@ class NonParametric(SmModel):
 
 
 sensorimotor_model = NonParametric
-configurations = {'default': {'fwd': 'LWLR', 'inv': 'L-BFGS-B'}}
+configurations = {'LWLR-BFGS': {'fwd': 'LWLR', 'inv': 'L-BFGS-B'},
+                  'ES-LWLR-BFGS': {'fwd': 'ES-LWLR', 'inv': 'L-BFGS-B'},
+                  'ES-WNN': {'fwd': 'ES-WNN', 'inv': 'ES-WNN'},
+                  'ES-WNN-BFGS': {'fwd': 'ES-WNN', 'inv': 'L-BFGS-B'}
+                 }
+configurations['default'] = configurations['LWLR-BFGS']

@@ -60,7 +60,7 @@ class Lattice(object):
 
 def uniform_sensor_testcases(robot, n):
     """Generates around n test uniformly distributed in the sensory space"""
-    observations = uniform_motor_testcases(robot, 10*n)
+    observations = uniform_motor_testcases(robot, 100*n)
     resolution = max(2, int((1.3*n)**(1.0/len(robot.s_feats))))
     lattice = Lattice(robot.s_feats, observations, res = resolution)
     return list(lattice.grid.values())

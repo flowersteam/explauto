@@ -4,6 +4,7 @@ from ..adaptors import Learner, Robot
 
 class Evaluation(object):
     def __init__(self, ag, env, n_samples=100, mode='inverse'):
+        self.ag = ag
         learner = Learner(ag)
         robot = Robot(env)
         self.tester = Testbed(robot, learner)
@@ -18,8 +19,11 @@ class Evaluation(object):
             raise ValueError
 
     def evaluate(self):
+        mode = self.ag.sensorimotor_model.mode
+        self.ag.sensorimotor_model.mode = 'exploit'
         if self.mode == 'forward':
             self.errors = self.tester.run_forward()
         elif self.mode == 'inverse':
             self.errors = self.tester.run_inverse()
+        self.ag.sensorimotor_model.mode = mode
         return self.errors

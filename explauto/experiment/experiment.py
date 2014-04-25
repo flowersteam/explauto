@@ -9,6 +9,7 @@ from ..utils.observer import Observer
 from ..evaluation import Evaluation
 from ..utils import rand_bounds
 
+from ..utils import density_image
 from ..agent import Agent
 from ..environment import environments
 from ..interest_model import interest_models
@@ -154,6 +155,8 @@ class Experiment(Observer):
         avg_err = mean(array(self.eval_errors), axis=1)
         std_err = std(array(self.eval_errors), axis=1)
         ax.errorbar(self.eval_at, avg_err, yerr=std_err)
+
+    # def density_plot(self, topic_dims, t=None, 
 
     @classmethod
     def from_settings(cls, environment, babbling, interest_model, sensorimotor_model,

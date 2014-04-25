@@ -185,7 +185,7 @@ class GMM(sklearn.mixture.GMM):
             ellipsoids.append(ellipsoid_3d(mean_k, covar_k))
         return ellipsoids
 
-    def plotProjection(self, ax, dims, label=False):
+    def plot_projection(self, ax, dims, label=False):
         COLORS = self.weights_ / max(self.weights_)
         COLORS = [str(c) for c in COLORS]
         # COLORS = ['r', 'g', 'b', 'k', 'm']*10000

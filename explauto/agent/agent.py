@@ -68,7 +68,7 @@ class Agent(Observable):
         self.x = self.interest_model.sample()
         self.emit('choice', self.x.flatten())
 
-        self.y = self.sensorimotor_model.infer(self.expl_dims, self.inf_dims, self.x)
+        self.y = self.sensorimotor_model.infer(self.expl_dims, self.inf_dims, self.x.flatten())
         self.emit('inference', self.y)
 
         self.ms[self.expl_dims] = self.x
