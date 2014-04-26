@@ -1,2 +1,4 @@
-Installing extra envrionments or models
-***************************************
+.. _extra:
+
+Extra envrionments and models
+*****************************
