@@ -163,8 +163,9 @@ def enable_cmodels():
         ESLWLRForwardModel = cESLWLRForwardModel
 
     except ImportError:
-        print("warning: cdataset.cLWLRForwardModel import error, defaulting to (slower) python implementation.")
-
+        # print("warning: cdataset.cLWLRForwardModel import error, defaulting to (slower) python implementation.")
+        pass
+        
 def disable_cmodels():
     global LWLRForwardModel, ESLWLRForwardModel
     LWLRForwardModel = pLWLRForwardModel
