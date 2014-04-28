@@ -1,5 +1,5 @@
 
-class SmModel(object):
+class SensorimotorModel(object):
     # def __init__(self, m_dims, s_dims):
     #     self.m_dims = m_dims
     #     self.s_dims = s_dims

@@ -1,10 +1,10 @@
 from numpy import zeros
 
-from .sm_model import SmModel
+from .sensorimotor_model import SensorimotorModel
 from ..utils import discrete_random_draw
 
 
-class LidstoneModel(SmModel):
+class LidstoneModel(SensorimotorModel):
     def __init__(self, m_card, s_card, lambd=1):
         self.k = m_card * s_card
         self.counts = zeros((m_card, s_card))

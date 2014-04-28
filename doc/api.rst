@@ -1,5 +1,8 @@
 Explauto's API
 **************
 .. toctree::
-    explauto.experiment
+    explauto.agent
     explauto.environment
+    explauto.experiment
+    explauto.interestmodel
+    explauto.sensorimotormodel
