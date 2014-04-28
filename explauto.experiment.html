@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+
+
+
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    
+    <title>experiment Package &mdash; explauto 0.2.0 documentation</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    
+<link rel="stylesheet" href="_static/css/basicstrap-base.css" type="text/css" />
+<link rel="stylesheet" href="_static/css/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" href="_static/css/font-awesome.min.css">
+<!--[if IE 7]>
+<link rel="stylesheet" href="_static/css/font-awesome-ie7.min.css">
+<![endif]-->
+
+<style type="text/css">
+  body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+  }
+}
+</style>
+
+<link rel="stylesheet" href="_static/basicstrap.css" type="text/css" />
+<link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+<link rel="stylesheet" href="_static/css/bootstrap-responsive.min.css" type="text/css" />
+    
+<script type="text/javascript">
+  var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:    './',
+            VERSION:     '0.2.0',
+            COLLAPSE_INDEX: false,
+            FILE_SUFFIX: '.html',
+            HAS_SOURCE:  true
+  };
+</script>
+<script type="text/javascript" src="_static/js/jquery.min.js"></script>
+<script type="text/javascript" src="_static/underscore.js"></script>
+<script type="text/javascript" src="_static/doctools.js"></script>
+<script type="text/javascript" src="_static/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('.show-sidebar').click(function(e) {
+       e.preventDefault();
+       if ($(".show-sidebar").html() == "Open Table Of Contents") {
+          $('.for-mobile').removeClass('hidden-phone');
+          $(".show-sidebar").html("Close Table Of Contents");
+       } else {
+          $(".show-sidebar").html("Open Table Of Contents");
+       }
+    });
+  });
+  $(window).load(function () {
+    /*
+
+     * Scroll the window to avoid the topnav bar
+     * https://github.com/twitter/bootstrap/issues/1768
+     */
+    if ($(".navbar.navbar-fixed-top").length > 0) {
+      // var navHeight = $(".navbar").height(),
+      var navHeight = 40,
+        shiftWindow = function() { scrollBy(0, -navHeight - 10); };
+
+      if (location.hash) {
+        setTimeout(shiftWindow, 1);
+      }
+
+      window.addEventListener("hashchange", shiftWindow);
+    }
+  });
+</script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="top" title="explauto 0.2.0 documentation" href="index.html" />
+    <link rel="up" title="Explauto’s API" href="api.html" />
+    <link rel="next" title="interest_model Package" href="explauto.interestmodel.html" />
+    <link rel="prev" title="environment Package" href="explauto.environment.html" /> 
+  </head>
+  <body role="document">
+    <div class="navbar navbar-fixed-top " role="navigation" aria-label="top navigation">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <div role="banner">
+            <a class="brand" href="index.html">explauto 0.2.0 documentation</a>
+          </div>
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              
+                <li>
+                <a href="genindex.html" title="General Index" accesskey="I">index</a>
+                </li>
+                <li>
+                <a href="py-modindex.html" title="Python Module Index" >modules</a>
+                </li>
+                <li>
+                <a href="explauto.interestmodel.html" title="interest_model Package" accesskey="N">next</a>
+                </li>
+                <li>
+                <a href="explauto.environment.html" title="environment Package" accesskey="P">previous</a>
+                </li>
+                <li>
+                <a href="api.html" accesskey="U">Explauto&#8217;s API</a>
+                </li>
+              
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+    <!-- container -->
+    <div class="container-fluid">
+
+
+      
+      <div class="row-fluid hidden-desktop hidden-tablet">
+      
+<div class="span3 ">
+  <a class="visible-phone btn btn-small show-sidebar" data-toggle="collapse" data-target=".for-mobile">Open Table Of Contents</a>
+  <div class="for-mobile sidebar hidden-phone" role="navigation" aria-label="main navigation">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="explauto.environment.html"
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">environment</span></tt> Package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="explauto.interestmodel.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">interest_model</span></tt> Package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/explauto.experiment.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" role="search">
+  <h3>Quick search</h3>
+  <form class="search form-search" action="search.html" method="get">
+      <div class="input-append">
+        <input type="text" class="search-query" name="q">
+        <input type="submit" class="btn" value="Go" />
+      </div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+  </div>
+</div>
+      </div>
+      
+
+      <!-- row -->
+      <div class="row-fluid">
+         
+<div class="span3 visible-desktop visible-tablet">
+  <div class=" sidebar hidden-phone" role="navigation" aria-label="main navigation">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="explauto.environment.html"
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">environment</span></tt> Package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="explauto.interestmodel.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">interest_model</span></tt> Package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/explauto.experiment.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" role="search">
+  <h3>Quick search</h3>
+  <form class="search form-search" action="search.html" method="get">
+      <div class="input-append">
+        <input type="text" class="search-query" name="q">
+        <input type="submit" class="btn" value="Go" />
+      </div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+  </div>
+</div> 
+        
+
+        <div class="span9">
+          <div class="document" role="main">
+            <div class="documentwrapper">
+              <div class="bodywrapper">
+                <div class="body">
+                  
+  <div class="section" id="module-explauto.experiment.experiment">
+<span id="experiment-package"></span><h1><tt class="xref py py-mod docutils literal"><span class="pre">experiment</span></tt> Package<a class="headerlink" href="#module-explauto.experiment.experiment" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="explauto.experiment.experiment.Experiment">
+<em class="property">class </em><tt class="descclassname">explauto.experiment.experiment.</tt><tt class="descname">Experiment</tt><big>(</big><em>environment</em>, <em>agent</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/experiment.html#Experiment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.experiment.Experiment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">explauto.utils.observer.Observer</span></tt></p>
+<p>This class is used to setup, run and plot the results of an experiment.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>environment</strong> (<a class="reference internal" href="explauto.environment.html#explauto.environment.environment.Environment" title="explauto.environment.environment.Environment"><tt class="xref py py-class docutils literal"><span class="pre">Environment</span></tt></a>) &#8211; set a handler that will receive the different errors</li>
+<li><strong>agent</strong> (<a class="reference internal" href="explauto.environment.html#explauto.environment.environment.Environment" title="explauto.environment.environment.Environment"><tt class="xref py py-class docutils literal"><span class="pre">Environment</span></tt></a>) &#8211; set a handler that will receive the different errors</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="explauto.experiment.experiment.Experiment.bootstrap">
+<tt class="descname">bootstrap</tt><big>(</big><em>n</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/experiment.html#Experiment.bootstrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.experiment.Experiment.bootstrap" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.experiment.experiment.Experiment.run">
+<tt class="descname">run</tt><big>(</big><em>n_iter=-1</em>, <em>bg=False</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/experiment.html#Experiment.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.experiment.Experiment.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.experiment.experiment.Experiment.wait">
+<tt class="descname">wait</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/explauto/experiment/experiment.html#Experiment.wait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.experiment.Experiment.wait" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.experiment.experiment.Experiment.stop">
+<tt class="descname">stop</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/explauto/experiment/experiment.html#Experiment.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.experiment.Experiment.stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.experiment.experiment.Experiment.update_logs">
+<tt class="descname">update_logs</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/explauto/experiment/experiment.html#Experiment.update_logs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.experiment.Experiment.update_logs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="explauto.experiment.experiment.Experiment.logs">
+<tt class="descname">logs</tt><a class="reference internal" href="_modules/explauto/experiment/experiment.html#Experiment.logs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.experiment.Experiment.logs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.experiment.experiment.Experiment.pack">
+<tt class="descname">pack</tt><big>(</big><em>topic_dims</em>, <em>t</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/experiment.html#Experiment.pack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.experiment.Experiment.pack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Packs selected logs into a numpy array
+:param list topic_dims: list of (topic, dims) tuples, where topic is a string and dims a list dimensions to be plotted for each topic
+:param int t: time indexes to be plotted</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="explauto.experiment.experiment.Experiment.evaluate_at">
+<tt class="descname">evaluate_at</tt><big>(</big><em>eval_at</em>, <em>evaluation=None</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/experiment.html#Experiment.evaluate_at"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.experiment.Experiment.evaluate_at" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.experiment.experiment.Experiment.scatter_plot">
+<tt class="descname">scatter_plot</tt><big>(</big><em>ax</em>, <em>topic_dims</em>, <em>t=None</em>, <em>**kwargs_plot</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/experiment.html#Experiment.scatter_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.experiment.Experiment.scatter_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>2D or 3D scatter plot
+:param dict topic_dims: dictionary of the form {topic : dims, ...}, where topic is a string and dims is a list of dimensions to be plotted for that topic.
+:param int t: time indexes to be plotted
+:param axes ax: matplotlib axes (use Axes3D if 3D data)
+:param dict kwargs_plot: argument to be passed to matplotlib&#8217;s plot function, e.g. the style of the plotted points &#8216;or&#8217;</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="explauto.experiment.experiment.Experiment.plot_learning_curve">
+<tt class="descname">plot_learning_curve</tt><big>(</big><em>ax</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/experiment.html#Experiment.plot_learning_curve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.experiment.Experiment.plot_learning_curve" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="explauto.experiment.experiment.Experiment.from_settings">
+<em class="property">classmethod </em><tt class="descname">from_settings</tt><big>(</big><em>environment</em>, <em>babbling</em>, <em>interest_model</em>, <em>sensorimotor_model</em>, <em>environment_config='default'</em>, <em>interest_model_config='default'</em>, <em>sensorimotor_model_config='default'</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/experiment.html#Experiment.from_settings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.experiment.Experiment.from_settings" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        
+      </div><!-- /row -->
+
+      <!-- row -->
+      <div class="row-fluid">
+<div class="related navbar " role="navigation" aria-label="related navigation">
+  <div class="navbar-inner">
+    <ul class="nav pull-right">
+      
+        <li><a href="genindex.html" title="General Index" >index</a></li>
+        <li><a href="py-modindex.html" title="Python Module Index" >modules</a></li>
+        <li><a href="explauto.interestmodel.html" title="interest_model Package" >next</a></li>
+        <li><a href="explauto.environment.html" title="environment Package" >previous</a></li>
+        <li><a href="index.html">explauto 0.2.0 documentation</a></li>
+        <li><a href="api.html" >Explauto&#8217;s API</a></li> 
+      
+    </ul>
+  </div>
+</div>
+      </div><!-- /row -->
+
+      <!-- footer -->
+      <footer role="contentinfo">
+          &copy; Copyright 2014, Clement Moulin-Frier, Pierre Rouanet.
+        Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.
+      </footer>
+      <!-- /footer -->
+
+    </div>
+    <!-- /container -->
+
+  </body>
+</html>
