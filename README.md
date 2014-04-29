@@ -1,37 +1,49 @@
-# Explauto: A library to study, model and simulated autonomous exploration in virtual and robotics agents #
+# Explauto: A library to study, model, and simulate autonomous exploration in virtual and robotic agents #
 
-Explauto is a framework developed in the [inria FLOWERS](https://flowers.inria.fr/) team to provide a common interface for the implementation of active sensorimotor learning algorithm.
+Explauto is a framework developed in the [Inria FLOWERS](https://flowers.inria.fr/) research team which provide a common interface for the implementation of active sensorimotor learning algorithm.
 
-Explauto allows the standardized but flexible implementation of:
+Explauto provides a high-level API for an easy definition of:
 
-* Sensorimotor active learning models (cognitive level)
-* Agent motor and sensory primitives (agent level)
-* Virtual and robotics setups (environment level)
+* Virtual and robotics setups (Environment level)
+* Sensorimotor learning iterative models (Sensorimotor level)
+* Active choice of sensorimotor experiments (Interest level)
 
-All interfaces are written in Python to allow for fast development, easy deployment and quick scripting by non-necessary expert developers. Python is highly interoperable with other programming language such as C++, Matlab, etc ... and a number of tutorial explaing how to bind the library with third-party softwares using othe programming languages are provided.
-
-It is crossed-platform and has been tested on Linux, Windows and Mac OS.
-
-Do not hesitate to contact us if you want to get involved!
-
-## Scientific grounding ##
-Explauto's scientific roots trace back from Intelligent Adaptive Curiosity algorithmic architecture (REF Kaplan Oudeyer (lien vers hal)), which has been extended to a more general family of autonomous exploration architecture by (REF Baranes) and recently expressed as a compact and unified formalism (REF Moulin-Frier Oudeyer). 
-
+It is crossed-platform and has been tested on Linux, Windows and Mac OS. Do not hesitate to contact us if you want to get involved!
 
 ## Documentation ##
 
-The full Explauto documentation on a html format can be found [here](https://bitbucket.org/ClementMF/Explauto/). It provides tutorials, examples and a complete API.
+### Scientific grounding ###
+
+
+Explauto's scientific roots trace back from Intelligent Adaptive Curiosity algorithmic architecture [[Oudeyer 07]](http://hal.inria.fr/hal-00793610/en), which has been extended to a more general family of autonomous exploration architecture by [[Baranes 13]](http://www.pyoudeyer.com/ActiveGoalExploration-RAS-2013.pdf) and recently expressed as a compact and unified formalism [[Moulin-Frier 13]](http://hal.inria.fr/hal-00860641). We strongly recommend to read this [short introduction](http://flowersteam.github.io/explauto/about.html) into developmental robotics before going through the tutorials.
+
+### Tutorials ###
+
+* [Setting a basic experiment](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/01%20Running%20a%20basic%20experiment..ipynb?create=1)
+*
+*
+
+### API ###
+
+The Explauto documentation on a html format can be found [here](http://flowersteam.github.io/explauto/).
+
 
 ## Installation ##
 
-Before you start building PyPot, you need to make sure that the following packages are already installed on your computer:
+Explauto is available via pip. It can thus be installed with the classical:
 
-* [python](http://www.python.org) 2.7
+    pip install explauto
+    
+or:
+    
+    easy_install explauto
+
+The core of explauto depends of the following packages:
+
+* [python](http://www.python.org) 2.7 or 3.*
 * [numpy](http://www.numpy.org)
+* [scipy](http://www.scipy.org)
+* [scikit-learn](http://scikit-learn.org/)
+* [pandas](http://pandas.pydata.org)
 
-Once it is done, you can build and install PyPot with the classical:
-
-    cd Explauto
-    python setup.py install
-
-For more details on the installation procedure, please refer to the [installation section](https://bitbucket.org/ClementMF/Explauto/intro.html#installation) of the documentation.
+For more details, please refer to the [installation section](http://flowersteam.github.io/explauto/installation.html) of the documentation.
