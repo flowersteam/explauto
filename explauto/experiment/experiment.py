@@ -84,7 +84,7 @@ class Experiment(Observer):
 
     def _run(self, n_iter):
         for t in range(n_iter):
-            if t in self.eval_at:
+            if t in self.eval_at and self.evaluation is not None:
                 self.eval_errors.append(self.evaluation.evaluate())
 
             # To clear messages received from the evaluation
