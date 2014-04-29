@@ -20,6 +20,7 @@ setup(name='explauto',
           'diva': ['pymatlab'],
           'pypot': ['pypot'],
           'imle': [],
+          'doc': ['sphinx', 'sphinx-bootstrap-theme'],
       },
 
       setup_requires=['setuptools_git >= 0.3', ],

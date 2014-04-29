@@ -20,11 +20,20 @@ logger = logging.getLogger(__name__)
 
 
 class Experiment(Observer):
-    def __init__(self, env, ag, evaluate_at=[]):
+    def __init__(self, environment, agent):
+        """ This class is used to setup, run and plot the results of an experiment.
+
+            :param environment: set a handler that will receive the different errors
+            :type environment: :py:class:`~explauto.environment.environment.Environment`
+
+            :param agent: set a handler that will receive the different errors
+            :type agent: :py:class:`~explauto.environment.environment.Environment`
+
+            """
         Observer.__init__(self)
 
-        self.env = env
-        self.ag = ag
+        self.env = environment
+        self.ag = agent
         # env.inds_in = inds_in
         # env.inds_out = inds_out
         # self.records = zeros((n_records, env.state.shape[0]))
@@ -76,7 +85,7 @@ class Experiment(Observer):
 
     def _run(self, n_iter):
         for t in range(n_iter):
-            if t in self.eval_at:
+            if t in self.eval_at and self.evaluation is not None:
                 self.eval_errors.append(self.evaluation.evaluate())
 
             # To clear messages received from the evaluation
