@@ -16,5 +16,4 @@ class RandomInterest(InterestModel):
         pass
 
 
-interest_model = RandomInterest
-configurations = {'default': {}}
+interest_models = {'random': (RandomInterest, {'default': {}})}

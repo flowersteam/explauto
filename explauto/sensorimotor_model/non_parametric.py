@@ -32,10 +32,14 @@ class NonParametric(SensorimotorModel):
         self.model.add_xy(tuple(m), tuple(s))
 
 
-sensorimotor_model = NonParametric
 configurations = {'LWLR-BFGS': {'fwd': 'LWLR', 'inv': 'L-BFGS-B'},
                   'ES-LWLR-BFGS': {'fwd': 'ES-LWLR', 'inv': 'L-BFGS-B'},
                   'ES-WNN': {'fwd': 'ES-WNN', 'inv': 'ES-WNN'},
                   'ES-WNN-BFGS': {'fwd': 'ES-WNN', 'inv': 'L-BFGS-B'}
                   }
 configurations['default'] = configurations['LWLR-BFGS']
+
+sensorimotor_models = {
+    'non_parametric': (NonParametric, configurations),
+    'knn': (NonParametric, {'default': {'fwd': 'ES-WNN', 'inv': 'ES-WNN'}}),
+}

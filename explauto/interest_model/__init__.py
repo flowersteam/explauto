@@ -3,10 +3,10 @@ import importlib
 
 interest_models = {}
 
-for mod_name in ['random', 'learning_progress']:
+for mod_name in ['random', 'gmm_progress']:
     module = importlib.import_module('explauto.interest_model.{}'.format(mod_name))
 
-    im = getattr(module, 'interest_model')
-    conf = getattr(module, 'configurations')
+    models = getattr(module, 'interest_models')
 
-    interest_models[mod_name] = (im, conf)
+    for name, (im, conf) in models.iteritems():
+        interest_models[name] = (im, conf)
