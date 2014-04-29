@@ -9,4 +9,4 @@ for mod_name in ['non_parametric', ]:
     models = getattr(module, 'sensorimotor_models')
 
     for name, (sm, conf) in models.iteritems():
-        sensorimotor_models[mod_name] = (sm, conf)
+        sensorimotor_models[name] = (sm, conf)

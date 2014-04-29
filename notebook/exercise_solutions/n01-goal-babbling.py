@@ -10,3 +10,6 @@ goal_expe.evaluate_at([1, 10, 20, 30, 100, 200])
 goal_expe.bootstrap(5)
 
 goal_expe.run()
+
+ax = axes()
+data = goal_expe.scatter_plot(ax, (('sensori', [0, 1]), ), color='green')
