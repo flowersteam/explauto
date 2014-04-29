@@ -1,5 +1,5 @@
 from ..third_party.models.models.testbed import Testbed
-from ..adaptors import Learner, Robot
+from ..third_party.models_adaptors import Learner, Robot
 
 
 class Evaluation(object):
@@ -15,8 +15,8 @@ class Evaluation(object):
         elif self.mode == 'inverse':
             self.tester.uniform_sensor(n_samples)
         else:
-            print 'mode should be "forward" or "inverse" (general prediction coming soon)'
-            raise ValueError
+            raise ValueError('mode should be "forward" or "inverse"'
+                             '(general prediction coming soon)')
 
     def evaluate(self):
         mode = self.ag.sensorimotor_model.mode

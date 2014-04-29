@@ -39,26 +39,3 @@ def rk4(x, h, y, f):
     k3 = h * f(x + 0.5*h, y + 0.5*k2)
     k4 = h * f(x + h, y + k3)
     return x + h, y + (k1 + 2*(k2 + k3) + k4)/6.0
-
-
-# class IncrementalVariance(object):
-#     def __init__(self):
-#         self.new_old_ratio = 0.1
-#         pass
-#     def update(self, x):
-
-# def weighted_incremental_variance(dataWeightPairs):
-#     sumweight = 0
-#     mean = 0
-#     M2 = 0
-#
-#     for x, weight in dataWeightPairs:  # Alternatively "for x, weight in zip(data, weights):"
-#         temp = weight + sumweight
-#         delta = x - mean
-#         R = delta * weight / temp
-#         mean = mean + R
-#         M2 = M2 + sumweight * delta * R  # Alternatively M2 = M2 + weight * delta * (x-mean)
-#         sumweight = temp
-#
-#     variance_n = M2/sumweight
-#     variance = variance_n * len(dataWeightPairs)/(len(dataWeightPairs) - 1)

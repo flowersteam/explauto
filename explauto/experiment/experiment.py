@@ -131,7 +131,7 @@ class Experiment(Observer):
                 data.append(self.logs[topic][t, d])
         return array(data).T
 
-    def evaluate_at(self, eval_at, evaluation = None):
+    def evaluate_at(self, eval_at, evaluation=None):
         self.eval_at = eval_at
         if evaluation is None:
             self.evaluation = Evaluation(self.ag, self.env)
@@ -165,7 +165,7 @@ class Experiment(Observer):
         std_err = std(array(self.eval_errors), axis=1)
         ax.errorbar(self.eval_at, avg_err, yerr=std_err)
 
-    # def density_plot(self, topic_dims, t=None, 
+    # def density_plot(self, topic_dims, t=None,
 
     @classmethod
     def from_settings(cls, environment, babbling, interest_model, sensorimotor_model,

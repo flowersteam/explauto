@@ -6,7 +6,7 @@ import simple_lip
 
 from .. import Environment
 from ...utils.utils import bounds_min_max
-from ...agent.motor_primitive import BasisFunctions
+from ...models.motor_primitive import BasisFunctions
 
 
 class PendulumEnvironment(Environment):

@@ -19,17 +19,3 @@ class Configuration(object):
         self.m_bounds = vstack((self.m_mins, self.m_maxs))
         self.s_bounds = vstack((self.s_mins, self.s_maxs))
         self.bounds = hstack((self.m_bounds, self.s_bounds))
-
-    # def __getattr__(self, attr):
-    #     return self[attr]
-    #
-    # def __setattr__(self, name, value):
-    #     self[name] = value
-    #
-    # def __setitem__(self, name, value):
-    #     """ "normalize" expl_dims and inf_dims in range(-s_ndims, m_ndims) """
-    #     if name == "expl_dims" or name == "inf_dims":
-    #         value = array(value)
-    #         value[value >= self.m_ndims] -= self.ndims
-    #         value = list(value)
-    #     super(Configuration, self).__setitem__(name, value)

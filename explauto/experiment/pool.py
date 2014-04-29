@@ -1,13 +1,13 @@
 import itertools
 
 from .experiment import Experiment
-from copy import deepcopy
+# from copy import deepcopy
 
 
 class ExperimentPool(object):
     def __init__(self, environments, babblings, interest_models, sensorimotor_models):
         configurations = itertools.product(environments, babblings,
-                                                interest_models, sensorimotor_models)
+                                           interest_models, sensorimotor_models)
         # print list(deepcopy(configurations))
         # print list(deepcopy(configurations))
         # self.pool = list(deepcopy(configurations))

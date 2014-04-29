@@ -1,6 +1,6 @@
 from numpy import linspace, array, arange, tile, dot, zeros
 
-from ..models.gaussian import Gaussian
+from .gaussian import Gaussian
 from ..utils import rk4
 
 
