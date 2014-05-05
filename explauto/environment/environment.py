@@ -2,7 +2,7 @@ from numpy import zeros
 
 from abc import ABCMeta, abstractmethod
 
-from ..utils.config import Configuration
+from ..utils.config import make_configuration
 from ..utils.observer import Observable
 
 
@@ -16,7 +16,7 @@ class Environment(Observable):
     def __init__(self, m_mins, m_maxs, s_mins, s_maxs):
         Observable.__init__(self)
 
-        self.conf = Configuration(m_mins, m_maxs, s_mins, s_maxs)
+        self.conf = make_configuration(m_mins, m_maxs, s_mins, s_maxs)
         self.state = zeros(self.conf.ndims)
 
     def update(self, ag_state):

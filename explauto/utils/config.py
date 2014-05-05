@@ -1,21 +1,27 @@
 from numpy import hstack, vstack
+from collections import namedtuple
 
 
-class Configuration(object):
-    def __init__(self, m_mins, m_maxs, s_mins, s_maxs):
-        self.m_mins = m_mins
-        self.m_maxs = m_maxs
-        self.s_mins = s_mins
-        self.s_maxs = s_maxs
+Configuration = namedtuple('Configuration', ('m_mins', 'm_maxs', 's_mins', 's_maxs',
+                                             'm_ndims', 's_ndims', 'ndims',
+                                             'm_dims', 's_dims', 'dims',
+                                             'm_bounds', 's_bounds', 'bounds'))
 
-        self.m_ndims = len(self.m_mins)
-        self.s_ndims = len(self.s_mins)
-        self.ndims = self.m_ndims + self.s_ndims
 
-        self.m_dims = range(self.m_ndims)
-        self.s_dims = range(self.m_ndims, self.ndims)
-        self.dims = self.m_dims + self.s_dims
+def make_configuration(m_mins, m_maxs, s_mins, s_maxs):
+    m_ndims = len(m_mins)
+    s_ndims = len(s_mins)
+    ndims = m_ndims + s_ndims
 
-        self.m_bounds = vstack((self.m_mins, self.m_maxs))
-        self.s_bounds = vstack((self.s_mins, self.s_maxs))
-        self.bounds = hstack((self.m_bounds, self.s_bounds))
+    m_dims = range(m_ndims)
+    s_dims = range(m_ndims, ndims)
+    dims = m_dims + s_dims
+
+    m_bounds = vstack((m_mins, m_maxs))
+    s_bounds = vstack((s_mins, s_maxs))
+    bounds = hstack((m_bounds, s_bounds))
+
+    return Configuration(m_mins, m_maxs, s_mins, s_maxs,
+                         m_ndims, s_ndims, ndims,
+                         m_dims, s_dims, dims,
+                         m_bounds, s_bounds, bounds)
