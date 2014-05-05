@@ -6,7 +6,6 @@ from ..utils.observer import Observer
 from ..evaluation import Evaluation
 from ..utils import rand_bounds
 
-# from ..utils import density_image
 from ..agent import Agent
 from .log import ExperimentLog
 from ..environment import environments
@@ -85,8 +84,9 @@ class Experiment(Observer):
             if t in self.eval_at and self.evaluation is not None:
                 self.logs._eval_errors.append(self.evaluation.evaluate())
 
-            # To clear messages received from the evaluation
+            # Clear messages received from the evaluation
             self.notifications.queue.clear()
+
             m = self.ag.produce()
             try:
                 self.env.update(m)
@@ -94,7 +94,8 @@ class Experiment(Observer):
             except ExplautoEnvironmentUpdateError:
                 logger.warning('Environment update error at time %d with '
                                'motor command %s. '
-                               'This iteration wont be used to update agent models', t, m)
+                               'This iteration wont be used to update agent models',
+                               t, m)
 
             # self.records[self.i_rec, :] = self.env.state
             # self.i_rec += 1
