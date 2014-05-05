@@ -1,5 +1,7 @@
 from numpy import zeros
 
+from abc import ABCMeta, abstractmethod
+
 from ..utils.config import Configuration
 from ..utils.observer import Observable
 
@@ -7,7 +9,10 @@ from ..utils.observer import Observable
 class Environment(Observable):
     """ Abstract class to define environments.
         :param array m_mins, m_maxs, s_mins, s_maxs: bounds of the motor (m) and sensory (s) spaces
+
     """
+    __metaclass__ = ABCMeta
+
     def __init__(self, m_mins, m_maxs, s_mins, s_maxs):
         Observable.__init__(self)
 
@@ -24,11 +29,13 @@ class Environment(Observable):
         self.emit('motor', m)
         self.emit('sensori', s)
 
+    @abstractmethod
     def compute_motor_command(self, ag_state):
-        raise NotImplementedError
+        pass
 
+    @abstractmethod
     def compute_sensori_effect(self):
-        raise NotImplementedError
+        pass
 
     # def post_processing(self):
     #     self.state = minimum(self.state, self.bounds[:,1])
