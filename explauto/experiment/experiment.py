@@ -1,16 +1,13 @@
 import logging
 import threading
 
-from numpy import array, mean, std
-from collections import defaultdict
-
 from .. import ExplautoEnvironmentUpdateError
 from ..utils.observer import Observer
 from ..evaluation import Evaluation
 from ..utils import rand_bounds
 
-# from ..utils import density_image
 from ..agent import Agent
+from .log import ExperimentLog
 from ..environment import environments
 from ..interest_model import interest_models
 from ..sensorimotor_model import sensorimotor_models
@@ -40,8 +37,7 @@ class Experiment(Observer):
         # self.i_rec = 0
         self.eval_at = []
 
-        self._logs = defaultdict(list)
-        self.counts = defaultdict(int)
+        self.logs = ExperimentLog()
 
         self.ag.subscribe('choice', self)
         self.ag.subscribe('inference', self)
@@ -86,10 +82,11 @@ class Experiment(Observer):
     def _run(self, n_iter):
         for t in range(n_iter):
             if t in self.eval_at and self.evaluation is not None:
-                self.eval_errors.append(self.evaluation.evaluate())
+                self.logs._eval_errors.append(self.evaluation.evaluate())
 
-            # To clear messages received from the evaluation
+            # Clear messages received from the evaluation
             self.notifications.queue.clear()
+
             m = self.ag.produce()
             try:
                 self.env.update(m)
@@ -97,7 +94,8 @@ class Experiment(Observer):
             except ExplautoEnvironmentUpdateError:
                 logger.warning('Environment update error at time %d with '
                                'motor command %s. '
-                               'This iteration wont be used to update agent models', t, m)
+                               'This iteration wont be used to update agent models',
+                               t, m)
 
             # self.records[self.i_rec, :] = self.env.state
             # self.i_rec += 1
@@ -112,60 +110,19 @@ class Experiment(Observer):
     def update_logs(self):
         while not self.notifications.empty():
             topic, msg = self.notifications.get()
-            self._logs[topic].append(msg)
-            self.counts[topic] += 1
+            self.logs.add(topic, msg)
 
-    @property
-    def logs(self):
-        return {key: array(val) for key, val in self._logs.iteritems()}
-
-    def pack(self, topic_dims, t):
-        """ Packs selected logs into a numpy array
-            :param list topic_dims: list of (topic, dims) tuples, where topic is a string and dims a list dimensions to be plotted for each topic
-            :param int t: time indexes to be plotted
-        """
-
-        data = []
-        for topic, dims in topic_dims:
-            for d in dims:
-                data.append(self.logs[topic][t, d])
-        return array(data).T
-
-    def evaluate_at(self, eval_at, evaluation=None):
+    def evaluate_at(self, eval_at, testcases=None, evaluation=None):
         self.eval_at = eval_at
+        self.logs._eval_at = eval_at
+
         if evaluation is None:
             self.evaluation = Evaluation(self.ag, self.env)
         else:
             self.evaluation = evaluation
-        self.eval_errors = []
 
-    def scatter_plot(self, ax, topic_dims, t=None, **kwargs_plot):
-        """ 2D or 3D scatter plot
-            :param dict topic_dims: dictionary of the form {topic : dims, ...}, where topic is a string and dims is a list of dimensions to be plotted for that topic.
-            :param int t: time indexes to be plotted
-            :param axes ax: matplotlib axes (use Axes3D if 3D data)
-            :param dict kwargs_plot: argument to be passed to matplotlib's plot function, e.g. the style of the plotted points 'or'
-        """
-        plot_specs = {'marker': 'o', 'linestyle': 'None'}
-        plot_specs.update(kwargs_plot)
-        t_bound = float('inf')
-        if t is None:
-            for topic, _ in topic_dims:
-                t_bound = min(t_bound, self.counts[topic])
-            t = range(t_bound)
-        data = self.pack(topic_dims, t)
-        # ax.plot(data[:, 0], data[:, 1], style)
-        ax.plot(*(data.T), **plot_specs)
-
-    def plot_learning_curve(self, ax):
-        if not self.evaluate_at:
-            print 'no evaluation available, you need to specify the evaluate_at argument when constructing the experiment'
-            return
-        avg_err = mean(array(self.eval_errors), axis=1)
-        std_err = std(array(self.eval_errors), axis=1)
-        ax.errorbar(self.eval_at, avg_err, yerr=std_err)
-
-    # def density_plot(self, topic_dims, t=None,
+        if testcases:
+            self.evaluation.tester.testcases = testcases
 
     @classmethod
     def from_settings(cls, environment, babbling, interest_model, sensorimotor_model,

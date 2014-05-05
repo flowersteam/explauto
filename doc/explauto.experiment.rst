@@ -5,3 +5,8 @@
     :members:
     :undoc-members:
     :show-inheritance:
+
+.. automodule:: explauto.experiment.pool
+    :members:
+    :undoc-members:
+    :show-inheritance:
