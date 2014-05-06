@@ -37,7 +37,7 @@ class Experiment(Observer):
         # self.i_rec = 0
         self.eval_at = []
 
-        self.logs = ExperimentLog()
+        self.log = ExperimentLog(self.env.conf)
 
         self.ag.subscribe('choice', self)
         self.ag.subscribe('inference', self)
@@ -45,18 +45,6 @@ class Experiment(Observer):
         self.env.subscribe('sensori', self)
 
         self._running = threading.Event()
-
-    def bootstrap(self, n):
-        while n > 0:
-            m = rand_bounds(self.ag.conf.m_bounds)[0]
-
-            try:
-                self.env.update(m)
-                self.ag.perceive(self.env.state)
-                n -= 1
-
-            except ExplautoEnvironmentUpdateError:
-                pass
 
     def run(self, n_iter=-1, bg=False):
         if n_iter == -1:
@@ -82,7 +70,7 @@ class Experiment(Observer):
     def _run(self, n_iter):
         for t in range(n_iter):
             if t in self.eval_at and self.evaluation is not None:
-                self.logs.eval_errors.append(self.evaluation.evaluate())
+                self.log.eval_errors.append(self.evaluation.evaluate())
 
             # Clear messages received from the evaluation
             self.notifications.queue.clear()
@@ -110,11 +98,11 @@ class Experiment(Observer):
     def update_logs(self):
         while not self.notifications.empty():
             topic, msg = self.notifications.get()
-            self.logs.add(topic, msg)
+            self.log.add(topic, msg)
 
     def evaluate_at(self, eval_at, testcases=None, evaluation=None):
         self.eval_at = eval_at
-        self.logs.eval_at = eval_at
+        self.log.eval_at = eval_at
 
         if evaluation is None:
             self.evaluation = Evaluation(self.ag, self.env)

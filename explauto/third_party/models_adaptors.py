@@ -29,8 +29,7 @@ class Learner(object):
         self.ag.sensorimotor_model.update(x, y)
 
     def infer_order(self, goal, **kwargs):
-        return self.ag.sensorimotor_model.infer(self.ag.conf.s_dims, self.ag.conf.m_dims, array(goal))
+        return self.ag.infer(self.ag.conf.s_dims, self.ag.conf.m_dims, array(goal))
 
     def predict_effect(self, order, **kwargs):
-        return self.ag.sensorimotor_model.infer(self.ag.conf.m_dims, self.ag.conf.s_dims, array(order))
-
+        return self.ag.infer(self.ag.conf.m_dims, self.ag.conf.s_dims, array(order))

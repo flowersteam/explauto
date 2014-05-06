@@ -16,7 +16,6 @@ def _f(args):
 
     xp = Experiment.from_settings(settings)
     xp.evaluate_at(evaluate_indices, testcases)
-    xp.bootstrap(5)
     xp.run()
 
     return xp.logs

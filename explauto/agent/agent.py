@@ -1,8 +1,13 @@
+import logging
 import numpy as np
 
 
 from ..utils.config import make_configuration
 from ..utils.observer import Observable
+from ..utils import rand_bounds
+from .. import ExplautoBootstrapError
+
+logger = logging.getLogger(__name__)
 
 
 class Agent(Observable):
@@ -31,23 +36,8 @@ class Agent(Observable):
                                            **im_model_config)
 
         # self.competence = competence
-        self.to_bootstrap = True
         self.t = 0
         self.state = np.zeros(self.conf.ndims)
-
-    # def bootstrap(self):
-    #     self.ms[self.m_dims] =np.zeros(len(self.m_dims))
-    #     #self.ms[self.s_dims] = self.interest_model.bounds[0,:].reshape(-1,1)
-    #     self.x =np.array(self.interest_model.bounds[0,:].reshape(-1,1))
-    #     self.to_bootstrap = False
-    #     return self.ms[self.m_dims].T
-    #
-    #     m, s = self.env.execute(np.zeros((len(self.m_dims), 1)))
-    #     self.ms = np.vstack((m, s))
-    #     self.sensorimotor_model.update(m, s)
-    #     self.interest_model.update(self.ms[i_dims,:],
-    #                         self.competence(self.interest_model.bounds[0,:].reshape(-1,1),
-    #                         self.interest_model.bounds[1,:].reshape(-1,1)))
 
     def next_state(self, env_state):
         if self.t > 0:
@@ -61,14 +51,24 @@ class Agent(Observable):
     def pre_perception(self):
         pass
 
+    def infer(self, expl_dims, inf_dims, x):
+        try:
+            y = self.sensorimotor_model.infer(expl_dims,
+                                                   inf_dims,
+                                                   x.flatten())
+        except ExplautoBootstrapError:
+            logger.warning('Sensorimotor model not bootstrapped yet')
+            y = rand_bounds(self.conf.bounds[:, inf_dims])
+        return y
+
     def produce(self):
         # if self.to_bootstrap:
         #     return self.bootstrap()
 
         self.x = self.interest_model.sample()
-        self.emit('choice', self.x.flatten())
+        self.y = self.infer(self.expl_dims, self.inf_dims, self.x)
 
-        self.y = self.sensorimotor_model.infer(self.expl_dims, self.inf_dims, self.x.flatten())
+        self.emit('choice', self.x.flatten())
         self.emit('inference', self.y)
 
         self.ms[self.expl_dims] = self.x

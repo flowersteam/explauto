@@ -3,10 +3,11 @@ from numpy import array, mean, std
 
 
 class ExperimentLog(object):
-    def __init__(self):
+    def __init__(self, conf):
         self._logs = defaultdict(list)
         self.counts = defaultdict(int)
         self.eval_errors = []
+        self.conf = conf
 
     @property
     def logs(self):
@@ -18,7 +19,7 @@ class ExperimentLog(object):
 
     def pack(self, topic_dims, t):
         """ Packs selected logs into a numpy array
-            :param list topic_dims: list of (topic, dims) tuples, where topic is a string and dims a list dimensions to be plotted for each topic
+            :param list topic_dims: list of (topic, dims) tuples, where topic is a string and dims a list dimensions to be plotted for that topic
             :param int t: time indexes to be plotted
         """
 
@@ -30,7 +31,7 @@ class ExperimentLog(object):
 
     def scatter_plot(self, ax, topic_dims, t=None, **kwargs_plot):
         """ 2D or 3D scatter plot
-            :param dict topic_dims: dictionary of the form {topic : dims, ...}, where topic is a string and dims is a list of dimensions to be plotted for that topic.
+            :param tuple topic_dims: list of (topic, dims) tuples, where topic is a string and dims is a list of dimensions to be plotted for that topic.
             :param int t: time indexes to be plotted
             :param axes ax: matplotlib axes (use Axes3D if 3D data)
             :param dict kwargs_plot: argument to be passed to matplotlib's plot function, e.g. the style of the plotted points 'or'
@@ -47,6 +48,7 @@ class ExperimentLog(object):
         data = self.pack(topic_dims, t)
         # ax.plot(data[:, 0], data[:, 1], style)
         ax.plot(*(data.T), **plot_specs)
+        # ax.axis([s
 
     def plot_learning_curve(self, ax):
         if not hasattr(self, 'eval_at'):

@@ -5,5 +5,13 @@ from ._version import __version__
 logging.getLogger(__name__).addHandler(logging.NullHandler())
 
 
-class ExplautoEnvironmentUpdateError(Exception):
+class ExplautoError(Exception):
+    pass
+
+
+class ExplautoEnvironmentUpdateError(ExplautoError):
+    pass
+
+
+class ExplautoBootstrapError(ExplautoError):
     pass
