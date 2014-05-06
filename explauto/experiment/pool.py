@@ -1,9 +1,9 @@
 import itertools
 
 from multiprocessing import Pool
+from numpy import array, hstack
 from numpy.random import seed
 from copy import deepcopy
-from numpy import array
 
 from . import Settings
 from .experiment import Experiment
@@ -18,7 +18,7 @@ def _f(args):
     xp.evaluate_at(evaluate_indices, testcases)
     xp.run()
 
-    return xp.logs
+    return xp.log
 
 
 class ExperimentPool(object):
@@ -77,14 +77,11 @@ class ExperimentPool(object):
         mega_config = [c for c in self._config for _ in range(repeat)]
 
         logs = Pool(processes).map(_f, mega_config)
-        # logs = map(_f, mega_config)
+        logs = array(logs).reshape(-1, repeat)
 
-        if repeat > 1:
-            logs = array(logs).reshape(-1, repeat).tolist()
+        self._add_logs(logs)
 
-        self._logs = logs
-
-        return self.logs
+        return logs
 
     @property
     def settings(self):
@@ -96,4 +93,12 @@ class ExperimentPool(object):
         if not hasattr(self, '_logs'):
             raise ValueError('You have to run the pool of experiments first!')
 
-        return deepcopy(self._logs)
+        logs = self._logs.reshape(-1) if self._logs.shape[1] == 1 else self._logs
+        return deepcopy(logs)
+
+    def _add_logs(self, logs):
+        if not hasattr(self, '_logs'):
+            self._logs = logs
+
+        else:
+            self._logs = hstack((self._logs, logs))
