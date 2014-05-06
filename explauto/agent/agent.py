@@ -1,7 +1,7 @@
 import numpy as np
 
 
-from ..utils.config import Configuration
+from ..utils.config import make_configuration
 from ..utils.observer import Observable
 
 
@@ -19,7 +19,7 @@ class Agent(Observable):
         """
         Observable.__init__(self)
 
-        self.conf = Configuration(m_mins, m_maxs, s_mins, s_maxs)
+        self.conf = make_configuration(m_mins, m_maxs, s_mins, s_maxs)
 
         self.ms = np.zeros(self.conf.ndims)
         self.expl_dims = expl_dims
