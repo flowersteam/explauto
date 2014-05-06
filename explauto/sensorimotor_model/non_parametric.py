@@ -1,5 +1,6 @@
 from numpy import array
 
+from .. import ExplautoBootstrapError
 from .sensorimotor_model import SensorimotorModel
 from ..third_party.models.models.learner import Learner
 
@@ -18,8 +19,11 @@ class NonParametric(SensorimotorModel):
 
         self.model = Learner(mfeats, sfeats, mbounds, fwd, inv, **learner_kwargs)
         self.mode = ''  # in case mode = 'expore' or 'exploit' is asked at a higher level
+        self.t = 0
 
     def infer(self, in_dims, out_dims, x):
+        if self.t <= max(self.model.imodel.fmodel.k, self.model.imodel.k) + 1:
+            raise ExplautoBootstrapError
         if in_dims == self.m_dims and out_dims == self.s_dims:  # forward
             return array(self.model.predict_effect(tuple(x.flatten())))
         elif in_dims == self.s_dims and out_dims == self.m_dims:  # inverse
@@ -30,6 +34,7 @@ class NonParametric(SensorimotorModel):
 
     def update(self, m, s):
         self.model.add_xy(tuple(m), tuple(s))
+        self.t += 1
 
 
 configurations = {'LWLR-BFGS': {'fwd': 'LWLR', 'inv': 'L-BFGS-B'},

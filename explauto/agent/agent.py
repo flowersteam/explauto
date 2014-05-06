@@ -1,8 +1,13 @@
+import logging
 import numpy as np
 
 
 from ..utils.config import make_configuration
 from ..utils.observer import Observable
+from ..utils import rand_bounds
+from .. import ExplautoBootstrapError
+
+logger = logging.getLogger(__name__)
 
 
 class Agent(Observable):
@@ -61,14 +66,24 @@ class Agent(Observable):
     def pre_perception(self):
         pass
 
+    def infer(self, expl_dims, inf_dims, x):
+        try:
+            y = self.sensorimotor_model.infer(expl_dims,
+                                                   inf_dims,
+                                                   x.flatten())
+        except ExplautoBootstrapError:
+            logger.warning('Sensorimotor model not bootstrapped yet')
+            y = rand_bounds(self.conf.bounds[:, inf_dims])
+        return y
+
     def produce(self):
         # if self.to_bootstrap:
         #     return self.bootstrap()
 
         self.x = self.interest_model.sample()
-        self.emit('choice', self.x.flatten())
+        self.y = self.infer(self.expl_dims, self.inf_dims, self.x)
 
-        self.y = self.sensorimotor_model.infer(self.expl_dims, self.inf_dims, self.x.flatten())
+        self.emit('choice', self.x.flatten())
         self.emit('inference', self.y)
 
         self.ms[self.expl_dims] = self.x

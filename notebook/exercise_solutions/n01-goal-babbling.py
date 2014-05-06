@@ -12,4 +12,4 @@ goal_expe.bootstrap(5)
 goal_expe.run()
 
 ax = axes()
-data = goal_expe.scatter_plot(ax, (('sensori', [0, 1]), ), color='green')
+data = goal_expe.log.scatter_plot(ax, (('sensori', [0, 1]), ), color='green')
