@@ -36,23 +36,8 @@ class Agent(Observable):
                                            **im_model_config)
 
         # self.competence = competence
-        self.to_bootstrap = True
         self.t = 0
         self.state = np.zeros(self.conf.ndims)
-
-    # def bootstrap(self):
-    #     self.ms[self.m_dims] =np.zeros(len(self.m_dims))
-    #     #self.ms[self.s_dims] = self.interest_model.bounds[0,:].reshape(-1,1)
-    #     self.x =np.array(self.interest_model.bounds[0,:].reshape(-1,1))
-    #     self.to_bootstrap = False
-    #     return self.ms[self.m_dims].T
-    #
-    #     m, s = self.env.execute(np.zeros((len(self.m_dims), 1)))
-    #     self.ms = np.vstack((m, s))
-    #     self.sensorimotor_model.update(m, s)
-    #     self.interest_model.update(self.ms[i_dims,:],
-    #                         self.competence(self.interest_model.bounds[0,:].reshape(-1,1),
-    #                         self.interest_model.bounds[1,:].reshape(-1,1)))
 
     def next_state(self, env_state):
         if self.t > 0:

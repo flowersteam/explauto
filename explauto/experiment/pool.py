@@ -27,7 +27,6 @@ def _f(setting):
                                   setting.sensorimotor_model_config)
 
     xp.evaluate_at(setting.evaluate_indices, setting.testcases)
-    xp.bootstrap(5)
     xp.run()
 
     return xp.logs

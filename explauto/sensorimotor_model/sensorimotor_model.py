@@ -11,7 +11,3 @@ class SensorimotorModel(object):
     @abstractmethod
     def update(self, m, s):
         pass
-
-    def bootstrap(self, orders, stimuli):
-        for i, m in enumerate(orders):
-            self.update(m, stimuli[i, :])

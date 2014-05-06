@@ -48,7 +48,7 @@ class ExperimentLog(object):
         data = self.pack(topic_dims, t)
         # ax.plot(data[:, 0], data[:, 1], style)
         ax.plot(*(data.T), **plot_specs)
-        ax.axis([s
+        # ax.axis([s
 
     def plot_learning_curve(self, ax):
         if not hasattr(self, 'eval_at'):

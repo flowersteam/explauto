@@ -46,18 +46,6 @@ class Experiment(Observer):
 
         self._running = threading.Event()
 
-    def bootstrap(self, n):
-        while n > 0:
-            m = rand_bounds(self.ag.conf.m_bounds)[0]
-
-            try:
-                self.env.update(m)
-                self.ag.perceive(self.env.state)
-                n -= 1
-
-            except ExplautoEnvironmentUpdateError:
-                pass
-
     def run(self, n_iter=-1, bg=False):
         if n_iter == -1:
             if not self.eval_at:
