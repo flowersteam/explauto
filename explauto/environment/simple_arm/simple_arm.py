@@ -9,7 +9,7 @@ def forward(angles, lengths):
     :param list angles: angles of each joint
     :param list lengths: length of each segment
 
-    .. warn:: angles and lengths should be the same size.
+    .. warning:: angles and lengths should be the same size.
     """
 
     if len(angles) != len(lengths):

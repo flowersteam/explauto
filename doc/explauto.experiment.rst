@@ -10,3 +10,8 @@
     :members:
     :undoc-members:
     :show-inheritance:
+
+.. automodule:: explauto.experiment.log
+    :members:
+    :undoc-members:
+    :show-inheritance:

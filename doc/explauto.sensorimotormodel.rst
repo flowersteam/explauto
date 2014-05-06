@@ -5,3 +5,8 @@
     :members:
     :undoc-members:
     :show-inheritance:
+
+.. automodule:: explauto.sensorimotor_model.non_parametric
+    :members:
+    :undoc-members:
+    :show-inheritance:
