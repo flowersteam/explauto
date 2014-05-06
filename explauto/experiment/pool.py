@@ -1,18 +1,32 @@
 import itertools
 
+from collections import namedtuple
 from multiprocessing import Pool
+from numpy.random import seed
 from copy import deepcopy
 from numpy import array
 
 from explauto.experiment import Experiment
 
+Setting = namedtuple('Setting', ('environment', 'environment_config',
+                                 'babbling_mode',
+                                 'interest_model', 'interest_model_config',
+                                 'sensorimotor_model', 'sensorimotor_model_config',
+                                 'evaluate_indices', 'testcases'))
 
-def _f(args):
-    # TODO: USE NAMEDTUPLE INSTEAD ?
-    (env, env_conf), bab, (im, im_conf), (sm, sm_conf), eval_ind, testcases = args
 
-    xp = Experiment.from_settings(env, bab, im, sm, env_conf, im_conf, sm_conf)
-    xp.evaluate_at(eval_ind, testcases)
+def _f(setting):
+    seed()
+
+    xp = Experiment.from_settings(setting.environment,
+                                  setting.babbling_mode,
+                                  setting.interest_model,
+                                  setting.sensorimotor_model,
+                                  setting.environment_config,
+                                  setting.interest_model_config,
+                                  setting.sensorimotor_model_config)
+
+    xp.evaluate_at(setting.evaluate_indices, setting.testcases)
     xp.bootstrap(5)
     xp.run()
 
@@ -68,6 +82,7 @@ class ExperimentPool(object):
         mega_config = [c for c in self.configurations for _ in range(repeat)]
 
         logs = Pool(processes).map(_f, mega_config)
+        # logs = map(_f, mega_config)
 
         if repeat > 1:
             logs = array(logs).reshape(-1, repeat).tolist()
@@ -79,7 +94,9 @@ class ExperimentPool(object):
     @property
     def configurations(self):
         """ Returns a copy of the list of all the configurations used. """
-        return list(self._config)
+        return [Setting(env, env_conf, bab, im, im_conf, sm, sm_conf, ev, tc)
+                for ((env, env_conf), bab,
+                     (im, im_conf), (sm, sm_conf), ev, tc) in self._config]
 
     @property
     def logs(self):

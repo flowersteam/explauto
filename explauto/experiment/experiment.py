@@ -121,7 +121,7 @@ class Experiment(Observer):
         else:
             self.evaluation = evaluation
 
-        if testcases:
+        if testcases is not None:
             self.evaluation.tester.testcases = testcases
 
     @classmethod

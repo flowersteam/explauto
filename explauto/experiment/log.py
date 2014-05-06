@@ -49,7 +49,7 @@ class ExperimentLog(object):
         ax.plot(*(data.T), **plot_specs)
 
     def plot_learning_curve(self, ax):
-        if not hasattr(self, '_eval_at'):
+        if not hasattr(self, 'eval_at'):
             raise UserWarning('No evaluation available, '
                               'you need to specify the evaluate_at argument'
                               ' when constructing the experiment')
