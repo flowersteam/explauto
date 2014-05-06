@@ -82,7 +82,7 @@ class Experiment(Observer):
     def _run(self, n_iter):
         for t in range(n_iter):
             if t in self.eval_at and self.evaluation is not None:
-                self.logs._eval_errors.append(self.evaluation.evaluate())
+                self.logs.eval_errors.append(self.evaluation.evaluate())
 
             # Clear messages received from the evaluation
             self.notifications.queue.clear()
@@ -114,7 +114,7 @@ class Experiment(Observer):
 
     def evaluate_at(self, eval_at, testcases=None, evaluation=None):
         self.eval_at = eval_at
-        self.logs._eval_at = eval_at
+        self.logs.eval_at = eval_at
 
         if evaluation is None:
             self.evaluation = Evaluation(self.ag, self.env)
@@ -129,7 +129,21 @@ class Experiment(Observer):
                       environment_config='default',
                       interest_model_config='default',
                       sensorimotor_model_config='default'):
+        """ Creates a :class:`~explauto.experiment.experiment.Experiment` object thanks to the given settings.
 
+        :param str environment: Name of the environment (see :data:`~explauto.environment.environments`)
+        :param str babbling: Babbling mode ('motor' or 'goal')
+        :param str interest_model: Name of the interest model (see :data:`~explauto.interest_model.interest_models`)
+        :param str sensorimotor_model: Name of the sensorimotor model (see :data:`~explauto.sensorimotor_model.sensorimotor_models`)
+        :param str environment_config: Name of the environment config (default: 'default')
+        :param str interest_model_config: Name of the interest model config (default: 'default')
+        :param str sensorimotor_model_config: Name of the sensorimotor model config (default: 'default')
+
+        This method automatically instantiate the :class:`~explauto.environment.environment.Environment` and the :class:`~explauto.agent.agent.Agent` with their respective configurations.
+
+        .. note:: The name of the environment (resp interest, sensorimotor model) should be registred in the environments (resp. interest_models, sensorimotor_models) dictionnary. Similarly, the name of the configuration should correspond to one of the  registred configurations.
+
+        """
         env_cls, env_configs = environments[environment]
         config = env_configs[environment_config]
 

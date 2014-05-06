@@ -5,8 +5,8 @@ from numpy import array, mean, std
 class ExperimentLog(object):
     def __init__(self):
         self._logs = defaultdict(list)
-        self._counts = defaultdict(int)
-        self._eval_errors = []
+        self.counts = defaultdict(int)
+        self.eval_errors = []
 
     @property
     def logs(self):
@@ -14,7 +14,7 @@ class ExperimentLog(object):
 
     def add(self, topic, message):
         self._logs[topic].append(message)
-        self._counts[topic] += 1
+        self.counts[topic] += 1
 
     def pack(self, topic_dims, t):
         """ Packs selected logs into a numpy array
@@ -41,7 +41,7 @@ class ExperimentLog(object):
 
         if t is None:
             for topic, _ in topic_dims:
-                t_bound = min(t_bound, self._counts[topic])
+                t_bound = min(t_bound, self.counts[topic])
             t = range(t_bound)
 
         data = self.pack(topic_dims, t)
@@ -54,8 +54,8 @@ class ExperimentLog(object):
                               'you need to specify the evaluate_at argument'
                               ' when constructing the experiment')
 
-        avg_err = mean(array(self._eval_errors), axis=1)
-        std_err = std(array(self._eval_errors), axis=1)
-        ax.errorbar(self._eval_at, avg_err, yerr=std_err)
+        avg_err = mean(array(self.eval_errors), axis=1)
+        std_err = std(array(self.eval_errors), axis=1)
+        ax.errorbar(self.eval_at, avg_err, yerr=std_err)
 
     # def density_plot(self, topic_dims, t=None,

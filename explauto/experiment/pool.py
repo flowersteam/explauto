@@ -1,10 +1,14 @@
 import itertools
 
-from explauto.experiment import Experiment
 from multiprocessing import Pool
+from copy import deepcopy
+from numpy import array
+
+from explauto.experiment import Experiment
 
 
 def _f(args):
+    # TODO: USE NAMEDTUPLE INSTEAD ?
     (env, env_conf), bab, (im, im_conf), (sm, sm_conf), eval_ind, testcases = args
 
     xp = Experiment.from_settings(env, bab, im, sm, env_conf, im_conf, sm_conf)
@@ -55,16 +59,31 @@ class ExperimentPool(object):
         self._config = list(itertools.product(environments, babblings,
                                               interest_models, sensorimotor_models,
                                               [evaluate_at], [testcases]))
-        self.logs = []
 
-    def run(self, processes=None):
+    def run(self, repeat=1, processes=None):
         """ Runs all experiments using a :py:class:`multiprocessing.Pool`.
 
             :param int processes: Number of processes launched in parallel (Default: uses all the availabled CPUs)
          """
-        return Pool(processes).map(_f, self.configurations)
+        mega_config = [c for c in self.configurations for _ in range(repeat)]
+
+        logs = Pool(processes).map(_f, mega_config)
+
+        if repeat > 1:
+            logs = array(logs).reshape(-1, repeat).tolist()
+
+        self._logs = logs
+
+        return self.logs
 
     @property
     def configurations(self):
         """ Returns a copy of the list of all the configurations used. """
         return list(self._config)
+
+    @property
+    def logs(self):
+        if not hasattr(self, '_logs'):
+            raise ValueError('You have to run the pool of experiments first!')
+
+        return deepcopy(self._logs)
