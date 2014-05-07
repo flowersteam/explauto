@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     
-    <title>experiment Package &mdash; explauto 0.2.0 documentation</title>
+    <title>experiment Package &mdash; explauto 1.0.0 documentation</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
@@ -36,7 +36,7 @@
 <script type="text/javascript">
   var DOCUMENTATION_OPTIONS = {
             URL_ROOT:    './',
-            VERSION:     '0.2.0',
+            VERSION:     '1.0.0',
             COLLAPSE_INDEX: false,
             FILE_SUFFIX: '.html',
             HAS_SOURCE:  true
@@ -78,10 +78,10 @@
   });
 </script>
     <link rel="author" title="About these documents" href="about.html" />
-    <link rel="top" title="explauto 0.2.0 documentation" href="index.html" />
+    <link rel="top" title="explauto 1.0.0 documentation" href="index.html" />
     <link rel="up" title="Explauto’s API" href="api.html" />
     <link rel="next" title="interest_model Package" href="explauto.interestmodel.html" />
-    <link rel="prev" title="environment Package" href="explauto.environment.html" /> 
+    <link rel="prev" title="evaluation Package" href="explauto.evaluation.html" /> 
   </head>
   <body role="document">
     <div class="navbar navbar-fixed-top " role="navigation" aria-label="top navigation">
@@ -93,7 +93,7 @@
             <span class="icon-bar"></span>
           </a>
           <div role="banner">
-            <a class="brand" href="index.html">explauto 0.2.0 documentation</a>
+            <a class="brand" href="index.html">explauto 1.0.0 documentation</a>
           </div>
           <div class="nav-collapse collapse">
             <ul class="nav pull-right">
@@ -108,7 +108,7 @@
                 <a href="explauto.interestmodel.html" title="interest_model Package" accesskey="N">next</a>
                 </li>
                 <li>
-                <a href="explauto.environment.html" title="environment Package" accesskey="P">previous</a>
+                <a href="explauto.evaluation.html" title="evaluation Package" accesskey="P">previous</a>
                 </li>
                 <li>
                 <a href="api.html" accesskey="U">Explauto&#8217;s API</a>
@@ -132,8 +132,8 @@
   <a class="visible-phone btn btn-small show-sidebar" data-toggle="collapse" data-target=".for-mobile">Open Table Of Contents</a>
   <div class="for-mobile sidebar hidden-phone" role="navigation" aria-label="main navigation">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="explauto.environment.html"
-                        title="previous chapter"><tt class="docutils literal"><span class="pre">environment</span></tt> Package</a></p>
+  <p class="topless"><a href="explauto.evaluation.html"
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">evaluation</span></tt> Package</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="explauto.interestmodel.html"
                         title="next chapter"><tt class="docutils literal"><span class="pre">interest_model</span></tt> Package</a></p>
@@ -167,8 +167,8 @@
 <div class="span3 visible-desktop visible-tablet">
   <div class=" sidebar hidden-phone" role="navigation" aria-label="main navigation">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="explauto.environment.html"
-                        title="previous chapter"><tt class="docutils literal"><span class="pre">environment</span></tt> Package</a></p>
+  <p class="topless"><a href="explauto.evaluation.html"
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">evaluation</span></tt> Package</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="explauto.interestmodel.html"
                         title="next chapter"><tt class="docutils literal"><span class="pre">interest_model</span></tt> Package</a></p>
@@ -221,11 +221,6 @@
 </tbody>
 </table>
 <dl class="method">
-<dt id="explauto.experiment.experiment.Experiment.bootstrap">
-<tt class="descname">bootstrap</tt><big>(</big><em>n</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/experiment.html#Experiment.bootstrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.experiment.Experiment.bootstrap" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
 <dt id="explauto.experiment.experiment.Experiment.run">
 <tt class="descname">run</tt><big>(</big><em>n_iter=-1</em>, <em>bg=False</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/experiment.html#Experiment.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.experiment.Experiment.run" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -245,42 +240,148 @@
 <tt class="descname">update_logs</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/explauto/experiment/experiment.html#Experiment.update_logs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.experiment.Experiment.update_logs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="method">
+<dt id="explauto.experiment.experiment.Experiment.evaluate_at">
+<tt class="descname">evaluate_at</tt><big>(</big><em>eval_at</em>, <em>testcases=None</em>, <em>evaluation=None</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/experiment.html#Experiment.evaluate_at"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.experiment.Experiment.evaluate_at" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="explauto.experiment.experiment.Experiment.from_settings">
+<em class="property">classmethod </em><tt class="descname">from_settings</tt><big>(</big><em>settings</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/experiment.html#Experiment.from_settings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.experiment.Experiment.from_settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a <a class="reference internal" href="#explauto.experiment.experiment.Experiment" title="explauto.experiment.experiment.Experiment"><tt class="xref py py-class docutils literal"><span class="pre">Experiment</span></tt></a> object thanks to the given settings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>environment</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Name of the environment (see <tt class="xref py py-data docutils literal"><span class="pre">environments</span></tt>)</li>
+<li><strong>babbling</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Babbling mode (&#8216;motor&#8217; or &#8216;goal&#8217;)</li>
+<li><strong>interest_model</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Name of the interest model (see <tt class="xref py py-data docutils literal"><span class="pre">interest_models</span></tt>)</li>
+<li><strong>sensorimotor_model</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Name of the sensorimotor model (see <tt class="xref py py-data docutils literal"><span class="pre">sensorimotor_models</span></tt>)</li>
+<li><strong>environment_config</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Name of the environment config (default: &#8216;default&#8217;)</li>
+<li><strong>interest_model_config</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Name of the interest model config (default: &#8216;default&#8217;)</li>
+<li><strong>sensorimotor_model_config</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Name of the sensorimotor model config (default: &#8216;default&#8217;)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This method automatically instantiate the <a class="reference internal" href="explauto.environment.html#explauto.environment.environment.Environment" title="explauto.environment.environment.Environment"><tt class="xref py py-class docutils literal"><span class="pre">Environment</span></tt></a> and the <a class="reference internal" href="explauto.agent.html#explauto.agent.agent.Agent" title="explauto.agent.agent.Agent"><tt class="xref py py-class docutils literal"><span class="pre">Agent</span></tt></a> with their respective configurations.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The name of the environment (resp interest, sensorimotor model) should be registred in the environments (resp. interest_models, sensorimotor_models) dictionnary. Similarly, the name of the configuration should correspond to one of the  registred configurations.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-explauto.experiment.pool"></span><dl class="class">
+<dt id="explauto.experiment.pool.ExperimentPool">
+<em class="property">class </em><tt class="descclassname">explauto.experiment.pool.</tt><tt class="descname">ExperimentPool</tt><big>(</big><em>settings</em>, <em>evaluate_at</em>, <em>same_testcases=False</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/pool.html#ExperimentPool"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.pool.ExperimentPool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Pool of experiments running in parallel.</p>
+<p>The Pool will create <a class="reference internal" href="#explauto.experiment.experiment.Experiment" title="explauto.experiment.experiment.Experiment"><tt class="xref py py-class docutils literal"><span class="pre">Experiment</span></tt></a> using the <a class="reference internal" href="#explauto.experiment.experiment.Experiment.from_settings" title="explauto.experiment.experiment.Experiment.from_settings"><tt class="xref py py-meth docutils literal"><span class="pre">from_settings()</span></tt></a> constructor for each combination of parameters given.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If you set same_testcases to True the first experiment will generate a testcase used by all the others experiment. Otherwise, each experiment will generate its own testcase.</p>
+</div>
+<dl class="classmethod">
+<dt id="explauto.experiment.pool.ExperimentPool.from_settings_product">
+<em class="property">classmethod </em><tt class="descname">from_settings_product</tt><big>(</big><em>environments</em>, <em>babblings</em>, <em>interest_models</em>, <em>sensorimotor_models</em>, <em>evaluate_at</em>, <em>same_testcases=False</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/pool.html#ExperimentPool.from_settings_product"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.pool.ExperimentPool.from_settings_product" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a ExperimentPool with the product of all the given settings.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>environments</strong> (<em>list of (environment name, config name)</em>) &#8211; e.g. [(&#8216;simple_arm&#8217;, &#8216;default&#8217;), (&#8216;simple_arm&#8217;, &#8216;high_dimensional&#8217;)]</li>
+<li><strong>babblings</strong> &#8211; e.g. [&#8216;motor&#8217;, &#8216;goal&#8217;]</li>
+<li><strong>interest_models</strong> (<em>list of (interest model name, config name)</em>) &#8211; e.g. [(&#8216;random&#8217;, &#8216;default&#8217;)]</li>
+<li><strong>sensorimotor_models</strong> (<em>list of (sensorimotor model name, config name)</em>) &#8211; e.g. [(&#8216;non_parametric&#8217;, &#8216;default&#8217;)]</li>
+<li><strong>evaluate_at</strong> (<em>list of int</em>) &#8211; indices defining when to evaluate</li>
+<li><strong>same_testcases</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; whether to use the same testcases for all experiments</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="explauto.experiment.pool.ExperimentPool.run">
+<tt class="descname">run</tt><big>(</big><em>repeat=1</em>, <em>processes=None</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/pool.html#ExperimentPool.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.pool.ExperimentPool.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs all experiments using a <tt class="xref py py-class docutils literal"><span class="pre">multiprocessing.Pool</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>processes</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of processes launched in parallel (Default: uses all the availabled CPUs)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="attribute">
-<dt id="explauto.experiment.experiment.Experiment.logs">
-<tt class="descname">logs</tt><a class="reference internal" href="_modules/explauto/experiment/experiment.html#Experiment.logs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.experiment.Experiment.logs" title="Permalink to this definition">¶</a></dt>
+<dt id="explauto.experiment.pool.ExperimentPool.settings">
+<tt class="descname">settings</tt><a class="reference internal" href="_modules/explauto/experiment/pool.html#ExperimentPool.settings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.pool.ExperimentPool.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a copy of the list of all the settings used.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="explauto.experiment.pool.ExperimentPool.logs">
+<tt class="descname">logs</tt><a class="reference internal" href="_modules/explauto/experiment/pool.html#ExperimentPool.logs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.pool.ExperimentPool.logs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="explauto.experiment.pool.seed">
+<tt class="descclassname">explauto.experiment.pool.</tt><tt class="descname">seed</tt><big>(</big><em>seed=None</em><big>)</big><a class="headerlink" href="#explauto.experiment.pool.seed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Seed the generator.</p>
+<p>This method is called when <cite>RandomState</cite> is initialized. It can be
+called again to re-seed the generator. For details, see <cite>RandomState</cite>.</p>
+<dl class="docutils">
+<dt>seed <span class="classifier-delimiter">:</span> <span class="classifier">int or array_like, optional</span></dt>
+<dd>Seed for <cite>RandomState</cite>.</dd>
+</dl>
+<p>RandomState</p>
+</dd></dl>
+
+<span class="target" id="module-explauto.experiment.log"></span><dl class="class">
+<dt id="explauto.experiment.log.ExperimentLog">
+<em class="property">class </em><tt class="descclassname">explauto.experiment.log.</tt><tt class="descname">ExperimentLog</tt><big>(</big><em>conf</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/log.html#ExperimentLog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.log.ExperimentLog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dl class="attribute">
+<dt id="explauto.experiment.log.ExperimentLog.logs">
+<tt class="descname">logs</tt><a class="reference internal" href="_modules/explauto/experiment/log.html#ExperimentLog.logs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.log.ExperimentLog.logs" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="explauto.experiment.experiment.Experiment.pack">
-<tt class="descname">pack</tt><big>(</big><em>topic_dims</em>, <em>t</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/experiment.html#Experiment.pack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.experiment.Experiment.pack" title="Permalink to this definition">¶</a></dt>
+<dt id="explauto.experiment.log.ExperimentLog.add">
+<tt class="descname">add</tt><big>(</big><em>topic</em>, <em>message</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/log.html#ExperimentLog.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.log.ExperimentLog.add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.experiment.log.ExperimentLog.pack">
+<tt class="descname">pack</tt><big>(</big><em>topic_dims</em>, <em>t</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/log.html#ExperimentLog.pack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.log.ExperimentLog.pack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Packs selected logs into a numpy array
-:param list topic_dims: list of (topic, dims) tuples, where topic is a string and dims a list dimensions to be plotted for each topic
+:param list topic_dims: list of (topic, dims) tuples, where topic is a string and dims a list dimensions to be plotted for that topic
 :param int t: time indexes to be plotted</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="explauto.experiment.experiment.Experiment.evaluate_at">
-<tt class="descname">evaluate_at</tt><big>(</big><em>eval_at</em>, <em>evaluation=None</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/experiment.html#Experiment.evaluate_at"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.experiment.Experiment.evaluate_at" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="explauto.experiment.experiment.Experiment.scatter_plot">
-<tt class="descname">scatter_plot</tt><big>(</big><em>ax</em>, <em>topic_dims</em>, <em>t=None</em>, <em>**kwargs_plot</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/experiment.html#Experiment.scatter_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.experiment.Experiment.scatter_plot" title="Permalink to this definition">¶</a></dt>
+<dt id="explauto.experiment.log.ExperimentLog.scatter_plot">
+<tt class="descname">scatter_plot</tt><big>(</big><em>ax</em>, <em>topic_dims</em>, <em>t=None</em>, <em>**kwargs_plot</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/log.html#ExperimentLog.scatter_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.log.ExperimentLog.scatter_plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>2D or 3D scatter plot
-:param dict topic_dims: dictionary of the form {topic : dims, ...}, where topic is a string and dims is a list of dimensions to be plotted for that topic.
+:param tuple topic_dims: list of (topic, dims) tuples, where topic is a string and dims is a list of dimensions to be plotted for that topic.
 :param int t: time indexes to be plotted
 :param axes ax: matplotlib axes (use Axes3D if 3D data)
 :param dict kwargs_plot: argument to be passed to matplotlib&#8217;s plot function, e.g. the style of the plotted points &#8216;or&#8217;</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="explauto.experiment.experiment.Experiment.plot_learning_curve">
-<tt class="descname">plot_learning_curve</tt><big>(</big><em>ax</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/experiment.html#Experiment.plot_learning_curve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.experiment.Experiment.plot_learning_curve" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="classmethod">
-<dt id="explauto.experiment.experiment.Experiment.from_settings">
-<em class="property">classmethod </em><tt class="descname">from_settings</tt><big>(</big><em>environment</em>, <em>babbling</em>, <em>interest_model</em>, <em>sensorimotor_model</em>, <em>environment_config='default'</em>, <em>interest_model_config='default'</em>, <em>sensorimotor_model_config='default'</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/experiment.html#Experiment.from_settings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.experiment.Experiment.from_settings" title="Permalink to this definition">¶</a></dt>
+<dt id="explauto.experiment.log.ExperimentLog.plot_learning_curve">
+<tt class="descname">plot_learning_curve</tt><big>(</big><em>ax</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/log.html#ExperimentLog.plot_learning_curve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.log.ExperimentLog.plot_learning_curve" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -306,8 +407,8 @@
         <li><a href="genindex.html" title="General Index" >index</a></li>
         <li><a href="py-modindex.html" title="Python Module Index" >modules</a></li>
         <li><a href="explauto.interestmodel.html" title="interest_model Package" >next</a></li>
-        <li><a href="explauto.environment.html" title="environment Package" >previous</a></li>
-        <li><a href="index.html">explauto 0.2.0 documentation</a></li>
+        <li><a href="explauto.evaluation.html" title="evaluation Package" >previous</a></li>
+        <li><a href="index.html">explauto 1.0.0 documentation</a></li>
         <li><a href="api.html" >Explauto&#8217;s API</a></li> 
       
     </ul>

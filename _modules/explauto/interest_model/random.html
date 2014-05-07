@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     
-    <title>explauto.interest_model.interest_model &mdash; explauto 1.0.0 documentation</title>
+    <title>explauto.interest_model.random &mdash; explauto 1.0.0 documentation</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
@@ -171,23 +171,26 @@
               <div class="bodywrapper">
                 <div class="body">
                   
-  <h1>Source code for explauto.interest_model.interest_model</h1><div class="highlight"><pre>
-<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span>
+  <h1>Source code for explauto.interest_model.random</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">.interest_model</span> <span class="kn">import</span> <span class="n">InterestModel</span>
+<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">rand_bounds</span>
 
 
-<div class="viewcode-block" id="InterestModel"><a class="viewcode-back" href="../../../explauto.interestmodel.html#explauto.interest_model.interest_model.InterestModel">[docs]</a><span class="k">class</span> <span class="nc">InterestModel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">ABCMeta</span>
+<div class="viewcode-block" id="RandomInterest"><a class="viewcode-back" href="../../../explauto.interestmodel.html#explauto.interest_model.random.RandomInterest">[docs]</a><span class="k">class</span> <span class="nc">RandomInterest</span><span class="p">(</span><span class="n">InterestModel</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i_dims</span><span class="p">,</span> <span class="n">bounds</span><span class="p">):</span>
+        <span class="n">InterestModel</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i_dims</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i_dims</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">i_dims</span> <span class="o">=</span> <span class="n">i_dims</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bounds</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[:,</span> <span class="n">i_dims</span><span class="p">]</span>
+        <span class="c"># self.ndims = bounds.shape[1]</span>
 
-    <span class="nd">@abstractmethod</span>
-<div class="viewcode-block" id="InterestModel.sample"><a class="viewcode-back" href="../../../explauto.interestmodel.html#explauto.interest_model.interest_model.InterestModel.sample">[docs]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span>
+<div class="viewcode-block" id="RandomInterest.sample"><a class="viewcode-back" href="../../../explauto.interestmodel.html#explauto.interest_model.random.RandomInterest.sample">[docs]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">rand_bounds</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span>
 </div>
-    <span class="nd">@abstractmethod</span>
-<div class="viewcode-block" id="InterestModel.update"><a class="viewcode-back" href="../../../explauto.interestmodel.html#explauto.interest_model.interest_model.InterestModel.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
-        <span class="k">pass</span></div></div>
+<div class="viewcode-block" id="RandomInterest.update"><a class="viewcode-back" href="../../../explauto.interestmodel.html#explauto.interest_model.random.RandomInterest.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+</div></div>
+<span class="n">interest_models</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;random&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">RandomInterest</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;default&#39;</span><span class="p">:</span> <span class="p">{}})}</span>
 </pre></div>
 
                 </div>

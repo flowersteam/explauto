@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     
-    <title>sensorimotor_model Package &mdash; explauto 0.2.0 documentation</title>
+    <title>sensorimotor_model Package &mdash; explauto 1.0.0 documentation</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
@@ -36,7 +36,7 @@
 <script type="text/javascript">
   var DOCUMENTATION_OPTIONS = {
             URL_ROOT:    './',
-            VERSION:     '0.2.0',
+            VERSION:     '1.0.0',
             COLLAPSE_INDEX: false,
             FILE_SUFFIX: '.html',
             HAS_SOURCE:  true
@@ -78,7 +78,7 @@
   });
 </script>
     <link rel="author" title="About these documents" href="about.html" />
-    <link rel="top" title="explauto 0.2.0 documentation" href="index.html" />
+    <link rel="top" title="explauto 1.0.0 documentation" href="index.html" />
     <link rel="up" title="Explauto’s API" href="api.html" />
     <link rel="next" title="FAQ" href="FAQ.html" />
     <link rel="prev" title="interest_model Package" href="explauto.interestmodel.html" /> 
@@ -93,7 +93,7 @@
             <span class="icon-bar"></span>
           </a>
           <div role="banner">
-            <a class="brand" href="index.html">explauto 0.2.0 documentation</a>
+            <a class="brand" href="index.html">explauto 1.0.0 documentation</a>
           </div>
           <div class="nav-collapse collapse">
             <ul class="nav pull-right">
@@ -217,9 +217,21 @@
 <tt class="descname">update</tt><big>(</big><em>m</em>, <em>s</em><big>)</big><a class="reference internal" href="_modules/explauto/sensorimotor_model/sensorimotor_model.html#SensorimotorModel.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel.update" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<span class="target" id="module-explauto.sensorimotor_model.non_parametric"></span><dl class="class">
+<dt id="explauto.sensorimotor_model.non_parametric.NonParametric">
+<em class="property">class </em><tt class="descclassname">explauto.sensorimotor_model.non_parametric.</tt><tt class="descname">NonParametric</tt><big>(</big><em>conf</em>, <em>fwd='LWLR'</em>, <em>inv='L-BFGS-B'</em>, <em>**learner_kwargs</em><big>)</big><a class="reference internal" href="_modules/explauto/sensorimotor_model/non_parametric.html#NonParametric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.sensorimotor_model.non_parametric.NonParametric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel" title="explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel"><tt class="xref py py-class docutils literal"><span class="pre">explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel</span></tt></a></p>
+<p>This class wraps the non-parametric forward and inverse models implemented by Fabien Benureau, in order to fit into the Explauto framework. Original code by Fabien available here: <a class="reference external" href="https://github.com/humm/models">https://github.com/humm/models</a></p>
 <dl class="method">
-<dt id="explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel.bootstrap">
-<tt class="descname">bootstrap</tt><big>(</big><em>orders</em>, <em>stimuli</em><big>)</big><a class="reference internal" href="_modules/explauto/sensorimotor_model/sensorimotor_model.html#SensorimotorModel.bootstrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel.bootstrap" title="Permalink to this definition">¶</a></dt>
+<dt id="explauto.sensorimotor_model.non_parametric.NonParametric.infer">
+<tt class="descname">infer</tt><big>(</big><em>in_dims</em>, <em>out_dims</em>, <em>x</em><big>)</big><a class="reference internal" href="_modules/explauto/sensorimotor_model/non_parametric.html#NonParametric.infer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.sensorimotor_model.non_parametric.NonParametric.infer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.sensorimotor_model.non_parametric.NonParametric.update">
+<tt class="descname">update</tt><big>(</big><em>m</em>, <em>s</em><big>)</big><a class="reference internal" href="_modules/explauto/sensorimotor_model/non_parametric.html#NonParametric.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.sensorimotor_model.non_parametric.NonParametric.update" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -246,7 +258,7 @@
         <li><a href="py-modindex.html" title="Python Module Index" >modules</a></li>
         <li><a href="FAQ.html" title="FAQ" >next</a></li>
         <li><a href="explauto.interestmodel.html" title="interest_model Package" >previous</a></li>
-        <li><a href="index.html">explauto 0.2.0 documentation</a></li>
+        <li><a href="index.html">explauto 1.0.0 documentation</a></li>
         <li><a href="api.html" >Explauto&#8217;s API</a></li> 
       
     </ul>

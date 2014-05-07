@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     
-    <title>explauto.sensorimotor_model.sensorimotor_model &mdash; explauto 0.2.0 documentation</title>
+    <title>explauto.sensorimotor_model.sensorimotor_model &mdash; explauto 1.0.0 documentation</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
@@ -36,7 +36,7 @@
 <script type="text/javascript">
   var DOCUMENTATION_OPTIONS = {
             URL_ROOT:    '../../../',
-            VERSION:     '0.2.0',
+            VERSION:     '1.0.0',
             COLLAPSE_INDEX: false,
             FILE_SUFFIX: '.html',
             HAS_SOURCE:  true
@@ -78,7 +78,7 @@
   });
 </script>
     <link rel="author" title="About these documents" href="../../../about.html" />
-    <link rel="top" title="explauto 0.2.0 documentation" href="../../../index.html" />
+    <link rel="top" title="explauto 1.0.0 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body role="document">
@@ -91,7 +91,7 @@
             <span class="icon-bar"></span>
           </a>
           <div role="banner">
-            <a class="brand" href="../../../index.html">explauto 0.2.0 documentation</a>
+            <a class="brand" href="../../../index.html">explauto 1.0.0 documentation</a>
           </div>
           <div class="nav-collapse collapse">
             <ul class="nav pull-right">
@@ -172,21 +172,20 @@
                 <div class="body">
                   
   <h1>Source code for explauto.sensorimotor_model.sensorimotor_model</h1><div class="highlight"><pre>
-<span class="k">class</span> <span class="nc">SensorimotorModel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-<div class="viewcode-block" id="SensorimotorModel"><a class="viewcode-back" href="../../../explauto.sensorimotormodel.html#explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel">[docs]</a>    <span class="c"># def __init__(self, m_dims, s_dims):</span>
-    <span class="c">#     self.m_dims = m_dims</span>
-    <span class="c">#     self.s_dims = s_dims</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span>
 
-    <span class="k">def</span> <span class="nf">infer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_dims</span><span class="p">,</span> <span class="n">out_dims</span><span class="p">):</span>
-<div class="viewcode-block" id="SensorimotorModel.infer"><a class="viewcode-back" href="../../../explauto.sensorimotormodel.html#explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel.infer">[docs]</a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
-    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span></div>
-<div class="viewcode-block" id="SensorimotorModel.update"><a class="viewcode-back" href="../../../explauto.sensorimotormodel.html#explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel.update">[docs]</a>        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+<div class="viewcode-block" id="SensorimotorModel"><a class="viewcode-back" href="../../../explauto.sensorimotormodel.html#explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel">[docs]</a><span class="k">class</span> <span class="nc">SensorimotorModel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">ABCMeta</span>
 
-    <span class="k">def</span> <span class="nf">bootstrap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orders</span><span class="p">,</span> <span class="n">stimuli</span><span class="p">):</span></div>
-<div class="viewcode-block" id="SensorimotorModel.bootstrap"><a class="viewcode-back" href="../../../explauto.sensorimotormodel.html#explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel.bootstrap">[docs]</a>        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">orders</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">stimuli</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:])</span>
-</pre></div></div></div>
+    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="SensorimotorModel.infer"><a class="viewcode-back" href="../../../explauto.sensorimotormodel.html#explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel.infer">[docs]</a>    <span class="k">def</span> <span class="nf">infer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_dims</span><span class="p">,</span> <span class="n">out_dims</span><span class="p">):</span>
+        <span class="k">pass</span>
+</div>
+    <span class="nd">@abstractmethod</span>
+<div class="viewcode-block" id="SensorimotorModel.update"><a class="viewcode-back" href="../../../explauto.sensorimotormodel.html#explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="k">pass</span></div></div>
+</pre></div>
 
                 </div>
               </div>
@@ -205,7 +204,7 @@
       
         <li><a href="../../../genindex.html" title="General Index" >index</a></li>
         <li><a href="../../../py-modindex.html" title="Python Module Index" >modules</a></li>
-        <li><a href="../../../index.html">explauto 0.2.0 documentation</a></li>
+        <li><a href="../../../index.html">explauto 1.0.0 documentation</a></li>
         <li><a href="../../index.html" >Module code</a></li> 
       
     </ul>

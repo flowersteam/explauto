@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     
-    <title>explauto.interest_model.interest_model &mdash; explauto 1.0.0 documentation</title>
+    <title>explauto.evaluation.evaluation &mdash; explauto 1.0.0 documentation</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
@@ -171,23 +171,36 @@
               <div class="bodywrapper">
                 <div class="body">
                   
-  <h1>Source code for explauto.interest_model.interest_model</h1><div class="highlight"><pre>
-<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span>
+  <h1>Source code for explauto.evaluation.evaluation</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">..third_party.models.models.testbed</span> <span class="kn">import</span> <span class="n">Testbed</span>
+<span class="kn">from</span> <span class="nn">..third_party.models_adaptors</span> <span class="kn">import</span> <span class="n">Learner</span><span class="p">,</span> <span class="n">Robot</span>
 
 
-<div class="viewcode-block" id="InterestModel"><a class="viewcode-back" href="../../../explauto.interestmodel.html#explauto.interest_model.interest_model.InterestModel">[docs]</a><span class="k">class</span> <span class="nc">InterestModel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">ABCMeta</span>
+<div class="viewcode-block" id="Evaluation"><a class="viewcode-back" href="../../../explauto.evaluation.html#explauto.evaluation.evaluation.Evaluation">[docs]</a><span class="k">class</span> <span class="nc">Evaluation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;inverse&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag</span> <span class="o">=</span> <span class="n">ag</span>
+        <span class="n">learner</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">ag</span><span class="p">)</span>
+        <span class="n">robot</span> <span class="o">=</span> <span class="n">Robot</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tester</span> <span class="o">=</span> <span class="n">Testbed</span><span class="p">(</span><span class="n">robot</span><span class="p">,</span> <span class="n">learner</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;forward&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tester</span><span class="o">.</span><span class="n">uniform_motor</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;inverse&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tester</span><span class="o">.</span><span class="n">uniform_sensor</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;mode should be &quot;forward&quot; or &quot;inverse&quot;&#39;</span>
+                             <span class="s">&#39;(general prediction coming soon)&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i_dims</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">i_dims</span> <span class="o">=</span> <span class="n">i_dims</span>
-
-    <span class="nd">@abstractmethod</span>
-<div class="viewcode-block" id="InterestModel.sample"><a class="viewcode-back" href="../../../explauto.interestmodel.html#explauto.interest_model.interest_model.InterestModel.sample">[docs]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span>
-</div>
-    <span class="nd">@abstractmethod</span>
-<div class="viewcode-block" id="InterestModel.update"><a class="viewcode-back" href="../../../explauto.interestmodel.html#explauto.interest_model.interest_model.InterestModel.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
-        <span class="k">pass</span></div></div>
+<div class="viewcode-block" id="Evaluation.evaluate"><a class="viewcode-back" href="../../../explauto.evaluation.html#explauto.evaluation.evaluation.Evaluation.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="o">.</span><span class="n">sensorimotor_model</span><span class="o">.</span><span class="n">mode</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="o">.</span><span class="n">sensorimotor_model</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s">&#39;exploit&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;forward&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tester</span><span class="o">.</span><span class="n">run_forward</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;inverse&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tester</span><span class="o">.</span><span class="n">run_inverse</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="o">.</span><span class="n">sensorimotor_model</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span></div></div>
 </pre></div>
 
                 </div>

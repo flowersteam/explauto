@@ -5,3 +5,8 @@
     :members:
     :undoc-members:
     :show-inheritance:
+
+.. automodule:: explauto.interest_model.random
+    :members:
+    :undoc-members:
+    :show-inheritance:
