@@ -7,3 +7,4 @@ Explauto's API
     explauto.experiment
     explauto.interestmodel
     explauto.sensorimotormodel
+    explauto.utils
