@@ -29,7 +29,7 @@ class NonParametric(SensorimotorModel):
         elif in_dims == self.s_dims and out_dims == self.m_dims:  # inverse
             return array(self.model.infer_order(tuple(x.flatten())))
         else:
-            raise NotImplementedError("NonParameticModel only implements forward (M -> S)"
+            raise NotImplementedError("NonParametic only implements forward (M -> S)"
                                       "and inverse (S -> M) model, not general prediction")
 
     def update(self, m, s):
