@@ -113,10 +113,7 @@ class Experiment(Observer):
             self.evaluation.tester.testcases = testcases
 
     @classmethod
-    def from_settings(cls, environment, babbling, interest_model, sensorimotor_model,
-                      environment_config='default',
-                      interest_model_config='default',
-                      sensorimotor_model_config='default'):
+    def from_settings(cls, settings):
         """ Creates a :class:`~explauto.experiment.experiment.Experiment` object thanks to the given settings.
 
         :param str environment: Name of the environment (see :data:`~explauto.environment.environments`)
@@ -132,22 +129,23 @@ class Experiment(Observer):
         .. note:: The name of the environment (resp interest, sensorimotor model) should be registred in the environments (resp. interest_models, sensorimotor_models) dictionnary. Similarly, the name of the configuration should correspond to one of the  registred configurations.
 
         """
-        env_cls, env_configs = environments[environment]
-        config = env_configs[environment_config]
+        env_cls, env_configs = environments[settings.environment]
+        config = env_configs[settings.environment_config]
 
         env = env_cls(**config)
 
-        im_cls, im_configs = interest_models[interest_model]
-        sm_cls, sm_configs = sensorimotor_models[sensorimotor_model]
+        im_cls, im_configs = interest_models[settings.interest_model]
+        sm_cls, sm_configs = sensorimotor_models[settings.sensorimotor_model]
 
+        babbling = settings.babbling_mode
         if babbling not in ['goal', 'motor']:
             raise ValueError("babbling argument must be in ['goal', 'motor']")
 
         expl_dims = env.conf.m_dims if (babbling == 'motor') else env.conf.s_dims
         inf_dims = env.conf.s_dims if (babbling == 'motor') else env.conf.m_dims
 
-        agent = Agent(im_cls, im_configs[interest_model_config], expl_dims,
-                      sm_cls, sm_configs[sensorimotor_model_config], inf_dims,
+        agent = Agent(im_cls, im_configs[settings.interest_model_config], expl_dims,
+                      sm_cls, sm_configs[settings.sensorimotor_model_config], inf_dims,
                       env.conf.m_mins, env.conf.m_maxs, env.conf.s_mins, env.conf.s_maxs)
 
         return cls(env, agent)
