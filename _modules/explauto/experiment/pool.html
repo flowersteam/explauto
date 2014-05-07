@@ -176,8 +176,8 @@
 
 <span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Pool</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">array</span><span class="p">,</span> <span class="n">hstack</span>
-<span class="kn">from</span> <span class="nn">numpy.random</span> <span class="kn">import</span> <span class="n">seed</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">random</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">Settings</span>
 <span class="kn">from</span> <span class="nn">.experiment</span> <span class="kn">import</span> <span class="n">Experiment</span>
@@ -186,7 +186,7 @@
 <span class="k">def</span> <span class="nf">_f</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
     <span class="n">settings</span><span class="p">,</span> <span class="n">evaluate_indices</span><span class="p">,</span> <span class="n">testcases</span> <span class="o">=</span> <span class="n">args</span>
 
-    <span class="n">seed</span><span class="p">()</span>
+    <span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">()</span>
 
     <span class="n">xp</span> <span class="o">=</span> <span class="n">Experiment</span><span class="o">.</span><span class="n">from_settings</span><span class="p">(</span><span class="n">settings</span><span class="p">)</span>
     <span class="n">xp</span><span class="o">.</span><span class="n">evaluate_at</span><span class="p">(</span><span class="n">evaluate_indices</span><span class="p">,</span> <span class="n">testcases</span><span class="p">)</span>
