@@ -6,7 +6,7 @@
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: explauto.sensorimotor_model.non_parametric
+.. automodule:: explauto.sensorimotor_model.nearest_neighbor
     :members:
     :undoc-members:
     :show-inheritance:

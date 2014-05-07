@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     
-    <title>FAQ &mdash; explauto 1.0.0 documentation</title>
+    <title>utils Package &mdash; explauto 1.0.0 documentation</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
@@ -79,8 +79,9 @@
 </script>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="top" title="explauto 1.0.0 documentation" href="index.html" />
-    <link rel="next" title="Known Issues" href="knownissues.html" />
-    <link rel="prev" title="utils Package" href="explauto.utils.html" /> 
+    <link rel="up" title="Explauto’s API" href="api.html" />
+    <link rel="next" title="FAQ" href="FAQ.html" />
+    <link rel="prev" title="sensorimotor_model Package" href="explauto.sensorimotormodel.html" /> 
   </head>
   <body role="document">
     <div class="navbar navbar-fixed-top " role="navigation" aria-label="top navigation">
@@ -104,10 +105,13 @@
                 <a href="py-modindex.html" title="Python Module Index" >modules</a>
                 </li>
                 <li>
-                <a href="knownissues.html" title="Known Issues" accesskey="N">next</a>
+                <a href="FAQ.html" title="FAQ" accesskey="N">next</a>
                 </li>
                 <li>
-                <a href="explauto.utils.html" title="utils Package" accesskey="P">previous</a>
+                <a href="explauto.sensorimotormodel.html" title="sensorimotor_model Package" accesskey="P">previous</a>
+                </li>
+                <li>
+                <a href="api.html" accesskey="U">Explauto&#8217;s API</a>
                 </li>
               
             </ul>
@@ -128,14 +132,14 @@
   <a class="visible-phone btn btn-small show-sidebar" data-toggle="collapse" data-target=".for-mobile">Open Table Of Contents</a>
   <div class="for-mobile sidebar hidden-phone" role="navigation" aria-label="main navigation">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="explauto.utils.html"
-                        title="previous chapter"><tt class="docutils literal"><span class="pre">utils</span></tt> Package</a></p>
+  <p class="topless"><a href="explauto.sensorimotormodel.html"
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">sensorimotor_model</span></tt> Package</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="knownissues.html"
-                        title="next chapter">Known Issues</a></p>
+  <p class="topless"><a href="FAQ.html"
+                        title="next chapter">FAQ</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="_sources/FAQ.txt"
+    <li><a href="_sources/explauto.utils.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" role="search">
@@ -163,14 +167,14 @@
 <div class="span3 visible-desktop visible-tablet">
   <div class=" sidebar hidden-phone" role="navigation" aria-label="main navigation">
   <h4>Previous topic</h4>
-  <p class="topless"><a href="explauto.utils.html"
-                        title="previous chapter"><tt class="docutils literal"><span class="pre">utils</span></tt> Package</a></p>
+  <p class="topless"><a href="explauto.sensorimotormodel.html"
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">sensorimotor_model</span></tt> Package</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="knownissues.html"
-                        title="next chapter">Known Issues</a></p>
+  <p class="topless"><a href="FAQ.html"
+                        title="next chapter">FAQ</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="_sources/FAQ.txt"
+    <li><a href="_sources/explauto.utils.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" role="search">
@@ -197,8 +201,98 @@
               <div class="bodywrapper">
                 <div class="body">
                   
-  <div class="section" id="faq">
-<h1>FAQ<a class="headerlink" href="#faq" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-explauto.utils.config">
+<span id="utils-package"></span><h1><tt class="xref py py-mod docutils literal"><span class="pre">utils</span></tt> Package<a class="headerlink" href="#module-explauto.utils.config" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="explauto.utils.config.Configuration">
+<em class="property">class </em><tt class="descclassname">explauto.utils.config.</tt><tt class="descname">Configuration</tt><a class="headerlink" href="#explauto.utils.config.Configuration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">tuple</span></tt></p>
+<p>Configuration(m_mins, m_maxs, s_mins, s_maxs, m_ndims, s_ndims, ndims, m_dims, s_dims, dims, m_bounds, s_bounds, bounds)</p>
+<dl class="attribute">
+<dt id="explauto.utils.config.Configuration.bounds">
+<tt class="descname">bounds</tt><a class="headerlink" href="#explauto.utils.config.Configuration.bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 12</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="explauto.utils.config.Configuration.dims">
+<tt class="descname">dims</tt><a class="headerlink" href="#explauto.utils.config.Configuration.dims" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 9</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="explauto.utils.config.Configuration.m_bounds">
+<tt class="descname">m_bounds</tt><a class="headerlink" href="#explauto.utils.config.Configuration.m_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 10</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="explauto.utils.config.Configuration.m_dims">
+<tt class="descname">m_dims</tt><a class="headerlink" href="#explauto.utils.config.Configuration.m_dims" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 7</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="explauto.utils.config.Configuration.m_maxs">
+<tt class="descname">m_maxs</tt><a class="headerlink" href="#explauto.utils.config.Configuration.m_maxs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="explauto.utils.config.Configuration.m_mins">
+<tt class="descname">m_mins</tt><a class="headerlink" href="#explauto.utils.config.Configuration.m_mins" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="explauto.utils.config.Configuration.m_ndims">
+<tt class="descname">m_ndims</tt><a class="headerlink" href="#explauto.utils.config.Configuration.m_ndims" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="explauto.utils.config.Configuration.ndims">
+<tt class="descname">ndims</tt><a class="headerlink" href="#explauto.utils.config.Configuration.ndims" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 6</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="explauto.utils.config.Configuration.s_bounds">
+<tt class="descname">s_bounds</tt><a class="headerlink" href="#explauto.utils.config.Configuration.s_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 11</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="explauto.utils.config.Configuration.s_dims">
+<tt class="descname">s_dims</tt><a class="headerlink" href="#explauto.utils.config.Configuration.s_dims" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 8</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="explauto.utils.config.Configuration.s_maxs">
+<tt class="descname">s_maxs</tt><a class="headerlink" href="#explauto.utils.config.Configuration.s_maxs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="explauto.utils.config.Configuration.s_mins">
+<tt class="descname">s_mins</tt><a class="headerlink" href="#explauto.utils.config.Configuration.s_mins" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="explauto.utils.config.Configuration.s_ndims">
+<tt class="descname">s_ndims</tt><a class="headerlink" href="#explauto.utils.config.Configuration.s_ndims" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alias for field number 5</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="explauto.utils.config.make_configuration">
+<tt class="descclassname">explauto.utils.config.</tt><tt class="descname">make_configuration</tt><big>(</big><em>m_mins</em>, <em>m_maxs</em>, <em>s_mins</em>, <em>s_maxs</em><big>)</big><a class="reference internal" href="_modules/explauto/utils/config.html#make_configuration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.utils.config.make_configuration" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 
 
@@ -219,9 +313,10 @@
       
         <li><a href="genindex.html" title="General Index" >index</a></li>
         <li><a href="py-modindex.html" title="Python Module Index" >modules</a></li>
-        <li><a href="knownissues.html" title="Known Issues" >next</a></li>
-        <li><a href="explauto.utils.html" title="utils Package" >previous</a></li>
-        <li><a href="index.html">explauto 1.0.0 documentation</a></li> 
+        <li><a href="FAQ.html" title="FAQ" >next</a></li>
+        <li><a href="explauto.sensorimotormodel.html" title="sensorimotor_model Package" >previous</a></li>
+        <li><a href="index.html">explauto 1.0.0 documentation</a></li>
+        <li><a href="api.html" >Explauto&#8217;s API</a></li> 
       
     </ul>
   </div>

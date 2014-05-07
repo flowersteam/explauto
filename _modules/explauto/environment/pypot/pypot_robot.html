@@ -181,11 +181,29 @@
 
 
 <div class="viewcode-block" id="PypotEnvironment"><a class="viewcode-back" href="../../../../explauto.environment.html#explauto.environment.pypot.pypot_robot.PypotEnvironment">[docs]</a><span class="k">class</span> <span class="nc">PypotEnvironment</span><span class="p">(</span><span class="n">Environment</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Environment based on dynamixel based robot using pypot.</span>
+
+<span class="sd">        This environment can be used to link explauto with pypot, a library allowing to control robot based on dynamixel motors. It uses an optitrack has the sensor. This could easily be changed by defining other pypot environments.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                  <span class="n">pypot_robot</span><span class="p">,</span> <span class="n">motors</span><span class="p">,</span> <span class="n">move_duration</span><span class="p">,</span>
                  <span class="n">optitrack_sensor</span><span class="p">,</span> <span class="n">tracked_obj</span><span class="p">,</span>
                  <span class="n">m_mins</span><span class="p">,</span> <span class="n">m_maxs</span><span class="p">,</span> <span class="n">s_mins</span><span class="p">,</span> <span class="n">s_maxs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; :param pypot_robot: robot used as the environment</span>
+<span class="sd">            :type pypot_robot: :class:`~pypot.robot.robot.Robot`</span>
+<span class="sd">            :param motors: list of motors used by the environment</span>
+<span class="sd">            :type motors: list of :class:`~pypot.dynamixel.motor.DxlMotor`</span>
+<span class="sd">            :param float move_duration: duration (in sec.) of each primitive motion</span>
+<span class="sd">            :param optitrack_sensor: Optitrack used as the sensor by the :class:`~explauto.agent.agent.Agent`</span>
+<span class="sd">            :type optitrack_sensor: :class:`~pypot.sensor.optitrack.OptiTrackClient`</span>
+<span class="sd">            :param string tracked_obj: name of the object tracked by the optitrack</span>
+<span class="sd">            :param numpy.array m_mins: minimum motor dims</span>
+<span class="sd">            :param numpy.array m_maxs: maximum motor dims</span>
+<span class="sd">            :param numpy.array s_mins: minimum sensor dims</span>
+<span class="sd">            :param numpy.array s_maxs: maximum sensor dims</span>
 
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Environment</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m_mins</span><span class="p">,</span> <span class="n">m_maxs</span><span class="p">,</span> <span class="n">s_mins</span><span class="p">,</span> <span class="n">s_maxs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">readable</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">ndims</span><span class="p">)</span>
 
@@ -193,20 +211,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">motors</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">motors</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">move_duration</span> <span class="o">=</span> <span class="n">move_duration</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">opti_getter</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">optitrack_sensor</span><span class="o">.</span><span class="n">tracked_objects</span><span class="p">[</span><span class="n">tracked_obj</span><span class="p">]</span><span class="o">.</span><span class="n">position</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">opti_get</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">optitrack_sensor</span><span class="o">.</span><span class="n">tracked_objects</span><span class="p">[</span><span class="n">tracked_obj</span><span class="p">]</span><span class="o">.</span><span class="n">position</span>
 
 <div class="viewcode-block" id="PypotEnvironment.compute_motor_command"><a class="viewcode-back" href="../../../../explauto.environment.html#explauto.environment.pypot.pypot_robot.PypotEnvironment.compute_motor_command">[docs]</a>    <span class="k">def</span> <span class="nf">compute_motor_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag_state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Compute the motor command by restricting it to the bounds. &quot;&quot;&quot;</span>
         <span class="n">motor_cmd</span> <span class="o">=</span> <span class="n">ag_state</span>
         <span class="k">return</span> <span class="n">bounds_min_max</span><span class="p">(</span><span class="n">motor_cmd</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">m_mins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">m_maxs</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="PypotEnvironment.compute_sensori_effect"><a class="viewcode-back" href="../../../../explauto.environment.html#explauto.environment.pypot.pypot_robot.PypotEnvironment.compute_sensori_effect">[docs]</a>    <span class="k">def</span> <span class="nf">compute_sensori_effect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Make the robot moves and retrieve the tracked object position. &quot;&quot;&quot;</span>
         <span class="n">cmd</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">rad2deg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">m_ndims</span><span class="p">])</span>
         <span class="n">pos</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">motors</span><span class="p">,</span> <span class="n">cmd</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">robot</span><span class="o">.</span><span class="n">goto_position</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">move_duration</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">opti_getter</span><span class="p">()</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">opti_get</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ExplautoEnvironmentUpdateError</span></div></div>
 </pre></div>
