@@ -1,41 +1,52 @@
 import itertools
 
-from collections import namedtuple
 from multiprocessing import Pool
+from numpy import array, hstack
 from numpy.random import seed
 from copy import deepcopy
-from numpy import array
 
-from explauto.experiment import Experiment
-
-Setting = namedtuple('Setting', ('environment', 'environment_config',
-                                 'babbling_mode',
-                                 'interest_model', 'interest_model_config',
-                                 'sensorimotor_model', 'sensorimotor_model_config',
-                                 'evaluate_indices', 'testcases'))
+from . import Settings
+from .experiment import Experiment
 
 
-def _f(setting):
+def _f(args):
+    settings, evaluate_indices, testcases = args
+
     seed()
 
-    xp = Experiment.from_settings(setting.environment,
-                                  setting.babbling_mode,
-                                  setting.interest_model,
-                                  setting.sensorimotor_model,
-                                  setting.environment_config,
-                                  setting.interest_model_config,
-                                  setting.sensorimotor_model_config)
-
-    xp.evaluate_at(setting.evaluate_indices, setting.testcases)
+    xp = Experiment.from_settings(settings)
+    xp.evaluate_at(evaluate_indices, testcases)
     xp.run()
 
-    return xp.logs
+    return xp.log
 
 
 class ExperimentPool(object):
-    def __init__(self, environments, babblings, interest_models, sensorimotor_models,
-                 evaluate_at, same_testcases=False):
+    def __init__(self, settings, evaluate_at, same_testcases=False):
         """ Pool of experiments running in parallel.
+
+            The Pool will create :class:`~explauto.experiment.experiment.Experiment` using the :meth:`~explauto.experiment.experiment.Experiment.from_settings` constructor for each combination of parameters given.
+
+            .. note:: If you set same_testcases to True the first experiment will generate a testcase used by all the others experiment. Otherwise, each experiment will generate its own testcase.
+        """
+        if same_testcases:
+            s = settings[0]
+            xp = Experiment.from_settings(s)
+            xp.evaluate_at(evaluate_at)
+            testcases = xp.evaluation.tester.testcases
+
+        else:
+            testcases = None
+
+        self._config = zip(settings,
+                           itertools.repeat(evaluate_at),
+                           itertools.repeat(testcases))
+
+    @classmethod
+    def from_settings_product(cls, environments, babblings,
+                              interest_models, sensorimotor_models,
+                              evaluate_at, same_testcases=False):
+        """ Creates a ExperimentPool with the product of all the given settings.
 
             :param environments: e.g. [('simple_arm', 'default'), ('simple_arm', 'high_dimensional')]
             :type environments: list of (environment name, config name)
@@ -49,57 +60,45 @@ class ExperimentPool(object):
             :type evaluate_at: list of int
             :param bool same_testcases: whether to use the same testcases for all experiments
 
-            The Pool will create :class:`~explauto.experiment.experiment.Experiment` using the :meth:`~explauto.experiment.experiment.Experiment.from_settings` constructor for each combination of parameters given.
-
-            .. note:: If you set same_testcases to True the first experiment will generate a testcase used by all the others experiment. Otherwise, each experiment will generate its own testcase.
-
         """
-        if same_testcases:
-            # We create a dummy environment just to generate the testcase
-            env, env_conf = environments[0]
-            bab = babblings[0]
-            im, im_conf = interest_models[0]
-            sm, sm_conf = sensorimotor_models[0]
+        l = itertools.product(environments, babblings,
+                              interest_models, sensorimotor_models)
 
-            xp = Experiment.from_settings(env, bab, im, sm,
-                                          env_conf, im_conf, sm_conf)
-            xp.evaluate_at(evaluate_at)
-            testcases = xp.evaluation.tester.testcases
+        settings = [Settings(env, env_conf, bab, im, im_conf, sm, sm_conf)
+                    for ((env, env_conf), bab, (im, im_conf), (sm, sm_conf)) in l]
 
-        else:
-            testcases = None
-
-        self._config = list(itertools.product(environments, babblings,
-                                              interest_models, sensorimotor_models,
-                                              [evaluate_at], [testcases]))
+        return cls(settings, evaluate_at, same_testcases)
 
     def run(self, repeat=1, processes=None):
         """ Runs all experiments using a :py:class:`multiprocessing.Pool`.
 
             :param int processes: Number of processes launched in parallel (Default: uses all the availabled CPUs)
          """
-        mega_config = [c for c in self.configurations for _ in range(repeat)]
+        mega_config = [c for c in self._config for _ in range(repeat)]
 
         logs = Pool(processes).map(_f, mega_config)
-        # logs = map(_f, mega_config)
+        logs = array(logs).reshape(-1, repeat)
 
-        if repeat > 1:
-            logs = array(logs).reshape(-1, repeat).tolist()
+        self._add_logs(logs)
 
-        self._logs = logs
-
-        return self.logs
+        return logs
 
     @property
-    def configurations(self):
-        """ Returns a copy of the list of all the configurations used. """
-        return [Setting(env, env_conf, bab, im, im_conf, sm, sm_conf, ev, tc)
-                for ((env, env_conf), bab,
-                     (im, im_conf), (sm, sm_conf), ev, tc) in self._config]
+    def settings(self):
+        """ Returns a copy of the list of all the settings used. """
+        return array(self._config)[:, 0].tolist()
 
     @property
     def logs(self):
         if not hasattr(self, '_logs'):
             raise ValueError('You have to run the pool of experiments first!')
 
-        return deepcopy(self._logs)
+        logs = self._logs.reshape(-1) if self._logs.shape[1] == 1 else self._logs
+        return deepcopy(logs)
+
+    def _add_logs(self, logs):
+        if not hasattr(self, '_logs'):
+            self._logs = logs
+
+        else:
+            self._logs = hstack((self._logs, logs))
