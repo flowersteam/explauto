@@ -54,10 +54,10 @@ class Agent(Observable):
     def infer(self, expl_dims, inf_dims, x):
         try:
             y = self.sensorimotor_model.infer(expl_dims,
-                                                   inf_dims,
-                                                   x.flatten())
+                                              inf_dims,
+                                              x.flatten())
         except ExplautoBootstrapError:
-            logger.warning('Sensorimotor model not bootstrapped yet')
+            # logger.warning('Sensorimotor model not bootstrapped yet')
             y = rand_bounds(self.conf.bounds[:, inf_dims])
         return y
 
