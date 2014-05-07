@@ -1,52 +1,63 @@
-from sklearn.neighbors import NearestNeighbors, KNeighborsRegressor
 from sklearn.mixture import sample_gaussian
-from numpy import array, vstack
+from numpy import inf, ones  # array, vstack
+from numpy.linalg import norm
 
 from .. import ExplautoBootstrapError
 from .sensorimotor_model import SensorimotorModel
-from ..third_party.models.models.dataset import DataSet
+from ..third_party.models.models.dataset import Dataset
 
 n_neighbors = 1
-algorithm = 'kd_tree'
+# algorithm = 'kd_tree'
 
 
 class NearestNeighbor(SensorimotorModel):
 
-    def __init__(self, conf):
-        self.model = NearestNeighbors(n_neighbors=n_neighbors, algorithm=algorithm)
+    def __init__(self, conf, n_explore, sigma_ratio):
+        self.dataset = Dataset(conf.m_ndims, conf.s_ndims)
         self.m_dims = conf.m_dims
         self.s_dims = conf.s_dims
         self.t = 0
-        self.sigma_expl = (conf.m_maxs - conf.m_mins) / 10.
-        self.data_m, self.data_s = [], []
-        self.n_explore = 10
+        self.sigma_expl = (conf.m_maxs - conf.m_mins) * float(sigma_ratio)
+        self.n_explore = n_explore
         self.to_explore = 0
-        self.to_fit = True
+        self.best_dist_to_goal = float('inf')
+        self.current_goal = inf * ones(conf.s_ndims)
+        self.mode = 'explore'
+
     def infer(self, in_dims, out_dims, x):
         if self.t < n_neighbors:
             raise ExplautoBootstrapError
         if in_dims == self.m_dims and out_dims == self.s_dims:  # forward
-            if self.to_fit:
-                self.model = KNeighborsRegressor(n_neighbors=min(self.t, 10), weights='distance', algorithm=algorithm)
-                self.to_fit = False
-                self.model.fit(data_m)
-            return self.predict(x)
+            dists, indexes = self.dataset.nn_x(x, k=1)
+            return self.dataset.get_y(indexes[0])
 
         elif in_dims == self.s_dims and out_dims == self.m_dims:  # inverse
-            self.
+            if self.mode == 'explore':
+                if not self.to_explore:
+                    self.current_goal = x
+                    dists, indexes = self.dataset.nn_y(x, k=1)
+                    self.mean_explore = self.dataset.get_x(indexes[0])
+                    self.to_explore = self.n_explore
+                self.to_explore -= 1
+                return sample_gaussian(self.mean_explore, self.sigma_expl ** 2)
+            else:  # exploit'
+                dists, indexes = self.dataset.nn_y(x, k=1)
+                return self.dataset.get_x(indexes[0])
 
         else:
-            raise NotImplementedError("NearestNeighbor only implements forward (M -> S)"
-                                      "and inverse (S -> M) model, not general prediction")
+            raise NotImplementedError("NearestNeighbor only implements forward"
+                                      "(M -> S) and inverse (S -> M) model, "
+                                      "not general prediction")
 
     def update(self, m, s):
-        if self.data_m:
-            self.data_m = vstack((self.data_m, m))
-        else:
-            self.data_m = m
-        if self.data_s:
-            self.data_s = vstack((self.data_s, s))
-        else:
-            self.data_s = s
-        self.to_fit = True
+        if self.t > 0:
+            dist_to_goal = norm(self.current_goal - s)
+            if dist_to_goal < self.best_dist_to_goal:
+                self.mean_explore = m
+                self.best_dist_to_goal = dist_to_goal
+
+        self.dataset.add_xy(tuple(m), tuple(s))
         self.t += 1
+
+configurations = {'default': {'n_explore': 10, 'sigma_ratio': 1./7.}}
+sensorimotor_models = {'nearest_neighbor': (NearestNeighbor, configurations)}

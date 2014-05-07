@@ -40,6 +40,9 @@ class NonParametric(SensorimotorModel):
 configurations = {'LWLR-BFGS': {'fwd': 'LWLR', 'inv': 'L-BFGS-B'},
                   'ES-LWLR-BFGS': {'fwd': 'ES-LWLR', 'inv': 'L-BFGS-B'},
                   'ES-WNN': {'fwd': 'ES-WNN', 'inv': 'ES-WNN'},
+                  'WNN': {'fwd': 'WNN', 'inv': 'WNN'},
+                  'AvgNN': {'fwd': 'AvgNN', 'inv': 'AvgNN'},
+                  # 'NN': {'fwd': 'NN', 'inv': 'NN'},
                   'ES-WNN-BFGS': {'fwd': 'ES-WNN', 'inv': 'L-BFGS-B'}
                   }
 configurations['default'] = configurations['LWLR-BFGS']
