@@ -1,19 +1,29 @@
 """Two function to generate set of test."""
 
 import random
-#import pandas
+# import pandas
+
+from explauto import ExplautoEnvironmentUpdateError
+
 
 def uniform_motor_testcases(robot, n):
     """Generates n test uniformly distributed in the motor space"""
     tb = []
     for i in range(n):
-        #order = pandas.Series([random.uniform(mi_min, mi_max)
+        # order = pandas.Series([random.uniform(mi_min, mi_max)
         #                       for mi_min, mi_max in robot.m_bounds],
         #                      index = robot.m_feats)
-        order = [random.uniform(mi_min, mi_max) for mi_min, mi_max in robot.m_bounds]                            
-        effect = robot.execute_order(order)
-        tb.append((order, effect))
+        while True:
+            try:
+                order = [random.uniform(mi_min, mi_max)
+                         for mi_min, mi_max in robot.m_bounds]
+                effect = robot.execute_order(order)
+                tb.append((order, effect))
+                break
+            except ExplautoEnvironmentUpdateError:
+                pass
     return tb
+
 
 class Lattice(object):
     """Select a subset of the provided observations approximately uniformly distributed

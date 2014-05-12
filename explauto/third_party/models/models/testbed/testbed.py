@@ -5,6 +5,9 @@ import numpy as np
 from ....toolbox import toolbox
 from . import testcase
 
+from explauto import ExplautoEnvironmentUpdateError
+
+
 class Testbed(object):
 
     @classmethod
@@ -80,13 +83,15 @@ class Testbed(object):
         """Run the tests. Note that the robot will execute an order for every test.
         @return list of error of each tests
         """
-        #assert self.imodel is not None
+        # assert self.imodel is not None
         errors = []
         for order, effect in self.testcases:
-            #predicted_order = self.imodel.infer_x(effect)[0]
             predicted_order = self.learner.infer_order(effect)
-            obtained_effect = self.robot.execute_order(predicted_order)
-            errors.append(toolbox.dist(obtained_effect, effect))
+            try:
+                obtained_effect = self.robot.execute_order(predicted_order)
+                errors.append(toolbox.dist(obtained_effect, effect))
+            except ExplautoEnvironmentUpdateError:
+                errors.append(np.inf)
         return errors
 
     def avg_std(self, errors):
