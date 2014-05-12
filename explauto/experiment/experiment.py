@@ -4,7 +4,6 @@ import threading
 from .. import ExplautoEnvironmentUpdateError
 from ..utils.observer import Observer
 from ..evaluation import Evaluation
-from ..utils import rand_bounds
 
 from ..agent import Agent
 from .log import ExperimentLog

@@ -1,6 +1,8 @@
 # To switch from motor to goal babbling
 # You just need to change the babling parameter at instanciation
 
+from explauto.experiment import Experiment, make_settings
+
 s_goal = make_settings(environment='simple_arm',
                        babbling_mode='goal',
                        interest_model='random',
