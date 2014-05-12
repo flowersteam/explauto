@@ -22,21 +22,19 @@ def _f(args):
 
 
 class ExperimentPool(object):
-    def __init__(self, settings, evaluate_at, same_testcases=False):
+    def __init__(self, settings, evaluate_at,
+                 testcases=None, same_testcases=False):
         """ Pool of experiments running in parallel.
 
             The Pool will create :class:`~explauto.experiment.experiment.Experiment` using the :meth:`~explauto.experiment.experiment.Experiment.from_settings` constructor for each combination of parameters given.
 
             .. note:: If you set same_testcases to True the first experiment will generate a testcase used by all the others experiment. Otherwise, each experiment will generate its own testcase.
         """
-        if same_testcases:
+        if same_testcases and testcases is None:
             s = settings[0]
             xp = Experiment.from_settings(s)
             xp.evaluate_at(evaluate_at)
             testcases = xp.evaluation.tester.testcases
-
-        else:
-            testcases = None
 
         self._config = zip(settings,
                            itertools.repeat(evaluate_at),
