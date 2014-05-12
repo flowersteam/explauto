@@ -73,7 +73,10 @@ class ExperimentPool(object):
     def run(self, repeat=1, processes=None, use_thread=False):
         """ Runs all experiments using a :py:class:`multiprocessing.Pool`.
 
+            :param int repeat: Number of time each experiment will be repeated.
             :param int processes: Number of processes launched in parallel (Default: uses all the availabled CPUs)
+            :param bool use_thread: Use a :py:class:`~multiprocessing.pool.ThreadPool` instead of a :py:class:`~multiprocessing.pool.Pool`. By default, tries to guess depending on the environment which one to use.
+
          """
         mega_config = [c for c in self._config for _ in range(repeat)]
 
