@@ -2,8 +2,8 @@ import itertools
 
 from multiprocessing.pool import Pool, ThreadPool
 from numpy import array, hstack
-from numpy.random import seed
 from copy import deepcopy
+from numpy import random
 
 from . import Settings
 from .experiment import Experiment
@@ -13,7 +13,7 @@ from ..environment import environments
 def _f(args):
     settings, evaluate_indices, testcases = args
 
-    seed()
+    random.seed()
 
     xp = Experiment.from_settings(settings)
     xp.evaluate_at(evaluate_indices, testcases)
