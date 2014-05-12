@@ -80,7 +80,6 @@ class ExperimentPool(object):
         env = [environments[s.environment][0] for s in self.settings]
         use_process = array([e.use_process for e in env]).all() and (not use_thread)
 
-        print 'process', use_process
         pool = Pool(processes) if use_process else ThreadPool(processes)
 
         logs = pool.map(_f, mega_config)
