@@ -12,6 +12,7 @@ class Environment(Observable):
 
     """
     __metaclass__ = ABCMeta
+    use_process = False
 
     def __init__(self, m_mins, m_maxs, s_mins, s_maxs):
         Observable.__init__(self)

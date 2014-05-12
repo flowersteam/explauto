@@ -7,6 +7,8 @@ from ... import ExplautoEnvironmentUpdateError
 
 
 class PypotEnvironment(Environment):
+    use_process = False
+
     def __init__(self,
                  pypot_robot, motors, move_duration,
                  optitrack_sensor, tracked_obj,
