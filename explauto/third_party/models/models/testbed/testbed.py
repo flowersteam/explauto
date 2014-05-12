@@ -13,9 +13,9 @@ class Testbed(object):
     @classmethod
     def from_learner(cls, robot, learner):
         """"""
-        return cls(robot, imodel = learner.imodel)
+        return cls(robot, imodel=learner.imodel)
 
-    def __init__(self, robot, learner):
+    def __init__(self, robot, learner, testcases=[]):
         """
         @param fmodel  forward model. If not provided, will look for the
                        'fmodel' attribute in the inverse model.
@@ -23,13 +23,13 @@ class Testbed(object):
                        (and run_inverse is not called !)
         """
         self.learner = learner
-        #assert fmodel is not None or imodel is not None
+        # assert fmodel is not None or imodel is not None
         self.robot = robot
-        #self.fmodel = fmodel
-        #if fmodel is None:
+        # self.fmodel = fmodel
+        # if fmodel is None:
         #    self.fmodel = imodel.fmodel
         #   self.imodel = imodel
-        self.testcases = []
+        self.testcases = testcases
 
     # Training
 

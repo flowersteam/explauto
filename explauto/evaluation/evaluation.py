@@ -3,20 +3,22 @@ from ..third_party.models_adaptors import Learner, Robot
 
 
 class Evaluation(object):
-    def __init__(self, ag, env, n_samples=100, mode='inverse'):
+    def __init__(self, ag, env, testcases=None, n_samples=100, mode='inverse'):
         self.ag = ag
         learner = Learner(ag)
         robot = Robot(env)
-        self.tester = Testbed(robot, learner)
+        self.tester = Testbed(robot, learner, testcases)
         self.mode = mode
         self.errors = []
-        if self.mode == 'forward':
-            self.tester.uniform_motor(n_samples)
-        elif self.mode == 'inverse':
-            self.tester.uniform_sensor(n_samples)
-        else:
-            raise ValueError('mode should be "forward" or "inverse"'
-                             '(general prediction coming soon)')
+
+        if testcases is None:
+            if mode not in ('forward', 'inverse'):
+                raise ValueError('mode should be "forward" or "inverse"'
+                                 '(general prediction coming soon)')
+
+            tests = getattr(self.tester,
+                            'uniform_motor' if mode == 'forward' else 'uniform_sensor')
+            tests(n_samples)
 
     def evaluate(self):
         mode = self.ag.sensorimotor_model.mode

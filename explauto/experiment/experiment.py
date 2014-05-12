@@ -99,17 +99,11 @@ class Experiment(Observer):
             topic, msg = self.notifications.get()
             self.log.add(topic, msg)
 
-    def evaluate_at(self, eval_at, testcases=None, evaluation=None):
+    def evaluate_at(self, eval_at, testcases=None):
         self.eval_at = eval_at
         self.log.eval_at = eval_at
 
-        if evaluation is None:
-            self.evaluation = Evaluation(self.ag, self.env)
-        else:
-            self.evaluation = evaluation
-
-        if testcases is not None:
-            self.evaluation.tester.testcases = testcases
+        self.evaluation = Evaluation(self.ag, self.env, testcases)
 
     @classmethod
     def from_settings(cls, settings):
