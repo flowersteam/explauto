@@ -28,6 +28,8 @@ def lengths(n_dofs, ratio):
 
 
 class SimpleArmEnvironment(Environment):
+    use_process = True
+
     def __init__(self, m_mins, m_maxs, s_mins, s_maxs,
                  length_ratio, noise):
         Environment.__init__(self, m_mins, m_maxs, s_mins, s_maxs)

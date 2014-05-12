@@ -8,12 +8,18 @@ from ..utils.observer import Observable
 
 class Environment(Observable):
     """ Abstract class to define environments.
-        :param array m_mins, m_maxs, s_mins, s_maxs: bounds of the motor (m) and sensory (s) spaces
+
+    When defining your sub-environment, you should specify whether they could be forked and run in different processes through the use_process class variable. By default, it is set to False to guarantee that the code will work.
 
     """
     __metaclass__ = ABCMeta
+    use_process = False
 
     def __init__(self, m_mins, m_maxs, s_mins, s_maxs):
+        """
+        :param array m_mins, m_maxs, s_mins, s_maxs: bounds of the motor (m) and sensory (s) spaces
+
+        """
         Observable.__init__(self)
 
         self.conf = make_configuration(m_mins, m_maxs, s_mins, s_maxs)

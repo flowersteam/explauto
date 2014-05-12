@@ -1,18 +1,19 @@
 import itertools
 
-from multiprocessing import Pool
+from multiprocessing.pool import Pool, ThreadPool
 from numpy import array, hstack
-from numpy.random import seed
 from copy import deepcopy
+from numpy import random
 
 from . import Settings
 from .experiment import Experiment
+from ..environment import environments
 
 
 def _f(args):
     settings, evaluate_indices, testcases = args
 
-    seed()
+    random.seed()
 
     xp = Experiment.from_settings(settings)
     xp.evaluate_at(evaluate_indices, testcases)
@@ -69,14 +70,22 @@ class ExperimentPool(object):
 
         return cls(settings, evaluate_at, same_testcases)
 
-    def run(self, repeat=1, processes=None):
+    def run(self, repeat=1, processes=None, use_thread=False):
         """ Runs all experiments using a :py:class:`multiprocessing.Pool`.
 
+            :param int repeat: Number of time each experiment will be repeated.
             :param int processes: Number of processes launched in parallel (Default: uses all the availabled CPUs)
+            :param bool use_thread: Use a :py:class:`~multiprocessing.pool.ThreadPool` instead of a :py:class:`~multiprocessing.pool.Pool`. By default, tries to guess depending on the environment which one to use.
+
          """
         mega_config = [c for c in self._config for _ in range(repeat)]
 
-        logs = Pool(processes).map(_f, mega_config)
+        env = [environments[s.environment][0] for s in self.settings]
+        use_process = array([e.use_process for e in env]).all() and (not use_thread)
+
+        pool = Pool(processes) if use_process else ThreadPool(processes)
+
+        logs = pool.map(_f, mega_config)
         logs = array(logs).reshape(-1, repeat)
 
         self._add_logs(logs)
