@@ -27,6 +27,11 @@ class ExperimentPool(object):
                  testcases=None, same_testcases=False):
         """ Pool of experiments running in parallel.
 
+            :param list settings: list of settings used to create the pool of experiments.
+            :param list evaluate_at: iteration indices where an evaluation should be performed.
+            :param numpy.array testcases: specify a pre-defined testcases, by default a testcases will be generated.
+            :param bool same_testcases: whether to use the same testcases for all experiments.
+
             The Pool will create :class:`~explauto.experiment.experiment.Experiment` using the :meth:`~explauto.experiment.experiment.Experiment.from_settings` constructor for each combination of parameters given.
 
             .. note:: If you set same_testcases to True the first experiment will generate a testcase used by all the others experiment. Otherwise, each experiment will generate its own testcase.
