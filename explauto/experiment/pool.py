@@ -66,7 +66,7 @@ class ExperimentPool(object):
         settings = [Settings(env, env_conf, bab, im, im_conf, sm, sm_conf)
                     for ((env, env_conf), bab, (im, im_conf), (sm, sm_conf)) in l]
 
-        return cls(settings, evaluate_at, same_testcases)
+        return cls(settings, evaluate_at, same_testcases=same_testcases)
 
     def run(self, repeat=1, processes=None, use_thread=False):
         """ Runs all experiments using a :py:class:`multiprocessing.Pool`.
