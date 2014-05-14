@@ -182,12 +182,18 @@
 
 <div class="viewcode-block" id="Environment"><a class="viewcode-back" href="../../../explauto.environment.html#explauto.environment.environment.Environment">[docs]</a><span class="k">class</span> <span class="nc">Environment</span><span class="p">(</span><span class="n">Observable</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Abstract class to define environments.</span>
-<span class="sd">        :param array m_mins, m_maxs, s_mins, s_maxs: bounds of the motor (m) and sensory (s) spaces</span>
+
+<span class="sd">    When defining your sub-environment, you should specify whether they could be forked and run in different processes through the use_process class variable. By default, it is set to False to guarantee that the code will work.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">ABCMeta</span>
+    <span class="n">use_process</span> <span class="o">=</span> <span class="bp">False</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m_mins</span><span class="p">,</span> <span class="n">m_maxs</span><span class="p">,</span> <span class="n">s_mins</span><span class="p">,</span> <span class="n">s_maxs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :param array m_mins, m_maxs, s_mins, s_maxs: bounds of the motor (m) and sensory (s) spaces</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Observable</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">conf</span> <span class="o">=</span> <span class="n">make_configuration</span><span class="p">(</span><span class="n">m_mins</span><span class="p">,</span> <span class="n">m_maxs</span><span class="p">,</span> <span class="n">s_mins</span><span class="p">,</span> <span class="n">s_maxs</span><span class="p">)</span>

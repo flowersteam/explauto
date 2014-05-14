@@ -207,8 +207,21 @@
 <dt id="explauto.environment.environment.Environment">
 <em class="property">class </em><tt class="descclassname">explauto.environment.environment.</tt><tt class="descname">Environment</tt><big>(</big><em>m_mins</em>, <em>m_maxs</em>, <em>s_mins</em>, <em>s_maxs</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/environment.html#Environment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.environment.Environment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">explauto.utils.observer.Observable</span></tt></p>
-<p>Abstract class to define environments.
-:param array m_mins, m_maxs, s_mins, s_maxs: bounds of the motor (m) and sensory (s) spaces</p>
+<p>Abstract class to define environments.</p>
+<p>When defining your sub-environment, you should specify whether they could be forked and run in different processes through the use_process class variable. By default, it is set to False to guarantee that the code will work.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>m_mins, m_maxs, s_mins, s_maxs</strong> (<a class="reference external" href="http://docs.python.org/library/array.html#module-array" title="(in Python v2.7)"><em>array</em></a>) &#8211; bounds of the motor (m) and sensory (s) spaces</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="explauto.environment.environment.Environment.use_process">
+<tt class="descname">use_process</tt><em class="property"> = False</em><a class="headerlink" href="#explauto.environment.environment.Environment.use_process" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="explauto.environment.environment.Environment.update">
 <tt class="descname">update</tt><big>(</big><em>ag_state</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/environment.html#Environment.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.environment.Environment.update" title="Permalink to this definition">¶</a></dt>
@@ -257,6 +270,11 @@
 <dt id="explauto.environment.simple_arm.simple_arm.SimpleArmEnvironment">
 <em class="property">class </em><tt class="descclassname">explauto.environment.simple_arm.simple_arm.</tt><tt class="descname">SimpleArmEnvironment</tt><big>(</big><em>m_mins</em>, <em>m_maxs</em>, <em>s_mins</em>, <em>s_maxs</em>, <em>length_ratio</em>, <em>noise</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/simple_arm/simple_arm.html#SimpleArmEnvironment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.simple_arm.simple_arm.SimpleArmEnvironment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#explauto.environment.environment.Environment" title="explauto.environment.environment.Environment"><tt class="xref py py-class docutils literal"><span class="pre">explauto.environment.environment.Environment</span></tt></a></p>
+<dl class="attribute">
+<dt id="explauto.environment.simple_arm.simple_arm.SimpleArmEnvironment.use_process">
+<tt class="descname">use_process</tt><em class="property"> = True</em><a class="headerlink" href="#explauto.environment.simple_arm.simple_arm.SimpleArmEnvironment.use_process" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="explauto.environment.simple_arm.simple_arm.SimpleArmEnvironment.compute_motor_command">
 <tt class="descname">compute_motor_command</tt><big>(</big><em>ag_state</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/simple_arm/simple_arm.html#SimpleArmEnvironment.compute_motor_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.simple_arm.simple_arm.SimpleArmEnvironment.compute_motor_command" title="Permalink to this definition">¶</a></dt>
@@ -294,6 +312,11 @@
 </tr>
 </tbody>
 </table>
+<dl class="attribute">
+<dt id="explauto.environment.pypot.pypot_robot.PypotEnvironment.use_process">
+<tt class="descname">use_process</tt><em class="property"> = False</em><a class="headerlink" href="#explauto.environment.pypot.pypot_robot.PypotEnvironment.use_process" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="explauto.environment.pypot.pypot_robot.PypotEnvironment.compute_motor_command">
 <tt class="descname">compute_motor_command</tt><big>(</big><em>ag_state</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/pypot/pypot_robot.html#PypotEnvironment.compute_motor_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.pypot.pypot_robot.PypotEnvironment.compute_motor_command" title="Permalink to this definition">¶</a></dt>

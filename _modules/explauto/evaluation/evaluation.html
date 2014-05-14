@@ -177,20 +177,22 @@
 
 
 <div class="viewcode-block" id="Evaluation"><a class="viewcode-back" href="../../../explauto.evaluation.html#explauto.evaluation.evaluation.Evaluation">[docs]</a><span class="k">class</span> <span class="nc">Evaluation</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;inverse&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">testcases</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;inverse&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ag</span> <span class="o">=</span> <span class="n">ag</span>
         <span class="n">learner</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">ag</span><span class="p">)</span>
         <span class="n">robot</span> <span class="o">=</span> <span class="n">Robot</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tester</span> <span class="o">=</span> <span class="n">Testbed</span><span class="p">(</span><span class="n">robot</span><span class="p">,</span> <span class="n">learner</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tester</span> <span class="o">=</span> <span class="n">Testbed</span><span class="p">(</span><span class="n">robot</span><span class="p">,</span> <span class="n">learner</span><span class="p">,</span> <span class="n">testcases</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;forward&#39;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tester</span><span class="o">.</span><span class="n">uniform_motor</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;inverse&#39;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">tester</span><span class="o">.</span><span class="n">uniform_sensor</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;mode should be &quot;forward&quot; or &quot;inverse&quot;&#39;</span>
-                             <span class="s">&#39;(general prediction coming soon)&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">testcases</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;forward&#39;</span><span class="p">,</span> <span class="s">&#39;inverse&#39;</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;mode should be &quot;forward&quot; or &quot;inverse&quot;&#39;</span>
+                                 <span class="s">&#39;(general prediction coming soon)&#39;</span><span class="p">)</span>
+
+            <span class="n">tests</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tester</span><span class="p">,</span>
+                            <span class="s">&#39;uniform_motor&#39;</span> <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;forward&#39;</span> <span class="k">else</span> <span class="s">&#39;uniform_sensor&#39;</span><span class="p">)</span>
+            <span class="n">tests</span><span class="p">(</span><span class="n">n_samples</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Evaluation.evaluate"><a class="viewcode-back" href="../../../explauto.evaluation.html#explauto.evaluation.evaluation.Evaluation.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="o">.</span><span class="n">sensorimotor_model</span><span class="o">.</span><span class="n">mode</span>

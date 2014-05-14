@@ -178,7 +178,6 @@
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">ExplautoEnvironmentUpdateError</span>
 <span class="kn">from</span> <span class="nn">..utils.observer</span> <span class="kn">import</span> <span class="n">Observer</span>
 <span class="kn">from</span> <span class="nn">..evaluation</span> <span class="kn">import</span> <span class="n">Evaluation</span>
-<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">rand_bounds</span>
 
 <span class="kn">from</span> <span class="nn">..agent</span> <span class="kn">import</span> <span class="n">Agent</span>
 <span class="kn">from</span> <span class="nn">.log</span> <span class="kn">import</span> <span class="n">ExperimentLog</span>
@@ -274,17 +273,11 @@
             <span class="n">topic</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifications</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Experiment.evaluate_at"><a class="viewcode-back" href="../../../explauto.experiment.html#explauto.experiment.experiment.Experiment.evaluate_at">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eval_at</span><span class="p">,</span> <span class="n">testcases</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">evaluation</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Experiment.evaluate_at"><a class="viewcode-back" href="../../../explauto.experiment.html#explauto.experiment.experiment.Experiment.evaluate_at">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eval_at</span><span class="p">,</span> <span class="n">testcases</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eval_at</span> <span class="o">=</span> <span class="n">eval_at</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">eval_at</span> <span class="o">=</span> <span class="n">eval_at</span>
 
-        <span class="k">if</span> <span class="n">evaluation</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">evaluation</span> <span class="o">=</span> <span class="n">Evaluation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">evaluation</span> <span class="o">=</span> <span class="n">evaluation</span>
-
-        <span class="k">if</span> <span class="n">testcases</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">evaluation</span><span class="o">.</span><span class="n">tester</span><span class="o">.</span><span class="n">testcases</span> <span class="o">=</span> <span class="n">testcases</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">evaluation</span> <span class="o">=</span> <span class="n">Evaluation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="p">,</span> <span class="n">testcases</span><span class="p">)</span>
 </div>
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="Experiment.from_settings"><a class="viewcode-back" href="../../../explauto.experiment.html#explauto.experiment.experiment.Experiment.from_settings">[docs]</a>    <span class="k">def</span> <span class="nf">from_settings</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">settings</span><span class="p">):</span>

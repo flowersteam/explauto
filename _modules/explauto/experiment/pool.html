@@ -174,13 +174,14 @@
   <h1>Source code for explauto.experiment.pool</h1><div class="highlight"><pre>
 <span class="kn">import</span> <span class="nn">itertools</span>
 
-<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Pool</span>
+<span class="kn">from</span> <span class="nn">multiprocessing.pool</span> <span class="kn">import</span> <span class="n">Pool</span><span class="p">,</span> <span class="n">ThreadPool</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">array</span><span class="p">,</span> <span class="n">hstack</span>
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">random</span>
 
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">Settings</span>
 <span class="kn">from</span> <span class="nn">.experiment</span> <span class="kn">import</span> <span class="n">Experiment</span>
+<span class="kn">from</span> <span class="nn">..environment</span> <span class="kn">import</span> <span class="n">environments</span>
 
 
 <span class="k">def</span> <span class="nf">_f</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
@@ -196,21 +197,19 @@
 
 
 <div class="viewcode-block" id="ExperimentPool"><a class="viewcode-back" href="../../../explauto.experiment.html#explauto.experiment.pool.ExperimentPool">[docs]</a><span class="k">class</span> <span class="nc">ExperimentPool</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">evaluate_at</span><span class="p">,</span> <span class="n">same_testcases</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">settings</span><span class="p">,</span> <span class="n">evaluate_at</span><span class="p">,</span>
+                 <span class="n">testcases</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">same_testcases</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Pool of experiments running in parallel.</span>
 
 <span class="sd">            The Pool will create :class:`~explauto.experiment.experiment.Experiment` using the :meth:`~explauto.experiment.experiment.Experiment.from_settings` constructor for each combination of parameters given.</span>
 
 <span class="sd">            .. note:: If you set same_testcases to True the first experiment will generate a testcase used by all the others experiment. Otherwise, each experiment will generate its own testcase.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">same_testcases</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">same_testcases</span> <span class="ow">and</span> <span class="n">testcases</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">s</span> <span class="o">=</span> <span class="n">settings</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">xp</span> <span class="o">=</span> <span class="n">Experiment</span><span class="o">.</span><span class="n">from_settings</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
             <span class="n">xp</span><span class="o">.</span><span class="n">evaluate_at</span><span class="p">(</span><span class="n">evaluate_at</span><span class="p">)</span>
             <span class="n">testcases</span> <span class="o">=</span> <span class="n">xp</span><span class="o">.</span><span class="n">evaluation</span><span class="o">.</span><span class="n">tester</span><span class="o">.</span><span class="n">testcases</span>
-
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">testcases</span> <span class="o">=</span> <span class="bp">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span>
                            <span class="n">itertools</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">evaluate_at</span><span class="p">),</span>
@@ -241,16 +240,24 @@
         <span class="n">settings</span> <span class="o">=</span> <span class="p">[</span><span class="n">Settings</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">env_conf</span><span class="p">,</span> <span class="n">bab</span><span class="p">,</span> <span class="n">im</span><span class="p">,</span> <span class="n">im_conf</span><span class="p">,</span> <span class="n">sm</span><span class="p">,</span> <span class="n">sm_conf</span><span class="p">)</span>
                     <span class="k">for</span> <span class="p">((</span><span class="n">env</span><span class="p">,</span> <span class="n">env_conf</span><span class="p">),</span> <span class="n">bab</span><span class="p">,</span> <span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">im_conf</span><span class="p">),</span> <span class="p">(</span><span class="n">sm</span><span class="p">,</span> <span class="n">sm_conf</span><span class="p">))</span> <span class="ow">in</span> <span class="n">l</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="n">evaluate_at</span><span class="p">,</span> <span class="n">same_testcases</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="n">evaluate_at</span><span class="p">,</span> <span class="n">same_testcases</span><span class="o">=</span><span class="n">same_testcases</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="ExperimentPool.run"><a class="viewcode-back" href="../../../explauto.experiment.html#explauto.experiment.pool.ExperimentPool.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">processes</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="ExperimentPool.run"><a class="viewcode-back" href="../../../explauto.experiment.html#explauto.experiment.pool.ExperimentPool.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">processes</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">use_thread</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Runs all experiments using a :py:class:`multiprocessing.Pool`.</span>
 
+<span class="sd">            :param int repeat: Number of time each experiment will be repeated.</span>
 <span class="sd">            :param int processes: Number of processes launched in parallel (Default: uses all the availabled CPUs)</span>
+<span class="sd">            :param bool use_thread: Use a :py:class:`~multiprocessing.pool.ThreadPool` instead of a :py:class:`~multiprocessing.pool.Pool`. By default, tries to guess depending on the environment which one to use.</span>
+
 <span class="sd">         &quot;&quot;&quot;</span>
         <span class="n">mega_config</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">repeat</span><span class="p">)]</span>
 
-        <span class="n">logs</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">_f</span><span class="p">,</span> <span class="n">mega_config</span><span class="p">)</span>
+        <span class="n">env</span> <span class="o">=</span> <span class="p">[</span><span class="n">environments</span><span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">environment</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">settings</span><span class="p">]</span>
+        <span class="n">use_process</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="n">e</span><span class="o">.</span><span class="n">use_process</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">env</span><span class="p">])</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">use_thread</span><span class="p">)</span>
+
+        <span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="p">)</span> <span class="k">if</span> <span class="n">use_process</span> <span class="k">else</span> <span class="n">ThreadPool</span><span class="p">(</span><span class="n">processes</span><span class="p">)</span>
+
+        <span class="n">logs</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">_f</span><span class="p">,</span> <span class="n">mega_config</span><span class="p">)</span>
         <span class="n">logs</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">logs</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">repeat</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_logs</span><span class="p">(</span><span class="n">logs</span><span class="p">)</span>
