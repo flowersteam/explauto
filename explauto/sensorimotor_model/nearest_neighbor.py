@@ -67,5 +67,7 @@ class NearestNeighbor(SensorimotorModel):
         self.dataset.add_xy(tuple(m), tuple(s))
         self.t += 1
 
-configurations = {'default': {'n_explore': 10, 'sigma_ratio': 1./7.}}
+configurations = {'default': {'n_explore': 10, 'sigma_ratio': 1./7.},
+                  'poppy': {'n_explore': 4, 'sigma_ratio': 1./5.}}
+
 sensorimotor_models = {'nearest_neighbor': (NearestNeighbor, configurations)}
