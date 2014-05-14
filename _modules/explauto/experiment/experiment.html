@@ -191,7 +191,7 @@
 
 <div class="viewcode-block" id="Experiment"><a class="viewcode-back" href="../../../explauto.experiment.html#explauto.experiment.experiment.Experiment">[docs]</a><span class="k">class</span> <span class="nc">Experiment</span><span class="p">(</span><span class="n">Observer</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">environment</span><span class="p">,</span> <span class="n">agent</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; This class is used to setup, run and plot the results of an experiment.</span>
+        <span class="sd">&quot;&quot;&quot; This class is used to setup, run and log the results of an experiment.</span>
 
 <span class="sd">            :param environment: set a handler that will receive the different errors</span>
 <span class="sd">            :type environment: :py:class:`~explauto.environment.environment.Environment`</span>
@@ -220,6 +220,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_running</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Event</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Experiment.run"><a class="viewcode-back" href="../../../explauto.experiment.html#explauto.experiment.experiment.Experiment.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">bg</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Run the experiment.</span>
+
+<span class="sd">            :param int n_iter: Number of run iterations, by default will run until the last evaluation step.</span>
+<span class="sd">            :param bool bg: whether to run in background (using a Thread)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">n_iter</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_at</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;Set n_iter or define evaluate_at.&#39;</span><span class="p">)</span>
@@ -235,9 +241,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_run</span><span class="p">(</span><span class="n">n_iter</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Experiment.wait"><a class="viewcode-back" href="../../../explauto.experiment.html#explauto.experiment.experiment.Experiment.wait">[docs]</a>    <span class="k">def</span> <span class="nf">wait</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Wait for the end of the run of the experiment. &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_t</span><span class="o">.</span><span class="n">join</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="Experiment.stop"><a class="viewcode-back" href="../../../explauto.experiment.html#explauto.experiment.experiment.Experiment.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Stop the experiment. &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_running</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 </div>
     <span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_iter</span><span class="p">):</span>
@@ -261,19 +269,25 @@
             <span class="c"># self.records[self.i_rec, :] = self.env.state</span>
             <span class="c"># self.i_rec += 1</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">update_logs</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_logs</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_running</span><span class="o">.</span><span class="n">is_set</span><span class="p">():</span>
                 <span class="k">break</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_running</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
-<div class="viewcode-block" id="Experiment.update_logs"><a class="viewcode-back" href="../../../explauto.experiment.html#explauto.experiment.experiment.Experiment.update_logs">[docs]</a>    <span class="k">def</span> <span class="nf">update_logs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_update_logs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">while</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifications</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
             <span class="n">topic</span><span class="p">,</span> <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">notifications</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
-</div>
+
 <div class="viewcode-block" id="Experiment.evaluate_at"><a class="viewcode-back" href="../../../explauto.experiment.html#explauto.experiment.experiment.Experiment.evaluate_at">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eval_at</span><span class="p">,</span> <span class="n">testcases</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Sets the evaluation interation indices.</span>
+
+<span class="sd">            :param list eval_at: iteration indices where an evaluation should be performed</span>
+<span class="sd">            :param numpy.array testcases: use a predefined testcases, by default it will be automatically generated.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eval_at</span> <span class="o">=</span> <span class="n">eval_at</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">eval_at</span> <span class="o">=</span> <span class="n">eval_at</span>
 
@@ -281,21 +295,7 @@
 </div>
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="Experiment.from_settings"><a class="viewcode-back" href="../../../explauto.experiment.html#explauto.experiment.experiment.Experiment.from_settings">[docs]</a>    <span class="k">def</span> <span class="nf">from_settings</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">settings</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Creates a :class:`~explauto.experiment.experiment.Experiment` object thanks to the given settings.</span>
-
-<span class="sd">        :param str environment: Name of the environment (see :data:`~explauto.environment.environments`)</span>
-<span class="sd">        :param str babbling: Babbling mode (&#39;motor&#39; or &#39;goal&#39;)</span>
-<span class="sd">        :param str interest_model: Name of the interest model (see :data:`~explauto.interest_model.interest_models`)</span>
-<span class="sd">        :param str sensorimotor_model: Name of the sensorimotor model (see :data:`~explauto.sensorimotor_model.sensorimotor_models`)</span>
-<span class="sd">        :param str environment_config: Name of the environment config (default: &#39;default&#39;)</span>
-<span class="sd">        :param str interest_model_config: Name of the interest model config (default: &#39;default&#39;)</span>
-<span class="sd">        :param str sensorimotor_model_config: Name of the sensorimotor model config (default: &#39;default&#39;)</span>
-
-<span class="sd">        This method automatically instantiate the :class:`~explauto.environment.environment.Environment` and the :class:`~explauto.agent.agent.Agent` with their respective configurations.</span>
-
-<span class="sd">        .. note:: The name of the environment (resp interest, sensorimotor model) should be registred in the environments (resp. interest_models, sensorimotor_models) dictionnary. Similarly, the name of the configuration should correspond to one of the  registred configurations.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot; Creates a :class:`~explauto.experiment.experiment.Experiment` object thanks to the given settings. &quot;&quot;&quot;</span>
         <span class="n">env_cls</span><span class="p">,</span> <span class="n">env_configs</span> <span class="o">=</span> <span class="n">environments</span><span class="p">[</span><span class="n">settings</span><span class="o">.</span><span class="n">environment</span><span class="p">]</span>
         <span class="n">config</span> <span class="o">=</span> <span class="n">env_configs</span><span class="p">[</span><span class="n">settings</span><span class="o">.</span><span class="n">environment_config</span><span class="p">]</span>
 
