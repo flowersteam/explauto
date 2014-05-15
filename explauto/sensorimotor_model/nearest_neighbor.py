@@ -12,7 +12,7 @@ n_neighbors = 1
 
 class NearestNeighbor(SensorimotorModel):
 
-    def __init__(self, conf, n_explore, sigma_ratio):
+    def __init__(self, conf, sigma_ratio):
         """ This class implements a simple sensorimotor model inspired from the original SAGG-RIAC algorithm. Used as a forward model, it simply returns the image in S of nearest neighbor in M. Used as an inverse model, it looks at the nearest neighbor in S, then explore during the n_explore following calls to self.infer around that neighborhood.
 
         :param conf: a Configuration instance
@@ -26,7 +26,7 @@ class NearestNeighbor(SensorimotorModel):
         self.s_dims = conf.s_dims
         self.t = 0
         self.sigma_expl = (conf.m_maxs - conf.m_mins) * float(sigma_ratio)
-        self.n_explore = n_explore
+        self.n_explore = 1
         self.to_explore = 0
         self.best_dist_to_goal = float('inf')
         self.current_goal = inf * ones(conf.s_ndims)
@@ -67,5 +67,5 @@ class NearestNeighbor(SensorimotorModel):
         self.dataset.add_xy(tuple(m), tuple(s))
         self.t += 1
 
-configurations = {'default': {'n_explore': 10, 'sigma_ratio': 1./7.}}
+configurations = {'default': {'sigma_ratio': 1./5.}}
 sensorimotor_models = {'nearest_neighbor': (NearestNeighbor, configurations)}
