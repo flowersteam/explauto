@@ -14,7 +14,8 @@ def make_arm_config(m_ndims, m_max, s_mins, s_maxs, length_ratio, noise):
 
 low_dim = make_arm_config(3, pi/3, array([-0.5, -1.]), array([1., 1.]), 3, 0.02)
 mid_dim = make_arm_config(7, pi/3, array([-0.5, -1.]), array([1., 1.]), 3, 0.02)
-hd_dim = make_arm_config(20, pi/12., array([0.2, -0.7]), array([1., 0.7]), 3, 0.02)
+# hd_dim = make_arm_config(20, pi/12., array([0.2, -0.7]), array([1., 0.7]), 3, 0.001)
+hd_dim = make_arm_config(30, pi/8., array([-0.6, -0.9]), array([1., 0.9]), 1., 0.001)
 
 environment = SimpleArmEnvironment
 configurations = {'low_dimensional': low_dim,
