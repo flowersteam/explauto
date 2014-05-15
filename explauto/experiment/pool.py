@@ -44,7 +44,7 @@ class ExperimentPool(object):
     @classmethod
     def from_settings_product(cls, environments, babblings,
                               interest_models, sensorimotor_models,
-                              evaluate_at, same_testcases=False):
+                              evaluate_at, n_bootstrap=[0], same_testcases=False):
         """ Creates a ExperimentPool with the product of all the given settings.
 
             :param environments: e.g. [('simple_arm', 'default'), ('simple_arm', 'high_dimensional')]
@@ -61,10 +61,10 @@ class ExperimentPool(object):
 
         """
         l = itertools.product(environments, babblings,
-                              interest_models, sensorimotor_models)
+                              interest_models, sensorimotor_models, n_bootstrap)
 
-        settings = [Settings(env, env_conf, bab, im, im_conf, sm, sm_conf)
-                    for ((env, env_conf), bab, (im, im_conf), (sm, sm_conf)) in l]
+        settings = [Settings(env, env_conf, bab, im, im_conf, sm, sm_conf, n_boot)
+                    for ((env, env_conf), bab, (im, im_conf), (sm, sm_conf), n_boot) in l]
 
         return cls(settings, evaluate_at, same_testcases=same_testcases)
 

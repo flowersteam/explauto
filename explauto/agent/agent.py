@@ -14,7 +14,7 @@ class Agent(Observable):
     def __init__(self,
                  im_model_cls, im_model_config, expl_dims,
                  sm_model_cls, sm_model_config, inf_dims,
-                 m_mins, m_maxs, s_mins, s_maxs):
+                 m_mins, m_maxs, s_mins, s_maxs, n_bootstrap=0):
         """Initialize agent class
         Keyword arguments:
         m_dims -- the indices of motor values
@@ -37,6 +37,7 @@ class Agent(Observable):
 
         # self.competence = competence
         self.t = 0
+        self.n_bootstrap = n_bootstrap
         self.state = np.zeros(self.conf.ndims)
 
     def next_state(self, env_state):
@@ -53,11 +54,14 @@ class Agent(Observable):
 
     def infer(self, expl_dims, inf_dims, x):
         try:
+            if self.n_bootstrap > 0:
+                self.n_bootstrap -= 1
+                raise ExplautoBootstrapError
             y = self.sensorimotor_model.infer(expl_dims,
                                               inf_dims,
                                               x.flatten())
         except ExplautoBootstrapError:
-            # logger.warning('Sensorimotor model not bootstrapped yet')
+            logger.warning('Sensorimotor model not bootstrapped yet, or Agent still in bootstraping phase')
             y = rand_bounds(self.conf.bounds[:, inf_dims])
         return y
 

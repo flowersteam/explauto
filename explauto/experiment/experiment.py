@@ -19,11 +19,11 @@ class Experiment(Observer):
     def __init__(self, environment, agent):
         """ This class is used to setup, run and plot the results of an experiment.
 
-            :param environment: set a handler that will receive the different errors
+            :param environment: an environment
             :type environment: :py:class:`~explauto.environment.environment.Environment`
 
-            :param agent: set a handler that will receive the different errors
-            :type agent: :py:class:`~explauto.environment.environment.Environment`
+            :param agent: an agent
+            :type agent: :py:class:`~explauto.environment.agent.Agent`
 
             """
         Observer.__init__(self)
@@ -139,6 +139,7 @@ class Experiment(Observer):
 
         agent = Agent(im_cls, im_configs[settings.interest_model_config], expl_dims,
                       sm_cls, sm_configs[settings.sensorimotor_model_config], inf_dims,
-                      env.conf.m_mins, env.conf.m_maxs, env.conf.s_mins, env.conf.s_maxs)
+                      env.conf.m_mins, env.conf.m_maxs, env.conf.s_mins, env.conf.s_maxs,
+                      settings.n_bootstrap)
 
         return cls(env, agent)
