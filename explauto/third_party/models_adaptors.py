@@ -11,12 +11,13 @@ def configuration(env_or_ag):
 
 
 class Robot(object):
-    def __init__(self, env):
+    def __init__(self, env, log=True):
         self.m_feats, self.s_feats, self.m_bounds = configuration(env)
         self.env = env
+        self.log = log
 
     def execute_order(self, order):
-        self.env.update(order)
+        self.env.update(order, self.log)
         return tuple(self.env.state[self.env.conf.s_dims])
 
 

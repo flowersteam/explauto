@@ -1,3 +1,5 @@
+from numpy import array, hstack
+
 from ..third_party.models.models.testbed import Testbed
 from ..third_party.models_adaptors import Learner, Robot
 
@@ -6,7 +8,7 @@ class Evaluation(object):
     def __init__(self, ag, env, testcases=None, n_samples=100, mode='inverse'):
         self.ag = ag
         learner = Learner(ag)
-        robot = Robot(env)
+        robot = Robot(env, log=False)
         self.tester = Testbed(robot, learner, testcases)
         self.mode = mode
         self.errors = []
@@ -29,3 +31,10 @@ class Evaluation(object):
             self.errors = self.tester.run_inverse()
         self.ag.sensorimotor_model.mode = mode
         return self.errors
+
+    def plot_testcases(self, ax, dims, **kwargs_plot):
+        plot_specs = {'marker': 'o', 'linestyle': 'None'}
+        plot_specs.update(kwargs_plot)
+        test_array = array([hstack((m, s)) for m, s in self.tester.testcases])
+        test_array = test_array[:, dims]
+        ax.plot(*(test_array.T), **plot_specs)
