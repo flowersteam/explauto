@@ -36,7 +36,7 @@ class Experiment(Observer):
         # self.i_rec = 0
         self.eval_at = []
 
-        self.log = ExperimentLog(self.env.conf)
+        self.log = ExperimentLog(self.env.conf, self.ag.expl_dims, self.ag.inf_dims)
 
         self.ag.subscribe('choice', self)
         self.ag.subscribe('inference', self)
