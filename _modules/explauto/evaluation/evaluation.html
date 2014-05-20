@@ -172,6 +172,8 @@
                 <div class="body">
                   
   <h1>Source code for explauto.evaluation.evaluation</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">array</span><span class="p">,</span> <span class="n">hstack</span>
+
 <span class="kn">from</span> <span class="nn">..third_party.models.models.testbed</span> <span class="kn">import</span> <span class="n">Testbed</span>
 <span class="kn">from</span> <span class="nn">..third_party.models_adaptors</span> <span class="kn">import</span> <span class="n">Learner</span><span class="p">,</span> <span class="n">Robot</span>
 
@@ -180,7 +182,7 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">testcases</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;inverse&#39;</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ag</span> <span class="o">=</span> <span class="n">ag</span>
         <span class="n">learner</span> <span class="o">=</span> <span class="n">Learner</span><span class="p">(</span><span class="n">ag</span><span class="p">)</span>
-        <span class="n">robot</span> <span class="o">=</span> <span class="n">Robot</span><span class="p">(</span><span class="n">env</span><span class="p">)</span>
+        <span class="n">robot</span> <span class="o">=</span> <span class="n">Robot</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tester</span> <span class="o">=</span> <span class="n">Testbed</span><span class="p">(</span><span class="n">robot</span><span class="p">,</span> <span class="n">learner</span><span class="p">,</span> <span class="n">testcases</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
@@ -202,7 +204,14 @@
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;inverse&#39;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tester</span><span class="o">.</span><span class="n">run_inverse</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="o">.</span><span class="n">sensorimotor_model</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">errors</span>
+</div>
+<div class="viewcode-block" id="Evaluation.plot_testcases"><a class="viewcode-back" href="../../../explauto.evaluation.html#explauto.evaluation.evaluation.Evaluation.plot_testcases">[docs]</a>    <span class="k">def</span> <span class="nf">plot_testcases</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">dims</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_plot</span><span class="p">):</span>
+        <span class="n">plot_specs</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;marker&#39;</span><span class="p">:</span> <span class="s">&#39;o&#39;</span><span class="p">,</span> <span class="s">&#39;linestyle&#39;</span><span class="p">:</span> <span class="s">&#39;None&#39;</span><span class="p">}</span>
+        <span class="n">plot_specs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs_plot</span><span class="p">)</span>
+        <span class="n">test_array</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="n">hstack</span><span class="p">((</span><span class="n">m</span><span class="p">,</span> <span class="n">s</span><span class="p">))</span> <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tester</span><span class="o">.</span><span class="n">testcases</span><span class="p">])</span>
+        <span class="n">test_array</span> <span class="o">=</span> <span class="n">test_array</span><span class="p">[:,</span> <span class="n">dims</span><span class="p">]</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">test_array</span><span class="o">.</span><span class="n">T</span><span class="p">),</span> <span class="o">**</span><span class="n">plot_specs</span><span class="p">)</span></div></div>
 </pre></div>
 
                 </div>

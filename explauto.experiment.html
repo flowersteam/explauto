@@ -213,8 +213,8 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>environment</strong> (<a class="reference internal" href="explauto.environment.html#explauto.environment.environment.Environment" title="explauto.environment.environment.Environment"><tt class="xref py py-class docutils literal"><span class="pre">Environment</span></tt></a>) &#8211; set a handler that will receive the different errors</li>
-<li><strong>agent</strong> (<a class="reference internal" href="explauto.environment.html#explauto.environment.environment.Environment" title="explauto.environment.environment.Environment"><tt class="xref py py-class docutils literal"><span class="pre">Environment</span></tt></a>) &#8211; set a handler that will receive the different errors</li>
+<li><strong>environment</strong> (<a class="reference internal" href="explauto.environment.html#explauto.environment.environment.Environment" title="explauto.environment.environment.Environment"><tt class="xref py py-class docutils literal"><span class="pre">Environment</span></tt></a>) &#8211; an environment</li>
+<li><strong>agent</strong> (<tt class="xref py py-class docutils literal"><span class="pre">Agent</span></tt>) &#8211; an agent</li>
 </ul>
 </td>
 </tr>
@@ -302,7 +302,7 @@
 </div>
 <dl class="classmethod">
 <dt id="explauto.experiment.pool.ExperimentPool.from_settings_product">
-<em class="property">classmethod </em><tt class="descname">from_settings_product</tt><big>(</big><em>environments</em>, <em>babblings</em>, <em>interest_models</em>, <em>sensorimotor_models</em>, <em>evaluate_at</em>, <em>same_testcases=False</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/pool.html#ExperimentPool.from_settings_product"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.pool.ExperimentPool.from_settings_product" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><tt class="descname">from_settings_product</tt><big>(</big><em>environments, babblings, interest_models, sensorimotor_models, evaluate_at, n_bootstrap=[0], same_testcases=False</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/pool.html#ExperimentPool.from_settings_product"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.pool.ExperimentPool.from_settings_product" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a ExperimentPool with the product of all the given settings.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -356,7 +356,7 @@
 
 <span class="target" id="module-explauto.experiment.log"></span><dl class="class">
 <dt id="explauto.experiment.log.ExperimentLog">
-<em class="property">class </em><tt class="descclassname">explauto.experiment.log.</tt><tt class="descname">ExperimentLog</tt><big>(</big><em>conf</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/log.html#ExperimentLog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.log.ExperimentLog" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">explauto.experiment.log.</tt><tt class="descname">ExperimentLog</tt><big>(</big><em>conf</em>, <em>expl_dims</em>, <em>inf_dims</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/log.html#ExperimentLog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.log.ExperimentLog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
 <dl class="attribute">
 <dt id="explauto.experiment.log.ExperimentLog.logs">
@@ -372,18 +372,23 @@
 <dt id="explauto.experiment.log.ExperimentLog.pack">
 <tt class="descname">pack</tt><big>(</big><em>topic_dims</em>, <em>t</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/log.html#ExperimentLog.pack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.log.ExperimentLog.pack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Packs selected logs into a numpy array
-:param list topic_dims: list of (topic, dims) tuples, where topic is a string and dims a list dimensions to be plotted for that topic
-:param int t: time indexes to be plotted</p>
+:param list topic_dims: list of (topic, dims) tuples, where topic is a string and dims a list dimensions to be packed for that topic
+:param int t: time indexes to be packed</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="explauto.experiment.log.ExperimentLog.axes_limits">
+<tt class="descname">axes_limits</tt><big>(</big><em>topic_dims</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/log.html#ExperimentLog.axes_limits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.log.ExperimentLog.axes_limits" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="explauto.experiment.log.ExperimentLog.scatter_plot">
-<tt class="descname">scatter_plot</tt><big>(</big><em>ax</em>, <em>topic_dims</em>, <em>t=None</em>, <em>**kwargs_plot</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/log.html#ExperimentLog.scatter_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.log.ExperimentLog.scatter_plot" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">scatter_plot</tt><big>(</big><em>ax</em>, <em>topic_dims</em>, <em>t=None</em>, <em>ms_limits=True</em>, <em>**kwargs_plot</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/log.html#ExperimentLog.scatter_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.log.ExperimentLog.scatter_plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>2D or 3D scatter plot
-:param tuple topic_dims: list of (topic, dims) tuples, where topic is a string and dims is a list of dimensions to be plotted for that topic.
-:param int t: time indexes to be plotted
 :param axes ax: matplotlib axes (use Axes3D if 3D data)
-:param dict kwargs_plot: argument to be passed to matplotlib&#8217;s plot function, e.g. the style of the plotted points &#8216;or&#8217;</p>
+:param tuple topic_dims: list of (topic, dims) tuples, where topic is a string and dims is a list of dimensions to be plotted for that topic.
+:param int t: time indexes to be plotted            :param dict kwargs_plot: argument to be passed to matplotlib&#8217;s plot function, e.g. the style of the plotted points &#8216;or&#8217;
+:param bool ms_limits: if set to True, automatically set axes boundaries to the sensorimotor boundaries (default: True)</p>
 </dd></dl>
 
 <dl class="method">

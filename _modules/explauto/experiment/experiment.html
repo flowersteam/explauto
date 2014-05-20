@@ -193,11 +193,11 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">environment</span><span class="p">,</span> <span class="n">agent</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; This class is used to setup, run and log the results of an experiment.</span>
 
-<span class="sd">            :param environment: set a handler that will receive the different errors</span>
+<span class="sd">            :param environment: an environment</span>
 <span class="sd">            :type environment: :py:class:`~explauto.environment.environment.Environment`</span>
 
-<span class="sd">            :param agent: set a handler that will receive the different errors</span>
-<span class="sd">            :type agent: :py:class:`~explauto.environment.environment.Environment`</span>
+<span class="sd">            :param agent: an agent</span>
+<span class="sd">            :type agent: :py:class:`~explauto.environment.agent.Agent`</span>
 
 <span class="sd">            &quot;&quot;&quot;</span>
         <span class="n">Observer</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -210,7 +210,7 @@
         <span class="c"># self.i_rec = 0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">eval_at</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">ExperimentLog</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">conf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span> <span class="o">=</span> <span class="n">ExperimentLog</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">env</span><span class="o">.</span><span class="n">conf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="o">.</span><span class="n">expl_dims</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="o">.</span><span class="n">inf_dims</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="s">&#39;choice&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ag</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="s">&#39;inference&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
@@ -313,7 +313,8 @@
 
         <span class="n">agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span><span class="n">im_cls</span><span class="p">,</span> <span class="n">im_configs</span><span class="p">[</span><span class="n">settings</span><span class="o">.</span><span class="n">interest_model_config</span><span class="p">],</span> <span class="n">expl_dims</span><span class="p">,</span>
                       <span class="n">sm_cls</span><span class="p">,</span> <span class="n">sm_configs</span><span class="p">[</span><span class="n">settings</span><span class="o">.</span><span class="n">sensorimotor_model_config</span><span class="p">],</span> <span class="n">inf_dims</span><span class="p">,</span>
-                      <span class="n">env</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">m_mins</span><span class="p">,</span> <span class="n">env</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">m_maxs</span><span class="p">,</span> <span class="n">env</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">s_mins</span><span class="p">,</span> <span class="n">env</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">s_maxs</span><span class="p">)</span>
+                      <span class="n">env</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">m_mins</span><span class="p">,</span> <span class="n">env</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">m_maxs</span><span class="p">,</span> <span class="n">env</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">s_mins</span><span class="p">,</span> <span class="n">env</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">s_maxs</span><span class="p">,</span>
+                      <span class="n">settings</span><span class="o">.</span><span class="n">n_bootstrap</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="n">env</span><span class="p">,</span> <span class="n">agent</span><span class="p">)</span></div></div>
 </pre></div>
