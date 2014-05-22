@@ -1,5 +1,5 @@
-About
-=====
+About Test
+=========
 
 Exploration strategies in Developmental Robotics
 ------------------------------------------------
