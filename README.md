@@ -22,7 +22,8 @@ Explauto's scientific roots trace back from Intelligent Adaptive Curiosity algor
 * [Setting a basic experiment](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/01%20Running%20a%20basic%20experiment..ipynb)
 * [Comparing motor vs goal strategies](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/02%20Comparing%20motor%20vs%20goal%20strategies.ipynb)
 * [Running pool of experiments](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/03%20Running%20pool%20of%20experiments.ipynb)
-* [Poppy environment](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/04%20%20Poppy%20environment.ipynb)
+* [Introducing curiosity-driven exploration](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/04%20Introducing%20curiosity-driven%20learning.ipynb)
+* [Poppy environment](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/05%20%20Poppy%20environment.ipynb)
 
 ### API ###
 
