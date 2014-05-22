@@ -13,12 +13,12 @@ This is why learning has to be guided using efficient exploration strategies.
 
 In the recent year, work in developmental learning has explored in particular two families of algorithmic principles which allow the efficient guiding of learning and exploration.
 
-First, the principle of goal babbling was proposed independantly by 'Oudeyer and Kaplan in 2008' and 'Rolf and Steil in 2010'_. It consists in sampling goals in the sensory effect space and to use the current state of an inverse model to infer a motor action supposed to reach the goals. This strategy allows a progressive covering of the reachable sensory space much more uniformly than in a motor babbling strategy, where the agent samples directly in the motor space.
+First, the principle of goal babbling was proposed independantly by `Oudeyer and Kaplan in 2008`_ and `Rolf and Steil in 2010`_. It consists in sampling goals in the sensory effect space and to use the current state of an inverse model to infer a motor action supposed to reach the goals. This strategy allows a progressive covering of the reachable sensory space much more uniformly than in a motor babbling strategy, where the agent samples directly in the motor space.
 
-The second principle is that of active learning and intrinsic motivation, where physical experiments are chosen to gather maximal information gain. Efficient versions of such mechanisms are based on the active choice of learning experiments that maximize learning *progress*, for e.g. improvement of predictions or of competences to reach goals ['Schmidhuber, 1991'_; 'Oudeyer, 2007'_]. This automatically drives the system to explore and learn first easy skills, and then explore skills of progressively increasing complexity.
+The second principle is that of active learning and intrinsic motivation, where physical experiments are chosen to gather maximal information gain. Efficient versions of such mechanisms are based on the active choice of learning experiments that maximize learning *progress*, for e.g. improvement of predictions or of competences to reach goals (`Schmidhuber, 1991`_ ; `Oudeyer, 2007`_). This automatically drives the system to explore and learn first easy skills, and then explore skills of progressively increasing complexity.
 
 
 .. _Rolf and Steil in 2010: http://cor-lab.org/system/files/RolfSteilGienger-TAMD2010-GoalBabbling.pdf
 .. _Oudeyer and Kaplan in 2008: http://www.pyoudeyer.com/epirob08OudeyerKaplan.pdf
-.. _Schmidhuber, 1991: ftp://ftp.idsia.ch/pub/juergen/curiositysab.pdf
+.. _Schmidhuber, 1991: http://web.media.mit.edu/~alockerd/reading/Schmidhuber-curiositysab-1.pdf
 .. _Oudeyer, 2007: http://www.pyoudeyer.com/ims.pdf
