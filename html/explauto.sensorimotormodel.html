@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+
+
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    
+    <title>sensorimotor_model Package &mdash; explauto 1.0.0 documentation</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    
+<link rel="stylesheet" href="_static/css/basicstrap-base.css" type="text/css" />
+<link rel="stylesheet" href="_static/css/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" href="_static/css/font-awesome.min.css">
+<!--[if IE 7]>
+<link rel="stylesheet" href="_static/css/font-awesome-ie7.min.css">
+<![endif]-->
+<style type="text/css">
+  body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+  }
+}
+</style>
+<link rel="stylesheet" href="_static/basicstrap.css" type="text/css" />
+<link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+<link rel="stylesheet" href="_static/css/bootstrap-responsive.min.css" type="text/css" />
+    
+<script type="text/javascript">
+  var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:    './',
+            VERSION:     '1.0.0',
+            COLLAPSE_INDEX: false,
+            FILE_SUFFIX: '.html',
+            HAS_SOURCE:  true
+  };
+</script>
+<script type="text/javascript" src="_static/js/jquery.min.js"></script>
+<script type="text/javascript" src="_static/underscore.js"></script>
+<script type="text/javascript" src="_static/doctools.js"></script>
+<script type="text/javascript" src="_static/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('.show-sidebar').click(function(e) {
+       e.preventDefault();
+       if ($(".show-sidebar").html() == "Open Table Of Contents") {
+          $('.for-mobile').removeClass('hidden-phone');
+          $(".show-sidebar").html("Close Table Of Contents");
+       } else {
+          $(".show-sidebar").html("Open Table Of Contents");
+       }
+    });
+  });
+</script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="top" title="explauto 1.0.0 documentation" href="index.html" />
+    <link rel="up" title="Explauto’s API" href="api.html" />
+    <link rel="next" title="utils Package" href="explauto.utils.html" />
+    <link rel="prev" title="interest_model Package" href="explauto.interestmodel.html" /> 
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top ">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="index.html">explauto 1.0.0 documentation</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              
+                <li>
+                <a href="genindex.html" title="General Index" accesskey="I">index</a>
+                </li>
+                <li>
+                <a href="py-modindex.html" title="Python Module Index" >modules</a>
+                </li>
+                <li>
+                <a href="explauto.utils.html" title="utils Package" accesskey="N">next</a>
+                </li>
+                <li>
+                <a href="explauto.interestmodel.html" title="interest_model Package" accesskey="P">previous</a>
+                </li>
+                <li>
+                <a href="api.html" accesskey="U">Explauto&#8217;s API</a>
+                </li>
+              
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+    <!-- container -->
+    <div class="container-fluid">
+
+
+      
+      <div class="row-fluid hidden-desktop hidden-tablet">
+      
+<div class="span3 ">
+  <a class="visible-phone btn btn-small show-sidebar" data-toggle="collapse" data-target=".for-mobile">Open Table Of Contents</a>
+  <div class="for-mobile sidebar hidden-phone">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="explauto.interestmodel.html"
+                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal docutils literal"><span class="pre">interest_model</span></tt> Package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="explauto.utils.html"
+                        title="next chapter"><tt class="docutils literal docutils literal"><span class="pre">utils</span></tt> Package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/explauto.sensorimotormodel.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox">
+  <h3>Quick search</h3>
+  <form class="search form-search" action="search.html" method="get">
+      <div class="input-append">
+        <input type="text" class="search-query" name="q">
+        <input type="submit" class="btn" value="Go" />
+      </div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+  </div>
+</div>
+      </div>
+      
+
+      <!-- row -->
+      <div class="row-fluid">
+         
+<div class="span3 visible-desktop visible-tablet">
+  <div class=" sidebar hidden-phone">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="explauto.interestmodel.html"
+                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal docutils literal"><span class="pre">interest_model</span></tt> Package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="explauto.utils.html"
+                        title="next chapter"><tt class="docutils literal docutils literal"><span class="pre">utils</span></tt> Package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/explauto.sensorimotormodel.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox">
+  <h3>Quick search</h3>
+  <form class="search form-search" action="search.html" method="get">
+      <div class="input-append">
+        <input type="text" class="search-query" name="q">
+        <input type="submit" class="btn" value="Go" />
+      </div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+  </div>
+</div> 
+        
+
+        <div class="span9">
+          <div class="document">
+            <div class="documentwrapper">
+              <div class="bodywrapper">
+                <div class="body">
+                  
+  <div class="section" id="module-explauto.sensorimotor_model.sensorimotor_model">
+<span id="sensorimotor-model-package"></span><h1><tt class="xref py py-mod docutils literal"><span class="pre">sensorimotor_model</span></tt> Package<a class="headerlink" href="#module-explauto.sensorimotor_model.sensorimotor_model" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel">
+<em class="property">class </em><tt class="descclassname">explauto.sensorimotor_model.sensorimotor_model.</tt><tt class="descname">SensorimotorModel</tt><a class="reference internal" href="_modules/explauto/sensorimotor_model/sensorimotor_model.html#SensorimotorModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dl class="method">
+<dt id="explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel.infer">
+<tt class="descname">infer</tt><big>(</big><em>in_dims</em>, <em>out_dims</em><big>)</big><a class="reference internal" href="_modules/explauto/sensorimotor_model/sensorimotor_model.html#SensorimotorModel.infer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel.infer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel.update">
+<tt class="descname">update</tt><big>(</big><em>m</em>, <em>s</em><big>)</big><a class="reference internal" href="_modules/explauto/sensorimotor_model/sensorimotor_model.html#SensorimotorModel.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel.update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-explauto.sensorimotor_model.nearest_neighbor"></span><dl class="class">
+<dt id="explauto.sensorimotor_model.nearest_neighbor.NearestNeighbor">
+<em class="property">class </em><tt class="descclassname">explauto.sensorimotor_model.nearest_neighbor.</tt><tt class="descname">NearestNeighbor</tt><big>(</big><em>conf</em>, <em>sigma_ratio</em><big>)</big><a class="reference internal" href="_modules/explauto/sensorimotor_model/nearest_neighbor.html#NearestNeighbor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.sensorimotor_model.nearest_neighbor.NearestNeighbor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel" title="explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel"><tt class="xref py py-class docutils literal"><span class="pre">explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel</span></tt></a></p>
+<p>This class implements a simple sensorimotor model inspired from the original SAGG-RIAC algorithm. Used as a forward model, it simply returns the image in S of nearest neighbor in M. Used as an inverse model, it looks at the nearest neighbor in S, then explore during the n_explore following calls to self.infer around that neighborhood.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>conf</strong> (<a class="reference internal" href="explauto.utils.html#explauto.utils.config.Configuration" title="explauto.utils.config.Configuration"><tt class="xref py py-class docutils literal"><span class="pre">Configuration</span></tt></a>) &#8211; a Configuration instance</li>
+<li><strong>n_explore</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; the number of exploration trials for each goal</li>
+<li><strong>sigma_ration</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; the standard deviation of the exploration will be (conf.m_maxs - conf.m_mins) sigma_ratio. Hence, low values of this parameters means larger exploration</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="explauto.sensorimotor_model.nearest_neighbor.NearestNeighbor.infer">
+<tt class="descname">infer</tt><big>(</big><em>in_dims</em>, <em>out_dims</em>, <em>x</em><big>)</big><a class="reference internal" href="_modules/explauto/sensorimotor_model/nearest_neighbor.html#NearestNeighbor.infer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.sensorimotor_model.nearest_neighbor.NearestNeighbor.infer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.sensorimotor_model.nearest_neighbor.NearestNeighbor.update">
+<tt class="descname">update</tt><big>(</big><em>m</em>, <em>s</em><big>)</big><a class="reference internal" href="_modules/explauto/sensorimotor_model/nearest_neighbor.html#NearestNeighbor.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.sensorimotor_model.nearest_neighbor.NearestNeighbor.update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        
+      </div><!-- /row -->
+
+      <!-- row -->
+      <div class="row-fluid">
+<div class="related navbar ">
+  <div class="navbar-inner">
+    <ul class="nav pull-right">
+      
+        <li><a href="genindex.html" title="General Index" >index</a></li>
+        <li><a href="py-modindex.html" title="Python Module Index" >modules</a></li>
+        <li><a href="explauto.utils.html" title="utils Package" >next</a></li>
+        <li><a href="explauto.interestmodel.html" title="interest_model Package" >previous</a></li>
+        <li><a href="index.html">explauto 1.0.0 documentation</a></li>
+        <li><a href="api.html" >Explauto&#8217;s API</a></li> 
+      
+    </ul>
+  </div>
+</div>
+      </div><!-- /row -->
+
+      <!-- footer -->
+      <footer>
+          &copy; Copyright 2014, Clement Moulin-Frier, Pierre Rouanet.
+        Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.
+      </footer>
+      <!-- /footer -->
+
+    </div>
+    <!-- /container -->
+
+  </body>
+</html>
