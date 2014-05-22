@@ -31,8 +31,7 @@ class Agent(Observable):
         self.inf_dims = inf_dims
 
         self.sensorimotor_model = sm_model_cls(self.conf, **sm_model_config)
-        self.interest_model = im_model_cls(self.expl_dims,
-                                           self.conf.bounds,
+        self.interest_model = im_model_cls(self.conf, self.expl_dims,
                                            **im_model_config)
 
         # self.competence = competence

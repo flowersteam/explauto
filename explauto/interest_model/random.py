@@ -3,10 +3,10 @@ from ..utils import rand_bounds
 
 
 class RandomInterest(InterestModel):
-    def __init__(self, i_dims, bounds):
-        InterestModel.__init__(self, i_dims)
+    def __init__(self, conf, expl_dims):
+        InterestModel.__init__(self, expl_dims)
 
-        self.bounds = bounds[:, i_dims]
+        self.bounds = conf.bounds[:, expl_dims]
         # self.ndims = bounds.shape[1]
 
     def sample(self):

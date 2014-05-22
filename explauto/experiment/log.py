@@ -39,9 +39,11 @@ class ExperimentLog(object):
             elif topic == 'sensori':
                 bounds.extend(list(self.conf.s_bounds[:, dims].T.flatten()))
             elif topic == 'choice':
-                bounds.extend(list(self.conf.bounds[:, self.expl_dims].T.flatten()))
+                bounds.extend(list(self.conf.bounds[:, [self.expl_dims[d]
+                                                        for d in dims]].T.flatten()))
             elif topic == 'inference':
-                bounds.extend(list(self.conf.bounds[:, self.inf_dims].T.flatten()))
+                bounds.extend(list(self.conf.bounds[:, [self.inf_dims[d]
+                                                        for d in dims]].T.flatten()))
             else:
                 raise ValueError("Only valid for 'motor', 'sensori', 'choice' and 'inference' topics")
         return bounds
