@@ -1,5 +1,6 @@
 from collections import defaultdict
 from numpy import array, mean, std
+from ..utils.density_image import density_image
 
 
 class ExperimentLog(object):
@@ -48,6 +49,15 @@ class ExperimentLog(object):
                 raise ValueError("Only valid for 'motor', 'sensori', 'choice' and 'inference' topics")
         return bounds
 
+    def data_t(self, topic_dims, t):
+        t_bound = float('inf')
+        if t is None:
+            for topic, _ in topic_dims:
+                t_bound = min(t_bound, self.counts[topic])
+            t = range(t_bound)
+        data = self.pack(topic_dims, t)
+        return data
+
     def scatter_plot(self, ax, topic_dims, t=None, ms_limits=True, **kwargs_plot):
         """ 2D or 3D scatter plot
             :param axes ax: matplotlib axes (use Axes3D if 3D data)
@@ -57,29 +67,41 @@ class ExperimentLog(object):
         """
         plot_specs = {'marker': 'o', 'linestyle': 'None'}
         plot_specs.update(kwargs_plot)
-        t_bound = float('inf')
 
-        if t is None:
-            for topic, _ in topic_dims:
-                t_bound = min(t_bound, self.counts[topic])
-            t = range(t_bound)
+        # t_bound = float('inf')
+        # if t is None:
+            # for topic, _ in topic_dims:
+                # t_bound = min(t_bound, self.counts[topic])
+            # t = range(t_bound)
+        # data = self.pack(topic_dims, t)
+        data = self.data_t(topic_dims, t)
 
-        data = self.pack(topic_dims, t)
-        # ax.plot(data[:, 0], data[:, 1], style)
         ax.plot(*(data.T), **plot_specs)
         if ms_limits:
             ax.axis(self.axes_limits(topic_dims))
 
-    def plot_learning_curve(self, ax):
+    def plot_learning_curve(self, ax, squared_errors=False):
         if not hasattr(self, 'eval_at'):
             raise UserWarning('No evaluation available, '
                               'you need to specify the evaluate_at argument'
                               ' when constructing the experiment')
 
-        avg_err = mean(array(self.eval_errors), axis=1)
-        std_err = std(array(self.eval_errors), axis=1)
+        errors = array(self.eval_errors)
+        if squared_errors:
+            errors = errors ** 2
+        avg_err = mean(errors, axis=1)
+        std_err = std(errors, axis=1)
         ax.errorbar(self.eval_at, avg_err, yerr=std_err)
 
-
-
-    # def density_plot(self, topic_dims, t=None,
+    def density_plot(self, ax, topic_dims, t=None,
+                     res_x=40, res_y=40,
+                     width_x=4, width_y=4):
+        data = self.data_t(topic_dims, t)
+        if data.shape[1] != 2:
+            raise ValueError('Density plot only possible on 2D data')
+        bounds = self.axes_limits(topic_dims)
+        kde = density_image(data[:, 0], data[:, 1],
+                            res_x, res_y,
+                            width_x, width_y,
+                            bounds, False)
+        ax.imshow(kde.T[::-1, :], extent=bounds)
