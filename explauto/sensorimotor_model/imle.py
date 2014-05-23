@@ -1,11 +1,11 @@
 # import numpy as np
 
-from .sm_model import SmModel
+from .sensorimotor_model import SensorimotorModel
 from ..models import imle_model as imle_
 from ..models.gmminf import GMM
 
 
-class ImleModel(SmModel):
+class ImleModel(SensorimotorModel):
     """
         This class wraps the IMLE model from Bruno Damas ( http://users.isr.ist.utl.pt/~bdamas/IMLE ) into a sensorimotor model class to be used by ..agent.agent
         """
