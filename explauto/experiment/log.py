@@ -92,6 +92,11 @@ class ExperimentLog(object):
         avg_err = mean(errors, axis=1)
         std_err = std(errors, axis=1)
         ax.errorbar(self.eval_at, avg_err, yerr=std_err)
+        axis = ax.axis()
+        ax.axis([self.eval_at[0] * 0.9, self.eval_at[-1] * 1.1, axis[2], axis[3]])
+        ax.set_title('Test on ' + str(errors.shape[1]) + ' sensory goals')
+        ax.set_xlabel('Number of sensorimotor experiments')
+        ax.set_ylabel('Mean ' + 'squared' if squared_errors else '' + 'error')
 
     def density_plot(self, ax, topic_dims, t=None,
                      res_x=40, res_y=40,
@@ -104,4 +109,7 @@ class ExperimentLog(object):
                             res_x, res_y,
                             width_x, width_y,
                             bounds, False)
-        ax.imshow(kde.T[::-1, :], extent=bounds)
+        # print kde.min(), kde.max()
+
+        #FIXME vmin, vmax
+        ax.imshow(kde.T[::-1, :], extent=bounds, vmin=0., vmax=1.)
