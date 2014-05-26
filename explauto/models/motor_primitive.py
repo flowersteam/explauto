@@ -9,6 +9,7 @@ class BasisFunctions(object):
         self.n_basis = n_basis
 
         means = linspace(0, duration, n_basis)
+        # FIXME:
         variances = duration / (sigma * n_basis)**2
         gaussians = [Gaussian(array([means[k]]), array([[variances]]))
                      for k in range(len(means))]
