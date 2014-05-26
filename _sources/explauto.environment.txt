@@ -11,6 +11,11 @@
     :undoc-members:
     :show-inheritance:
 
+.. automodule:: explauto.environment.pendulum.pendulum
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 .. automodule:: explauto.environment.pypot.pypot_robot
     :members:
     :undoc-members:

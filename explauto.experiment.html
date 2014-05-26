@@ -20,7 +20,6 @@
 <!--[if IE 7]>
 <link rel="stylesheet" href="_static/css/font-awesome-ie7.min.css">
 <![endif]-->
-
 <style type="text/css">
   body {
     padding-top: 60px;
@@ -28,7 +27,6 @@
   }
 }
 </style>
-
 <link rel="stylesheet" href="_static/basicstrap.css" type="text/css" />
 <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 <link rel="stylesheet" href="_static/css/bootstrap-responsive.min.css" type="text/css" />
@@ -45,6 +43,7 @@
 <script type="text/javascript" src="_static/js/jquery.min.js"></script>
 <script type="text/javascript" src="_static/underscore.js"></script>
 <script type="text/javascript" src="_static/doctools.js"></script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 <script type="text/javascript" src="_static/js/bootstrap.min.js"></script>
 <script type="text/javascript">
   $(document).ready(function(){
@@ -58,24 +57,6 @@
        }
     });
   });
-  $(window).load(function () {
-    /*
-
-     * Scroll the window to avoid the topnav bar
-     * https://github.com/twitter/bootstrap/issues/1768
-     */
-    if ($(".navbar.navbar-fixed-top").length > 0) {
-      // var navHeight = $(".navbar").height(),
-      var navHeight = 40,
-        shiftWindow = function() { scrollBy(0, -navHeight - 10); };
-
-      if (location.hash) {
-        setTimeout(shiftWindow, 1);
-      }
-
-      window.addEventListener("hashchange", shiftWindow);
-    }
-  });
 </script>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="top" title="explauto 1.0.0 documentation" href="index.html" />
@@ -83,8 +64,8 @@
     <link rel="next" title="interest_model Package" href="explauto.interestmodel.html" />
     <link rel="prev" title="evaluation Package" href="explauto.evaluation.html" /> 
   </head>
-  <body role="document">
-    <div class="navbar navbar-fixed-top " role="navigation" aria-label="top navigation">
+  <body>
+    <div class="navbar navbar-fixed-top ">
       <div class="navbar-inner">
         <div class="container-fluid">
           <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -92,9 +73,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <div role="banner">
-            <a class="brand" href="index.html">explauto 1.0.0 documentation</a>
-          </div>
+          <a class="brand" href="index.html">explauto 1.0.0 documentation</a>
           <div class="nav-collapse collapse">
             <ul class="nav pull-right">
               
@@ -130,10 +109,10 @@
       
 <div class="span3 ">
   <a class="visible-phone btn btn-small show-sidebar" data-toggle="collapse" data-target=".for-mobile">Open Table Of Contents</a>
-  <div class="for-mobile sidebar hidden-phone" role="navigation" aria-label="main navigation">
+  <div class="for-mobile sidebar hidden-phone">
   <h4>Previous topic</h4>
   <p class="topless"><a href="explauto.evaluation.html"
-                        title="previous chapter"><tt class="docutils literal"><span class="pre">evaluation</span></tt> Package</a></p>
+                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal docutils literal"><span class="pre">evaluation</span></tt> Package</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="explauto.interestmodel.html"
                         title="next chapter"><tt class="docutils literal"><span class="pre">interest_model</span></tt> Package</a></p>
@@ -142,7 +121,7 @@
     <li><a href="_sources/explauto.experiment.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
-<div id="searchbox" role="search">
+<div id="searchbox">
   <h3>Quick search</h3>
   <form class="search form-search" action="search.html" method="get">
       <div class="input-append">
@@ -165,10 +144,10 @@
       <div class="row-fluid">
          
 <div class="span3 visible-desktop visible-tablet">
-  <div class=" sidebar hidden-phone" role="navigation" aria-label="main navigation">
+  <div class=" sidebar hidden-phone">
   <h4>Previous topic</h4>
   <p class="topless"><a href="explauto.evaluation.html"
-                        title="previous chapter"><tt class="docutils literal"><span class="pre">evaluation</span></tt> Package</a></p>
+                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal docutils literal"><span class="pre">evaluation</span></tt> Package</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="explauto.interestmodel.html"
                         title="next chapter"><tt class="docutils literal"><span class="pre">interest_model</span></tt> Package</a></p>
@@ -177,7 +156,7 @@
     <li><a href="_sources/explauto.experiment.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
-<div id="searchbox" role="search">
+<div id="searchbox">
   <h3>Quick search</h3>
   <form class="search form-search" action="search.html" method="get">
       <div class="input-append">
@@ -196,7 +175,7 @@
         
 
         <div class="span9">
-          <div class="document" role="main">
+          <div class="document">
             <div class="documentwrapper">
               <div class="bodywrapper">
                 <div class="body">
@@ -382,6 +361,11 @@
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="explauto.experiment.log.ExperimentLog.data_t">
+<tt class="descname">data_t</tt><big>(</big><em>topic_dims</em>, <em>t</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/log.html#ExperimentLog.data_t"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.log.ExperimentLog.data_t" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="explauto.experiment.log.ExperimentLog.scatter_plot">
 <tt class="descname">scatter_plot</tt><big>(</big><em>ax</em>, <em>topic_dims</em>, <em>t=None</em>, <em>ms_limits=True</em>, <em>**kwargs_plot</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/log.html#ExperimentLog.scatter_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.log.ExperimentLog.scatter_plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>2D or 3D scatter plot
@@ -393,7 +377,12 @@
 
 <dl class="method">
 <dt id="explauto.experiment.log.ExperimentLog.plot_learning_curve">
-<tt class="descname">plot_learning_curve</tt><big>(</big><em>ax</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/log.html#ExperimentLog.plot_learning_curve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.log.ExperimentLog.plot_learning_curve" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">plot_learning_curve</tt><big>(</big><em>ax</em>, <em>squared_errors=False</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/log.html#ExperimentLog.plot_learning_curve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.log.ExperimentLog.plot_learning_curve" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.experiment.log.ExperimentLog.density_plot">
+<tt class="descname">density_plot</tt><big>(</big><em>ax</em>, <em>topic_dims</em>, <em>t=None</em>, <em>res_x=40</em>, <em>res_y=40</em>, <em>width_x=4</em>, <em>width_y=4</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/log.html#ExperimentLog.density_plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.log.ExperimentLog.density_plot" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -412,7 +401,7 @@
 
       <!-- row -->
       <div class="row-fluid">
-<div class="related navbar " role="navigation" aria-label="related navigation">
+<div class="related navbar ">
   <div class="navbar-inner">
     <ul class="nav pull-right">
       
@@ -429,7 +418,7 @@
       </div><!-- /row -->
 
       <!-- footer -->
-      <footer role="contentinfo">
+      <footer>
           &copy; Copyright 2014, Clement Moulin-Frier, Pierre Rouanet.
         Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.
       </footer>

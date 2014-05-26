@@ -20,7 +20,6 @@
 <!--[if IE 7]>
 <link rel="stylesheet" href="_static/css/font-awesome-ie7.min.css">
 <![endif]-->
-
 <style type="text/css">
   body {
     padding-top: 60px;
@@ -28,7 +27,6 @@
   }
 }
 </style>
-
 <link rel="stylesheet" href="_static/basicstrap.css" type="text/css" />
 <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 <link rel="stylesheet" href="_static/css/bootstrap-responsive.min.css" type="text/css" />
@@ -45,6 +43,7 @@
 <script type="text/javascript" src="_static/js/jquery.min.js"></script>
 <script type="text/javascript" src="_static/underscore.js"></script>
 <script type="text/javascript" src="_static/doctools.js"></script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 <script type="text/javascript" src="_static/js/bootstrap.min.js"></script>
 <script type="text/javascript">
   $(document).ready(function(){
@@ -58,31 +57,13 @@
        }
     });
   });
-  $(window).load(function () {
-    /*
-
-     * Scroll the window to avoid the topnav bar
-     * https://github.com/twitter/bootstrap/issues/1768
-     */
-    if ($(".navbar.navbar-fixed-top").length > 0) {
-      // var navHeight = $(".navbar").height(),
-      var navHeight = 40,
-        shiftWindow = function() { scrollBy(0, -navHeight - 10); };
-
-      if (location.hash) {
-        setTimeout(shiftWindow, 1);
-      }
-
-      window.addEventListener("hashchange", shiftWindow);
-    }
-  });
 </script>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="top" title="explauto 1.0.0 documentation" href="#" />
-    <link rel="next" title="About" href="about.html" /> 
+    <link rel="next" title="Exploration strategies in Developmental Robotics" href="about.html" /> 
   </head>
-  <body role="document">
-    <div class="navbar navbar-fixed-top " role="navigation" aria-label="top navigation">
+  <body>
+    <div class="navbar navbar-fixed-top ">
       <div class="navbar-inner">
         <div class="container-fluid">
           <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -90,9 +71,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <div role="banner">
-            <a class="brand" href="#">explauto 1.0.0 documentation</a>
-          </div>
+          <a class="brand" href="#">explauto 1.0.0 documentation</a>
           <div class="nav-collapse collapse">
             <ul class="nav pull-right">
               
@@ -103,7 +82,7 @@
                 <a href="py-modindex.html" title="Python Module Index" >modules</a>
                 </li>
                 <li>
-                <a href="about.html" title="About" accesskey="N">next</a>
+                <a href="about.html" title="Exploration strategies in Developmental Robotics" accesskey="N">next</a>
                 </li>
               
             </ul>
@@ -122,7 +101,7 @@
       
 <div class="span3 ">
   <a class="visible-phone btn btn-small show-sidebar" data-toggle="collapse" data-target=".for-mobile">Open Table Of Contents</a>
-  <div class="for-mobile sidebar hidden-phone" role="navigation" aria-label="main navigation">
+  <div class="for-mobile sidebar hidden-phone">
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Welcome to explauto&#8217;s documentation!</a><ul>
@@ -133,13 +112,13 @@
 
   <h4>Next topic</h4>
   <p class="topless"><a href="about.html"
-                        title="next chapter">About</a></p>
+                        title="next chapter">Exploration strategies in Developmental Robotics</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/index.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
-<div id="searchbox" role="search">
+<div id="searchbox">
   <h3>Quick search</h3>
   <form class="search form-search" action="search.html" method="get">
       <div class="input-append">
@@ -162,7 +141,7 @@
       <div class="row-fluid">
          
 <div class="span3 visible-desktop visible-tablet">
-  <div class=" sidebar hidden-phone" role="navigation" aria-label="main navigation">
+  <div class=" sidebar hidden-phone">
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Welcome to explauto&#8217;s documentation!</a><ul>
@@ -173,13 +152,13 @@
 
   <h4>Next topic</h4>
   <p class="topless"><a href="about.html"
-                        title="next chapter">About</a></p>
+                        title="next chapter">Exploration strategies in Developmental Robotics</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/index.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
-<div id="searchbox" role="search">
+<div id="searchbox">
   <h3>Quick search</h3>
   <form class="search form-search" action="search.html" method="get">
       <div class="input-append">
@@ -198,7 +177,7 @@
         
 
         <div class="span9">
-          <div class="document" role="main">
+          <div class="document">
             <div class="documentwrapper">
               <div class="bodywrapper">
                 <div class="body">
@@ -208,9 +187,7 @@
 <p><strong>Introduction</strong></p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="about.html">About</a><ul class="simple">
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">Exploration strategies in Developmental Robotics</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul class="simple">
 </ul>
 </li>
@@ -259,13 +236,13 @@
 
       <!-- row -->
       <div class="row-fluid">
-<div class="related navbar " role="navigation" aria-label="related navigation">
+<div class="related navbar ">
   <div class="navbar-inner">
     <ul class="nav pull-right">
       
         <li><a href="genindex.html" title="General Index" >index</a></li>
         <li><a href="py-modindex.html" title="Python Module Index" >modules</a></li>
-        <li><a href="about.html" title="About" >next</a></li>
+        <li><a href="about.html" title="Exploration strategies in Developmental Robotics" >next</a></li>
         <li><a href="#">explauto 1.0.0 documentation</a></li> 
       
     </ul>
@@ -274,7 +251,7 @@
       </div><!-- /row -->
 
       <!-- footer -->
-      <footer role="contentinfo">
+      <footer>
           &copy; Copyright 2014, Clement Moulin-Frier, Pierre Rouanet.
         Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.
       </footer>

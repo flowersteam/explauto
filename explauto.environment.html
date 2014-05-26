@@ -20,7 +20,6 @@
 <!--[if IE 7]>
 <link rel="stylesheet" href="_static/css/font-awesome-ie7.min.css">
 <![endif]-->
-
 <style type="text/css">
   body {
     padding-top: 60px;
@@ -28,7 +27,6 @@
   }
 }
 </style>
-
 <link rel="stylesheet" href="_static/basicstrap.css" type="text/css" />
 <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 <link rel="stylesheet" href="_static/css/bootstrap-responsive.min.css" type="text/css" />
@@ -45,6 +43,7 @@
 <script type="text/javascript" src="_static/js/jquery.min.js"></script>
 <script type="text/javascript" src="_static/underscore.js"></script>
 <script type="text/javascript" src="_static/doctools.js"></script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 <script type="text/javascript" src="_static/js/bootstrap.min.js"></script>
 <script type="text/javascript">
   $(document).ready(function(){
@@ -58,24 +57,6 @@
        }
     });
   });
-  $(window).load(function () {
-    /*
-
-     * Scroll the window to avoid the topnav bar
-     * https://github.com/twitter/bootstrap/issues/1768
-     */
-    if ($(".navbar.navbar-fixed-top").length > 0) {
-      // var navHeight = $(".navbar").height(),
-      var navHeight = 40,
-        shiftWindow = function() { scrollBy(0, -navHeight - 10); };
-
-      if (location.hash) {
-        setTimeout(shiftWindow, 1);
-      }
-
-      window.addEventListener("hashchange", shiftWindow);
-    }
-  });
 </script>
     <link rel="author" title="About these documents" href="about.html" />
     <link rel="top" title="explauto 1.0.0 documentation" href="index.html" />
@@ -83,8 +64,8 @@
     <link rel="next" title="evaluation Package" href="explauto.evaluation.html" />
     <link rel="prev" title="agent Package" href="explauto.agent.html" /> 
   </head>
-  <body role="document">
-    <div class="navbar navbar-fixed-top " role="navigation" aria-label="top navigation">
+  <body>
+    <div class="navbar navbar-fixed-top ">
       <div class="navbar-inner">
         <div class="container-fluid">
           <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -92,9 +73,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <div role="banner">
-            <a class="brand" href="index.html">explauto 1.0.0 documentation</a>
-          </div>
+          <a class="brand" href="index.html">explauto 1.0.0 documentation</a>
           <div class="nav-collapse collapse">
             <ul class="nav pull-right">
               
@@ -130,10 +109,10 @@
       
 <div class="span3 ">
   <a class="visible-phone btn btn-small show-sidebar" data-toggle="collapse" data-target=".for-mobile">Open Table Of Contents</a>
-  <div class="for-mobile sidebar hidden-phone" role="navigation" aria-label="main navigation">
+  <div class="for-mobile sidebar hidden-phone">
   <h4>Previous topic</h4>
   <p class="topless"><a href="explauto.agent.html"
-                        title="previous chapter"><tt class="docutils literal"><span class="pre">agent</span></tt> Package</a></p>
+                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal docutils literal"><span class="pre">agent</span></tt> Package</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="explauto.evaluation.html"
                         title="next chapter"><tt class="docutils literal"><span class="pre">evaluation</span></tt> Package</a></p>
@@ -142,7 +121,7 @@
     <li><a href="_sources/explauto.environment.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
-<div id="searchbox" role="search">
+<div id="searchbox">
   <h3>Quick search</h3>
   <form class="search form-search" action="search.html" method="get">
       <div class="input-append">
@@ -165,10 +144,10 @@
       <div class="row-fluid">
          
 <div class="span3 visible-desktop visible-tablet">
-  <div class=" sidebar hidden-phone" role="navigation" aria-label="main navigation">
+  <div class=" sidebar hidden-phone">
   <h4>Previous topic</h4>
   <p class="topless"><a href="explauto.agent.html"
-                        title="previous chapter"><tt class="docutils literal"><span class="pre">agent</span></tt> Package</a></p>
+                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal docutils literal"><span class="pre">agent</span></tt> Package</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="explauto.evaluation.html"
                         title="next chapter"><tt class="docutils literal"><span class="pre">evaluation</span></tt> Package</a></p>
@@ -177,7 +156,7 @@
     <li><a href="_sources/explauto.environment.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
-<div id="searchbox" role="search">
+<div id="searchbox">
   <h3>Quick search</h3>
   <form class="search form-search" action="search.html" method="get">
       <div class="input-append">
@@ -196,7 +175,7 @@
         
 
         <div class="span9">
-          <div class="document" role="main">
+          <div class="document">
             <div class="documentwrapper">
               <div class="bodywrapper">
                 <div class="body">
@@ -238,8 +217,8 @@
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="explauto.environment.environment.Environment.read">
-<tt class="descname">read</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/explauto/environment/environment.html#Environment.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.environment.Environment.read" title="Permalink to this definition">¶</a></dt>
+<dt id="explauto.environment.environment.Environment.random_motors">
+<tt class="descname">random_motors</tt><big>(</big><em>n=1</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/environment.html#Environment.random_motors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.environment.Environment.random_motors" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -254,7 +233,21 @@
 <tt class="descclassname">explauto.environment.simple_arm.simple_arm.</tt><tt class="descname">forward</tt><big>(</big><em>angles</em>, <em>lengths</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/simple_arm/simple_arm.html#forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.simple_arm.simple_arm.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Link object as defined by the standard DH representation.
 :param list angles: angles of each joint
-:param list lengths: length of each segment</p>
+:param list lengths: length of each segment
+:return tuple: x, y end-effector postion</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">angles and lengths should be the same size.</p>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="explauto.environment.simple_arm.simple_arm.joint_positions">
+<tt class="descclassname">explauto.environment.simple_arm.simple_arm.</tt><tt class="descname">joint_positions</tt><big>(</big><em>angles</em>, <em>lengths</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/simple_arm/simple_arm.html#joint_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.simple_arm.simple_arm.joint_positions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Link object as defined by the standard DH representation.
+:param list angles: angles of each joint
+:param list lengths: length of each segment
+:return tuple: x positions of each joint, y positions of each joints, except the first one wich is fixed at (0, 0)</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p class="last">angles and lengths should be the same size.</p>
@@ -283,6 +276,27 @@
 <dl class="method">
 <dt id="explauto.environment.simple_arm.simple_arm.SimpleArmEnvironment.compute_sensori_effect">
 <tt class="descname">compute_sensori_effect</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/explauto/environment/simple_arm/simple_arm.html#SimpleArmEnvironment.compute_sensori_effect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.simple_arm.simple_arm.SimpleArmEnvironment.compute_sensori_effect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.environment.simple_arm.simple_arm.SimpleArmEnvironment.plot_arm">
+<tt class="descname">plot_arm</tt><big>(</big><em>ax</em>, <em>m</em>, <em>**kwargs_plot</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/simple_arm/simple_arm.html#SimpleArmEnvironment.plot_arm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.simple_arm.simple_arm.SimpleArmEnvironment.plot_arm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-explauto.environment.pendulum.pendulum"></span><dl class="class">
+<dt id="explauto.environment.pendulum.pendulum.PendulumEnvironment">
+<em class="property">class </em><tt class="descclassname">explauto.environment.pendulum.pendulum.</tt><tt class="descname">PendulumEnvironment</tt><big>(</big><em>m_mins</em>, <em>m_maxs</em>, <em>s_mins</em>, <em>s_maxs</em>, <em>noise</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/pendulum/pendulum.html#PendulumEnvironment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.pendulum.pendulum.PendulumEnvironment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#explauto.environment.environment.Environment" title="explauto.environment.environment.Environment"><tt class="xref py py-class docutils literal"><span class="pre">explauto.environment.environment.Environment</span></tt></a></p>
+<dl class="method">
+<dt id="explauto.environment.pendulum.pendulum.PendulumEnvironment.compute_motor_command">
+<tt class="descname">compute_motor_command</tt><big>(</big><em>ag_state</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/pendulum/pendulum.html#PendulumEnvironment.compute_motor_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.pendulum.pendulum.PendulumEnvironment.compute_motor_command" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.environment.pendulum.pendulum.PendulumEnvironment.compute_sensori_effect">
+<tt class="descname">compute_sensori_effect</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/explauto/environment/pendulum/pendulum.html#PendulumEnvironment.compute_sensori_effect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.pendulum.pendulum.PendulumEnvironment.compute_sensori_effect" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -345,7 +359,7 @@
 
       <!-- row -->
       <div class="row-fluid">
-<div class="related navbar " role="navigation" aria-label="related navigation">
+<div class="related navbar ">
   <div class="navbar-inner">
     <ul class="nav pull-right">
       
@@ -362,7 +376,7 @@
       </div><!-- /row -->
 
       <!-- footer -->
-      <footer role="contentinfo">
+      <footer>
           &copy; Copyright 2014, Clement Moulin-Frier, Pierre Rouanet.
         Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.
       </footer>
