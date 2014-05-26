@@ -20,6 +20,7 @@
 <!--[if IE 7]>
 <link rel="stylesheet" href="_static/css/font-awesome-ie7.min.css">
 <![endif]-->
+
 <style type="text/css">
   body {
     padding-top: 60px;
@@ -27,6 +28,7 @@
   }
 }
 </style>
+
 <link rel="stylesheet" href="_static/basicstrap.css" type="text/css" />
 <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
 <link rel="stylesheet" href="_static/css/bootstrap-responsive.min.css" type="text/css" />
@@ -57,14 +59,32 @@
        }
     });
   });
+  $(window).load(function () {
+    /*
+
+     * Scroll the window to avoid the topnav bar
+     * https://github.com/twitter/bootstrap/issues/1768
+     */
+    if ($(".navbar.navbar-fixed-top").length > 0) {
+      // var navHeight = $(".navbar").height(),
+      var navHeight = 40,
+        shiftWindow = function() { scrollBy(0, -navHeight - 10); };
+
+      if (location.hash) {
+        setTimeout(shiftWindow, 1);
+      }
+
+      window.addEventListener("hashchange", shiftWindow);
+    }
+  });
 </script>
     <link rel="author" title="About these documents" href="#" />
     <link rel="top" title="explauto 1.0.0 documentation" href="index.html" />
     <link rel="next" title="Installation" href="installation.html" />
     <link rel="prev" title="Welcome to explauto’s documentation!" href="index.html" /> 
   </head>
-  <body>
-    <div class="navbar navbar-fixed-top ">
+  <body role="document">
+    <div class="navbar navbar-fixed-top " role="navigation" aria-label="top navigation">
       <div class="navbar-inner">
         <div class="container-fluid">
           <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -72,7 +92,9 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="index.html">explauto 1.0.0 documentation</a>
+          <div role="banner">
+            <a class="brand" href="index.html">explauto 1.0.0 documentation</a>
+          </div>
           <div class="nav-collapse collapse">
             <ul class="nav pull-right">
               
@@ -105,7 +127,7 @@
       
 <div class="span3 ">
   <a class="visible-phone btn btn-small show-sidebar" data-toggle="collapse" data-target=".for-mobile">Open Table Of Contents</a>
-  <div class="for-mobile sidebar hidden-phone">
+  <div class="for-mobile sidebar hidden-phone" role="navigation" aria-label="main navigation">
   <h4>Previous topic</h4>
   <p class="topless"><a href="index.html"
                         title="previous chapter">Welcome to explauto&#8217;s documentation!</a></p>
@@ -117,7 +139,7 @@
     <li><a href="_sources/about.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
-<div id="searchbox">
+<div id="searchbox" role="search">
   <h3>Quick search</h3>
   <form class="search form-search" action="search.html" method="get">
       <div class="input-append">
@@ -140,7 +162,7 @@
       <div class="row-fluid">
          
 <div class="span3 visible-desktop visible-tablet">
-  <div class=" sidebar hidden-phone">
+  <div class=" sidebar hidden-phone" role="navigation" aria-label="main navigation">
   <h4>Previous topic</h4>
   <p class="topless"><a href="index.html"
                         title="previous chapter">Welcome to explauto&#8217;s documentation!</a></p>
@@ -152,7 +174,7 @@
     <li><a href="_sources/about.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
-<div id="searchbox">
+<div id="searchbox" role="search">
   <h3>Quick search</h3>
   <form class="search form-search" action="search.html" method="get">
       <div class="input-append">
@@ -171,7 +193,7 @@
         
 
         <div class="span9">
-          <div class="document">
+          <div class="document" role="main">
             <div class="documentwrapper">
               <div class="bodywrapper">
                 <div class="body">
@@ -219,7 +241,7 @@ This is why learning has to be guided using efficient exploration strategies, al
 
       <!-- row -->
       <div class="row-fluid">
-<div class="related navbar ">
+<div class="related navbar " role="navigation" aria-label="related navigation">
   <div class="navbar-inner">
     <ul class="nav pull-right">
       
@@ -235,7 +257,7 @@ This is why learning has to be guided using efficient exploration strategies, al
       </div><!-- /row -->
 
       <!-- footer -->
-      <footer>
+      <footer role="contentinfo">
           &copy; Copyright 2014, Clement Moulin-Frier, Pierre Rouanet.
         Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.
       </footer>
