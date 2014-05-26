@@ -4,6 +4,7 @@ from abc import ABCMeta, abstractmethod
 
 from ..utils.config import make_configuration
 from ..utils.observer import Observable
+from ..utils import rand_bounds
 
 
 class Environment(Observable):
@@ -44,15 +45,8 @@ class Environment(Observable):
     def compute_sensori_effect(self):
         pass
 
-    # def post_processing(self):
-    #     self.state = minimum(self.state, self.bounds[:,1])
-    #     self.state = maximum(self.state, self.bounds[:,0])
-
-    def read(self):
-        return self.state[self.readable]
-
-    # def write(self, data):
-    #     self.state[self.writable] = data
+    def random_motors(self, n=1):
+        return rand_bounds(self.conf.bounds[:, self.conf.m_dims], n)
 
     def dataset(self, orders):
         n = orders.shape[0]
