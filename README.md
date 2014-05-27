@@ -19,6 +19,8 @@ Explauto's scientific roots trace back from Intelligent Adaptive Curiosity algor
 
 ### Tutorials ###
 
+Most of Explauto's documentation is written as [IPython notebooks](http://ipython.org/notebook.html). If you do not know how to use them, please refer to the [dedicated section](http://flowersteam.github.io/explauto/notebook.html). 
+
 * [Setting a basic experiment](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/01%20Running%20a%20basic%20experiment..ipynb)
 * [Comparing motor vs goal strategies](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/02%20Comparing%20motor%20vs%20goal%20strategies.ipynb)
 * [Running pool of experiments](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/03%20Running%20pool%20of%20experiments.ipynb)
@@ -27,20 +29,12 @@ Explauto's scientific roots trace back from Intelligent Adaptive Curiosity algor
 
 ### API ###
 
-The Explauto documentation on a html format can be found [here](http://flowersteam.github.io/explauto/).
+Explauto's API can be found on a html format [here](http://flowersteam.github.io/explauto/).
 
 
 ## Installation ##
 
-Explauto is available via pip. It can thus be installed with the classical:
-
-    pip install explauto
-    
-or:
-    
-    easy_install explauto
-
-The core of explauto depends of the following packages:
+The best way to install Explauto at the moment is to clone the repo and used it in [development mode](http://flowersteam.github.io/explauto/installation.html#as-a-developer). It is also available as as [python package](https://pypi.python.org/pypi/explauto/). The core of explauto depends on the following packages:
 
 * [python](http://www.python.org) 2.7 or 3.*
 * [numpy](http://www.numpy.org)
