@@ -34,7 +34,7 @@ Explauto's API can be found on a html format [here](http://flowersteam.github.io
 
 ## Installation ##
 
-The best way to install Explauto at the moment is to clone the repo and used it in [development mode](http://flowersteam.github.io/explauto/installation.html#as-a-developer). It is also available as as [python package](https://pypi.python.org/pypi/explauto/). The core of explauto depends on the following packages:
+The best way to install Explauto at the moment is to clone the repo and used it in [development mode](http://flowersteam.github.io/explauto/installation.html#as-a-developer). It is also available as a [python package](https://pypi.python.org/pypi/explauto/). The core of explauto depends on the following packages:
 
 * [python](http://www.python.org) 2.7 or 3.*
 * [numpy](http://www.numpy.org)
