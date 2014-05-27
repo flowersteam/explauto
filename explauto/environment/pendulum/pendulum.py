@@ -1,5 +1,5 @@
 from numpy import pi, array
-from numpy.random import randn
+from numpy import random
 from copy import copy
 
 import simple_lip
@@ -34,5 +34,5 @@ class PendulumEnvironment(Environment):
         for u in self.bf.trajectory(self.state[:self.m_ndims]).flatten():
             s = simple_lip.simulate(s, [u], self.dt)
         res = array(s)
-        res += self.noise * randn(*res.shape)
+        res += self.noise * random.randn(*res.shape)
         self.state[-self.s_ndims:] = res
