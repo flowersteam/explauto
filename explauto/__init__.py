@@ -15,3 +15,7 @@ class ExplautoEnvironmentUpdateError(ExplautoError):
 
 class ExplautoBootstrapError(ExplautoError):
     pass
+
+
+class ExplautoNoTestCasesError(ExplautoError):
+    pass
