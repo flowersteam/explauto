@@ -102,6 +102,11 @@ class ExperimentPool(object):
 
     @property
     def logs(self):
+        """ Returns the list of :class:`~explauto.experiment.log.ExperimentLog`.
+
+        .. note:: The logs will be returned as a vector if repeat was set as one in the :meth:`~explauto.experiment.pool.ExperimentPool.run` method else it will be a matrix where each rows represents the n repetitions of an experiment.
+
+        """
         if not hasattr(self, '_logs'):
             raise ValueError('You have to run the pool of experiments first!')
 
