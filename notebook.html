@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     
-    <title>Welcome to explauto’s documentation! &mdash; explauto 1.0.0 documentation</title>
+    <title>IPython notebooks &mdash; explauto 1.0.0 documentation</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
@@ -79,8 +79,9 @@
   });
 </script>
     <link rel="author" title="About these documents" href="about.html" />
-    <link rel="top" title="explauto 1.0.0 documentation" href="#" />
-    <link rel="next" title="Exploration strategies in Developmental Robotics" href="about.html" /> 
+    <link rel="top" title="explauto 1.0.0 documentation" href="index.html" />
+    <link rel="next" title="Setting an experiment" href="experiment.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
   </head>
   <body role="document">
     <div class="navbar navbar-fixed-top " role="navigation" aria-label="top navigation">
@@ -92,7 +93,7 @@
             <span class="icon-bar"></span>
           </a>
           <div role="banner">
-            <a class="brand" href="#">explauto 1.0.0 documentation</a>
+            <a class="brand" href="index.html">explauto 1.0.0 documentation</a>
           </div>
           <div class="nav-collapse collapse">
             <ul class="nav pull-right">
@@ -104,7 +105,10 @@
                 <a href="py-modindex.html" title="Python Module Index" >modules</a>
                 </li>
                 <li>
-                <a href="about.html" title="Exploration strategies in Developmental Robotics" accesskey="N">next</a>
+                <a href="experiment.html" title="Setting an experiment" accesskey="N">next</a>
+                </li>
+                <li>
+                <a href="installation.html" title="Installation" accesskey="P">previous</a>
                 </li>
               
             </ul>
@@ -124,20 +128,15 @@
 <div class="span3 ">
   <a class="visible-phone btn btn-small show-sidebar" data-toggle="collapse" data-target=".for-mobile">Open Table Of Contents</a>
   <div class="for-mobile sidebar hidden-phone" role="navigation" aria-label="main navigation">
-  <h3><a href="#">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Welcome to explauto&#8217;s documentation!</a><ul>
-</ul>
-</li>
-<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
-</ul>
-
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="installation.html"
+                        title="previous chapter">Installation</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="about.html"
-                        title="next chapter">Exploration strategies in Developmental Robotics</a></p>
+  <p class="topless"><a href="experiment.html"
+                        title="next chapter">Setting an experiment</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="_sources/index.txt"
+    <li><a href="_sources/notebook.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" role="search">
@@ -164,20 +163,15 @@
          
 <div class="span3 visible-desktop visible-tablet">
   <div class=" sidebar hidden-phone" role="navigation" aria-label="main navigation">
-  <h3><a href="#">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Welcome to explauto&#8217;s documentation!</a><ul>
-</ul>
-</li>
-<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
-</ul>
-
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="installation.html"
+                        title="previous chapter">Installation</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="about.html"
-                        title="next chapter">Exploration strategies in Developmental Robotics</a></p>
+  <p class="topless"><a href="experiment.html"
+                        title="next chapter">Setting an experiment</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="_sources/index.txt"
+    <li><a href="_sources/notebook.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" role="search">
@@ -204,47 +198,22 @@
               <div class="bodywrapper">
                 <div class="body">
                   
-  <div class="section" id="welcome-to-explauto-s-documentation">
-<h1>Welcome to explauto&#8217;s documentation!<a class="headerlink" href="#welcome-to-explauto-s-documentation" title="Permalink to this headline">¶</a></h1>
-<p><strong>Introduction</strong></p>
-<div class="toctree-wrapper compound">
+  <div class="section" id="ipython-notebooks">
+<h1>IPython notebooks<a class="headerlink" href="#ipython-notebooks" title="Permalink to this headline">¶</a></h1>
+<p>Most of Explauto&#8217;s documentation has been written as <a class="reference external" href="http://ipython.org/notebook.html">IPython notebooks</a> as it is a very convenient way to describe the code side by side with examples. Furthermore, it allows you not only to read the examples but also to modify, play, and tweak them.</p>
+<p>Our github <a class="reference external" href="https://github.com/flowersteam/explauto">repository</a> contains a <a class="reference external" href="https://github.com/flowersteam/explauto/tree/master/notebook">notebook folder</a> with all the notebook examples (with their associated exercise solutions). The list of all the available notebook tutorial can be seen on the <a class="reference external" href="https://github.com/flowersteam/explauto#tutorials">github repository front page</a>.</p>
+<p>You can directly view them on <a class="reference external" href="http://nbviewer.ipython.org/github/flowersteam/explauto/tree/master/notebook/">nbviewer</a>. Yet, to actually run them on your computer you will need to download them. You can:</p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="about.html">Exploration strategies in Developmental Robotics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul class="simple">
-</ul>
+<li><p class="first">either run them from the notebook folder of your local copy of the repository:</p>
+<div class="highlight-python"><div class="highlight"><pre>cd explauto/notebook
+ipython notebook
+</pre></div>
+</div>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="notebook.html">IPython notebooks</a></li>
+<li><p class="first">or you can directly download them from the nbviewer interface.</p>
+</li>
 </ul>
-</div>
-<p><strong>Running experiments</strong></p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="experiment.html">Setting an experiment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pool.html">Comparing experiment</a></li>
-</ul>
-</div>
-<p><strong>Adding environment, interest or sensorimotor models</strong></p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="extra.html">Extra envrionments and models</a></li>
-</ul>
-</div>
-<p><strong>Misc</strong></p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="api.html">Explauto&#8217;s API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
-<li class="toctree-l1"><a class="reference internal" href="knownissues.html">Known Issues</a></li>
-</ul>
-</div>
-</div>
-<div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
-<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
-<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
-</ul>
+<p>For details on installing the packages recquired for running ipython notebook, please refer to the <a class="reference external" href="http://ipython.org/notebook.html">official documentation</a>.</p>
 </div>
 
 
@@ -265,8 +234,9 @@
       
         <li><a href="genindex.html" title="General Index" >index</a></li>
         <li><a href="py-modindex.html" title="Python Module Index" >modules</a></li>
-        <li><a href="about.html" title="Exploration strategies in Developmental Robotics" >next</a></li>
-        <li><a href="#">explauto 1.0.0 documentation</a></li> 
+        <li><a href="experiment.html" title="Setting an experiment" >next</a></li>
+        <li><a href="installation.html" title="Installation" >previous</a></li>
+        <li><a href="index.html">explauto 1.0.0 documentation</a></li> 
       
     </ul>
   </div>
