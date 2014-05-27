@@ -2,6 +2,7 @@ import numpy as np
 
 from .. import Environment
 from ...utils import bounds_min_max
+from ... import ExplautoNoTestCasesError
 
 
 def forward(angles, lengths):
@@ -72,4 +73,6 @@ class SimpleArmEnvironment(Environment):
         ax.axis([self.conf.s_mins[0], self.conf.s_maxs[0], self.conf.s_mins[1], self.conf.s_maxs[1]])
         ax.set_xlabel('X')
         ax.set_ylabel('Y')
+
+
 

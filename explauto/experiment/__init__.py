@@ -6,8 +6,7 @@ Settings = namedtuple('Settings', ('environment',
                                    'interest_model',
                                    'interest_model_config',
                                    'sensorimotor_model',
-                                   'sensorimotor_model_config',
-                                   'n_bootstrap'))
+                                   'sensorimotor_model_config'))
 
 
 def make_settings(environment,
@@ -15,13 +14,12 @@ def make_settings(environment,
                   interest_model, sensorimotor_model,
                   environment_config='default',
                   interest_model_config='default',
-                  sensorimotor_model_config='default',
-                  n_bootstrap=0):
+                  sensorimotor_model_config='default'):
 
     return Settings(environment, environment_config,
                     babbling_mode,
                     interest_model, interest_model_config,
-                    sensorimotor_model, sensorimotor_model_config, n_bootstrap)
+                    sensorimotor_model, sensorimotor_model_config)
 
 from .experiment import Experiment
 from .pool import ExperimentPool
