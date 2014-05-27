@@ -133,6 +133,7 @@
 <li><a class="reference internal" href="#">Installation</a><ul>
 <li><a class="reference internal" href="#via-python-packages">Via Python Packages</a></li>
 <li><a class="reference internal" href="#from-the-source-code">From the source code</a></li>
+<li><a class="reference internal" href="#as-a-developer">As a developer</a></li>
 <li><a class="reference internal" href="#testing-your-install">Testing your install</a></li>
 </ul>
 </li>
@@ -178,6 +179,7 @@
 <li><a class="reference internal" href="#">Installation</a><ul>
 <li><a class="reference internal" href="#via-python-packages">Via Python Packages</a></li>
 <li><a class="reference internal" href="#from-the-source-code">From the source code</a></li>
+<li><a class="reference internal" href="#as-a-developer">As a developer</a></li>
 <li><a class="reference internal" href="#testing-your-install">Testing your install</a></li>
 </ul>
 </li>
@@ -231,7 +233,7 @@
 </pre></div>
 </div>
 <p>The up to date archive can also be directly downloaded <a class="reference external" href="https://pypi.python.org/pypi/explauto/">here</a>.</p>
-<p>Make sure to also install all the dependecies required by the extra environment or models (e.g. pypot environment or imle models) you want to use. See the section <a class="reference internal" href="extra.html#extra"><em>Extra envrionments and models</em></a> for details.</p>
+<p>Make sure to also install all the dependencies required by the extra environment or models (e.g. pypot environment or imle models) you want to use. See the section <a class="reference internal" href="extra.html#extra"><em>Extra envrionments and models</em></a> for details.</p>
 </div>
 <div class="section" id="from-the-source-code">
 <h2>From the source code<a class="headerlink" href="#from-the-source-code" title="Permalink to this headline">¶</a></h2>
@@ -259,6 +261,15 @@ python setup.py build
 python setup.py install
 </pre></div>
 </div>
+</div>
+<div class="section" id="as-a-developer">
+<h2>As a developer<a class="headerlink" href="#as-a-developer" title="Permalink to this headline">¶</a></h2>
+<p>As Explauto is still in development, a good way to keep with an updated version is to use it in <a class="reference external" href="https://pythonhosted.org/setuptools/setuptools.html#development-mode">development mode</a>. To do that, after cloning the <a class="reference external" href="https://github.com/flowersteam/explauto">repository</a>, you can use the following command line:</p>
+<div class="highlight-python"><div class="highlight"><pre>cd explauto
+python setup.py develop
+</pre></div>
+</div>
+<p>This will symlink your cloned repository to your site-packages directory. When pulling the latest modification from the repo, they will automatically be &#8220;installed&#8221;.</p>
 </div>
 <div class="section" id="testing-your-install">
 <h2>Testing your install<a class="headerlink" href="#testing-your-install" title="Permalink to this headline">¶</a></h2>
