@@ -38,9 +38,7 @@ class ExperimentPool(object):
         """
         if same_testcases and testcases is None:
             s = settings[0]
-            xp = Experiment.from_settings(s)
-            xp.evaluate_at(evaluate_at)
-            testcases = xp.evaluation.tester.testcases
+            testcases = s.default_testcases
 
         self._config = zip(settings,
                            itertools.repeat(evaluate_at),
@@ -49,7 +47,8 @@ class ExperimentPool(object):
     @classmethod
     def from_settings_product(cls, environments, babblings,
                               interest_models, sensorimotor_models,
-                              evaluate_at, same_testcases=False):
+                              evaluate_at,
+                              testcases=None, same_testcases=False):
         """ Creates a ExperimentPool with the product of all the given settings.
 
             :param environments: e.g. [('simple_arm', 'default'), ('simple_arm', 'high_dimensional')]
@@ -71,7 +70,7 @@ class ExperimentPool(object):
         settings = [Settings(env, env_conf, bab, im, im_conf, sm, sm_conf)
                     for ((env, env_conf), bab, (im, im_conf), (sm, sm_conf)) in l]
 
-        return cls(settings, evaluate_at, same_testcases=same_testcases)
+        return cls(settings, evaluate_at, testcases, same_testcases)
 
     def run(self, repeat=1, processes=None, use_thread=False):
         """ Runs all experiments using a :py:class:`multiprocessing.Pool`.
