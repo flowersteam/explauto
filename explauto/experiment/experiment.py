@@ -139,7 +139,6 @@ class Experiment(Observer):
 
         agent = Agent(im_cls, im_configs[settings.interest_model_config], expl_dims,
                       sm_cls, sm_configs[settings.sensorimotor_model_config], inf_dims,
-                      env.conf.m_mins, env.conf.m_maxs, env.conf.s_mins, env.conf.s_maxs,
-                      settings.n_bootstrap)
+                      env.conf.m_mins, env.conf.m_maxs, env.conf.s_mins, env.conf.s_maxs)
 
         return cls(env, agent)
