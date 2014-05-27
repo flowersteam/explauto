@@ -179,7 +179,6 @@
 
 <span class="kn">from</span> <span class="nn">..utils.config</span> <span class="kn">import</span> <span class="n">make_configuration</span>
 <span class="kn">from</span> <span class="nn">..utils.observer</span> <span class="kn">import</span> <span class="n">Observable</span>
-<span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">rand_bounds</span>
 
 
 <div class="viewcode-block" id="Environment"><a class="viewcode-back" href="../../../explauto.environment.html#explauto.environment.environment.Environment">[docs]</a><span class="k">class</span> <span class="nc">Environment</span><span class="p">(</span><span class="n">Observable</span><span class="p">):</span>
@@ -223,15 +222,12 @@
     <span class="c"># def post_processing(self):</span>
     <span class="c">#     self.state = minimum(self.state, self.bounds[:,1])</span>
     <span class="c">#     self.state = maximum(self.state, self.bounds[:,0])</span>
-
-    <span class="c"># def read(self):</span>
-        <span class="c"># return self.state[self.readable]</span>
+</div>
+<div class="viewcode-block" id="Environment.read"><a class="viewcode-back" href="../../../explauto.environment.html#explauto.environment.environment.Environment.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">readable</span><span class="p">]</span>
 
     <span class="c"># def write(self, data):</span>
     <span class="c">#     self.state[self.writable] = data</span>
-</div>
-<div class="viewcode-block" id="Environment.random_motors"><a class="viewcode-back" href="../../../explauto.environment.html#explauto.environment.environment.Environment.random_motors">[docs]</a>    <span class="k">def</span> <span class="nf">random_motors</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">rand_bounds</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">bounds</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">m_dims</span><span class="p">],</span> <span class="n">n</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Environment.dataset"><a class="viewcode-back" href="../../../explauto.environment.html#explauto.environment.environment.Environment.dataset">[docs]</a>    <span class="k">def</span> <span class="nf">dataset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orders</span><span class="p">):</span>
         <span class="n">n</span> <span class="o">=</span> <span class="n">orders</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>

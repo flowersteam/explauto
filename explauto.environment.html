@@ -134,7 +134,7 @@
   <div class="for-mobile sidebar hidden-phone" role="navigation" aria-label="main navigation">
   <h4>Previous topic</h4>
   <p class="topless"><a href="explauto.agent.html"
-                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal docutils literal"><span class="pre">agent</span></tt> Package</a></p>
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">agent</span></tt> Package</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="explauto.evaluation.html"
                         title="next chapter"><tt class="docutils literal"><span class="pre">evaluation</span></tt> Package</a></p>
@@ -169,7 +169,7 @@
   <div class=" sidebar hidden-phone" role="navigation" aria-label="main navigation">
   <h4>Previous topic</h4>
   <p class="topless"><a href="explauto.agent.html"
-                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal docutils literal"><span class="pre">agent</span></tt> Package</a></p>
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">agent</span></tt> Package</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="explauto.evaluation.html"
                         title="next chapter"><tt class="docutils literal"><span class="pre">evaluation</span></tt> Package</a></p>
@@ -239,8 +239,8 @@
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="explauto.environment.environment.Environment.random_motors">
-<tt class="descname">random_motors</tt><big>(</big><em>n=1</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/environment.html#Environment.random_motors"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.environment.Environment.random_motors" title="Permalink to this definition">¶</a></dt>
+<dt id="explauto.environment.environment.Environment.read">
+<tt class="descname">read</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/explauto/environment/environment.html#Environment.read"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.environment.Environment.read" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -255,21 +255,7 @@
 <tt class="descclassname">explauto.environment.simple_arm.simple_arm.</tt><tt class="descname">forward</tt><big>(</big><em>angles</em>, <em>lengths</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/simple_arm/simple_arm.html#forward"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.simple_arm.simple_arm.forward" title="Permalink to this definition">¶</a></dt>
 <dd><p>Link object as defined by the standard DH representation.
 :param list angles: angles of each joint
-:param list lengths: length of each segment
-:return tuple: x, y end-effector postion</p>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">angles and lengths should be the same size.</p>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="explauto.environment.simple_arm.simple_arm.joint_positions">
-<tt class="descclassname">explauto.environment.simple_arm.simple_arm.</tt><tt class="descname">joint_positions</tt><big>(</big><em>angles</em>, <em>lengths</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/simple_arm/simple_arm.html#joint_positions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.simple_arm.simple_arm.joint_positions" title="Permalink to this definition">¶</a></dt>
-<dd><p>Link object as defined by the standard DH representation.
-:param list angles: angles of each joint
-:param list lengths: length of each segment
-:return tuple: x positions of each joint, y positions of each joints, except the first one wich is fixed at (0, 0)</p>
+:param list lengths: length of each segment</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p class="last">angles and lengths should be the same size.</p>
@@ -300,25 +286,15 @@
 <tt class="descname">compute_sensori_effect</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/explauto/environment/simple_arm/simple_arm.html#SimpleArmEnvironment.compute_sensori_effect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.simple_arm.simple_arm.SimpleArmEnvironment.compute_sensori_effect" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="explauto.environment.simple_arm.simple_arm.SimpleArmEnvironment.plot_arm">
-<tt class="descname">plot_arm</tt><big>(</big><em>ax</em>, <em>m</em>, <em>**kwargs_plot</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/simple_arm/simple_arm.html#SimpleArmEnvironment.plot_arm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.simple_arm.simple_arm.SimpleArmEnvironment.plot_arm" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <span class="target" id="module-explauto.environment.pendulum.pendulum"></span><dl class="class">
 <dt id="explauto.environment.pendulum.pendulum.PendulumEnvironment">
-<em class="property">class </em><tt class="descclassname">explauto.environment.pendulum.pendulum.</tt><tt class="descname">PendulumEnvironment</tt><big>(</big><em>m_mins</em>, <em>m_maxs</em>, <em>s_mins</em>, <em>s_maxs</em>, <em>noise</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/pendulum/pendulum.html#PendulumEnvironment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.pendulum.pendulum.PendulumEnvironment" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">explauto.environment.pendulum.pendulum.</tt><tt class="descname">PendulumEnvironment</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/pendulum/pendulum.html#PendulumEnvironment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.pendulum.pendulum.PendulumEnvironment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#explauto.environment.environment.Environment" title="explauto.environment.environment.Environment"><tt class="xref py py-class docutils literal"><span class="pre">explauto.environment.environment.Environment</span></tt></a></p>
 <dl class="method">
-<dt id="explauto.environment.pendulum.pendulum.PendulumEnvironment.compute_motor_command">
-<tt class="descname">compute_motor_command</tt><big>(</big><em>ag_state</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/pendulum/pendulum.html#PendulumEnvironment.compute_motor_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.pendulum.pendulum.PendulumEnvironment.compute_motor_command" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="explauto.environment.pendulum.pendulum.PendulumEnvironment.compute_sensori_effect">
-<tt class="descname">compute_sensori_effect</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/explauto/environment/pendulum/pendulum.html#PendulumEnvironment.compute_sensori_effect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.pendulum.pendulum.PendulumEnvironment.compute_sensori_effect" title="Permalink to this definition">¶</a></dt>
+<dt id="explauto.environment.pendulum.pendulum.PendulumEnvironment.next_state">
+<tt class="descname">next_state</tt><big>(</big><em>ag_state</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/pendulum/pendulum.html#PendulumEnvironment.next_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.pendulum.pendulum.PendulumEnvironment.next_state" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

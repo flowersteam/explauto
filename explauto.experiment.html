@@ -134,7 +134,7 @@
   <div class="for-mobile sidebar hidden-phone" role="navigation" aria-label="main navigation">
   <h4>Previous topic</h4>
   <p class="topless"><a href="explauto.evaluation.html"
-                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal docutils literal"><span class="pre">evaluation</span></tt> Package</a></p>
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">evaluation</span></tt> Package</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="explauto.interestmodel.html"
                         title="next chapter"><tt class="docutils literal"><span class="pre">interest_model</span></tt> Package</a></p>
@@ -169,7 +169,7 @@
   <div class=" sidebar hidden-phone" role="navigation" aria-label="main navigation">
   <h4>Previous topic</h4>
   <p class="topless"><a href="explauto.evaluation.html"
-                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal docutils literal"><span class="pre">evaluation</span></tt> Package</a></p>
+                        title="previous chapter"><tt class="docutils literal"><span class="pre">evaluation</span></tt> Package</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="explauto.interestmodel.html"
                         title="next chapter"><tt class="docutils literal"><span class="pre">interest_model</span></tt> Package</a></p>
@@ -351,7 +351,12 @@
 <dl class="attribute">
 <dt id="explauto.experiment.pool.ExperimentPool.logs">
 <tt class="descname">logs</tt><a class="reference internal" href="_modules/explauto/experiment/pool.html#ExperimentPool.logs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.pool.ExperimentPool.logs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns the list of <a class="reference internal" href="#explauto.experiment.log.ExperimentLog" title="explauto.experiment.log.ExperimentLog"><tt class="xref py py-class docutils literal"><span class="pre">ExperimentLog</span></tt></a>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The logs will be returned as a vector if repeat was set as one in the <a class="reference internal" href="#explauto.experiment.pool.ExperimentPool.run" title="explauto.experiment.pool.ExperimentPool.run"><tt class="xref py py-meth docutils literal"><span class="pre">run()</span></tt></a> method else it will be a matrix where each rows represents the n repetitions of an experiment.</p>
+</div>
+</dd></dl>
 
 </dd></dl>
 

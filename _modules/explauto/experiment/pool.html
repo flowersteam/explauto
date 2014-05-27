@@ -277,6 +277,11 @@
 </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="ExperimentPool.logs"><a class="viewcode-back" href="../../../explauto.experiment.html#explauto.experiment.pool.ExperimentPool.logs">[docs]</a>    <span class="k">def</span> <span class="nf">logs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the list of :class:`~explauto.experiment.log.ExperimentLog`.</span>
+
+<span class="sd">        .. note:: The logs will be returned as a vector if repeat was set as one in the :meth:`~explauto.experiment.pool.ExperimentPool.run` method else it will be a matrix where each rows represents the n repetitions of an experiment.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;_logs&#39;</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;You have to run the pool of experiments first!&#39;</span><span class="p">)</span>
 
