@@ -34,7 +34,7 @@ configurations = {'low_dimensional': low_dim,
 def testcases(config_str, n_samples=100):
     tests = zeros((n_samples, 2))
     #FIXME low_dimensional
-    if config_str == 'high_dimensional' or config_str == 'high_dim_high_s_range' or config_str == 'low_dimensional':
+    if config_str in ('high_dimensional', 'high_dim_high_s_range', 'default'):
         i = 0
         for r, theta in array([1., 2*pi]) * random.rand(n_samples, 2) + array([0., pi]):
             tests[i, :] = sqrt(r) * array([cos(theta), sin(theta)])
