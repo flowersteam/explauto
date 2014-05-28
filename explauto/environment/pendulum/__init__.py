@@ -9,7 +9,7 @@ environment = PendulumEnvironment
 configurations = {'default': test_config}
 
 
-def testcases(config_str, n_samples):
+def testcases(config_str, n_samples=100):
     if config_str == 'default':
         return rand_bounds(array([[x_min, v_min], [x_max, v_max]]), n_samples)
     else:
