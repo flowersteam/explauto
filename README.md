@@ -21,11 +21,12 @@ Explauto's scientific roots trace back from Intelligent Adaptive Curiosity algor
 
 Most of Explauto's documentation is written as [IPython notebooks](http://ipython.org/notebook.html). If you do not know how to use them, please refer to the [dedicated section](http://flowersteam.github.io/explauto/notebook.html). 
 
-* [Setting a basic experiment](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/01%20Running%20a%20basic%20experiment..ipynb)
-* [Comparing motor vs goal strategies](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/02%20Comparing%20motor%20vs%20goal%20strategies.ipynb)
-* [Running pool of experiments](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/03%20Running%20pool%20of%20experiments.ipynb)
-* [Introducing curiosity-driven exploration](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/04%20Introducing%20curiosity-driven%20learning.ipynb)
-* [Poppy environment](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/05%20%20Poppy%20environment.ipynb)
+* [Setting environments](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/setting_environments.ipynb)
+* [Setting a basic experiment](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/setting_basic_experiment.ipynb)
+* [Comparing motor vs goal strategies](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/comparing_motor_goal_stategies.ipynb)
+* [Running pool of experiments](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/running_experiment_pool.ipynb)
+* [Introducing curiosity-driven exploration](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/introducing_curiosity_learning.ipynb)
+* [Poppy environment](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/poppy_environment.ipynb)
 
 ### API ###
 
