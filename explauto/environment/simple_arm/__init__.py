@@ -34,14 +34,14 @@ configurations = {'low_dimensional': low_dim,
 def testcases(config_str, n_samples=100):
     tests = zeros((n_samples, 2))
     #FIXME low_dimensional
-    if config_str in ('high_dimensional', 'high_dim_high_s_range', 'default'):
+    if config_str in ('high_dimensional', 'high_dim_high_s_range'):
         i = 0
         for r, theta in array([1., 2*pi]) * random.rand(n_samples, 2) + array([0., -pi]):
             tests[i, :] = sqrt(r) * array([cos(theta), sin(theta)])
-            # for theta in 2. * pi * random.rand(int(sqrt(n_samples))):
-                # tests[i, :] = sqrt(r) * array([cos(theta), sin(theta)])
             i += 1
         return tests
 
     else:
-        raise ExplautoNoTestCasesError("TODO")
+        env = environment(**configurations[config_str])
+        env.noise = 0.
+        return env.uniform_sensor(n_samples)
