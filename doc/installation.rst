@@ -16,7 +16,7 @@ or::
 
 The up to date archive can also be directly downloaded `here <https://pypi.python.org/pypi/explauto/>`_.
 
-Make sure to also install all the dependencies required by the extra environment or models (e.g. pypot environment or imle models) you want to use. See the section :ref:`extra` for details.
+Make sure to also install all the dependencies required by the extra environment or models (e.g. pypot environment or imle models) you want to use.
 
 From the source code
 --------------------
@@ -64,4 +64,4 @@ You can test if the installation went well with::
 
     python -m "import explauto"
 
-If you have any trouble during the installation process, please refer to the :doc:`FAQ </FAQ>`. If this does not solve your problem, please report the issue directly on the issue tracker of the repository.
+If you have any trouble during the installation process, please report the issue directly on the `issue tracker <https://github.com/flowersteam/explauto/issues>`_ of the repository.
