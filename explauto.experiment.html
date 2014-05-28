@@ -253,7 +253,7 @@
 
 <dl class="method">
 <dt id="explauto.experiment.experiment.Experiment.evaluate_at">
-<tt class="descname">evaluate_at</tt><big>(</big><em>eval_at</em>, <em>testcases=None</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/experiment.html#Experiment.evaluate_at"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.experiment.Experiment.evaluate_at" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">evaluate_at</tt><big>(</big><em>eval_at</em>, <em>testcases</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/experiment.html#Experiment.evaluate_at"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.experiment.Experiment.evaluate_at" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the evaluation interation indices.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -261,7 +261,7 @@
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>eval_at</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; iteration indices where an evaluation should be performed</li>
-<li><strong>testcases</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.8)"><em>numpy.array</em></a>) &#8211; use a predefined testcases, by default it will be automatically generated.</li>
+<li><strong>testcases</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.8)"><em>numpy.array</em></a>) &#8211; testcases used for evaluation</li>
 </ul>
 </td>
 </tr>
@@ -303,7 +303,7 @@
 </div>
 <dl class="classmethod">
 <dt id="explauto.experiment.pool.ExperimentPool.from_settings_product">
-<em class="property">classmethod </em><tt class="descname">from_settings_product</tt><big>(</big><em>environments, babblings, interest_models, sensorimotor_models, evaluate_at, n_bootstrap=[0], same_testcases=False</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/pool.html#ExperimentPool.from_settings_product"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.pool.ExperimentPool.from_settings_product" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><tt class="descname">from_settings_product</tt><big>(</big><em>environments</em>, <em>babblings</em>, <em>interest_models</em>, <em>sensorimotor_models</em>, <em>evaluate_at</em>, <em>testcases=None</em>, <em>same_testcases=False</em><big>)</big><a class="reference internal" href="_modules/explauto/experiment/pool.html#ExperimentPool.from_settings_product"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.experiment.pool.ExperimentPool.from_settings_product" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a ExperimentPool with the product of all the given settings.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
