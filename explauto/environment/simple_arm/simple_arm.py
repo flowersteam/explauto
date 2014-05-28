@@ -2,7 +2,6 @@ import numpy as np
 
 from .. import Environment
 from ...utils import bounds_min_max
-from ... import ExplautoNoTestCasesError
 
 
 def forward(angles, lengths):

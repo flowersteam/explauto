@@ -112,4 +112,4 @@ class ExperimentLog(object):
         # print kde.min(), kde.max()
 
         #FIXME vmin, vmax
-        ax.imshow(kde.T[::-1, :], extent=bounds, vmin=0., vmax=1.)
+        ax.imshow(kde.T[::-1, :], extent=bounds, vmin=0., vmax=kde.max())
