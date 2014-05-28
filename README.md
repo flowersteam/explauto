@@ -8,7 +8,7 @@ Explauto provides a high-level API for an easy definition of:
 * Sensorimotor learning iterative models (Sensorimotor level)
 * Active choice of sensorimotor experiments (Interest level)
 
-It is crossed-platform and has been tested on Linux, Windows and Mac OS. Do not hesitate to contact us if you want to get involved!
+It is crossed-platform and has been tested on Linux, Windows and Mac OS. Do not hesitate to contact us if you want to get involved! It has been released under the [GPLv3 license](http://www.gnu.org/copyleft/gpl.html).
 
 ## Documentation ##
 
@@ -19,7 +19,7 @@ Explauto's scientific roots trace back from Intelligent Adaptive Curiosity algor
 
 ### Tutorials ###
 
-Most of Explauto's documentation is written as [IPython notebooks](http://ipython.org/notebook.html). If you do not know how to use them, please refer to the [dedicated section](http://flowersteam.github.io/explauto/notebook.html). 
+Most of Explauto's documentation is written as [IPython notebooks](http://ipython.org/notebook.html). If you do not know how to use them, please refer to the [dedicated section](http://flowersteam.github.io/explauto/notebook.html).
 
 * [Setting environments](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/setting_environments.ipynb)
 * [Setting a basic experiment](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/setting_basic_experiment.ipynb)
