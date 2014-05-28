@@ -37,7 +37,7 @@ class ExperimentLog(object):
         for topic, dims in topic_dims:
             if topic == 'motor':
                 bounds.extend(list(self.conf.m_bounds[:, dims].T.flatten()))
-            elif topic == 'sensori':
+            elif topic in ['testcases', 'sensori']:
                 bounds.extend(list(self.conf.s_bounds[:, dims].T.flatten()))
             elif topic == 'choice':
                 bounds.extend(list(self.conf.bounds[:, [self.expl_dims[d]
@@ -96,7 +96,7 @@ class ExperimentLog(object):
         ax.axis([self.eval_at[0] * 0.9, self.eval_at[-1] * 1.1, axis[2], axis[3]])
         ax.set_title('Test on ' + str(errors.shape[1]) + ' sensory goals')
         ax.set_xlabel('Number of sensorimotor experiments')
-        ax.set_ylabel('Mean ' + 'squared' if squared_errors else '' + 'error')
+        ax.set_ylabel('Mean ' + ('squared' if squared_errors else '') + 'error')
 
     def density_plot(self, ax, topic_dims, t=None,
                      res_x=40, res_y=40,

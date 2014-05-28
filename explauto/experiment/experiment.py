@@ -118,6 +118,8 @@ class Experiment(Observer):
         self.log.eval_at = eval_at
 
         self.evaluation = Evaluation(self.ag, self.env, testcases)
+        for test in testcases:
+            self.log.add('testcases', test)
 
     @classmethod
     def from_settings(cls, settings):

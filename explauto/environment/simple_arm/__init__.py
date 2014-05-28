@@ -36,7 +36,7 @@ def testcases(config_str, n_samples=100):
     #FIXME low_dimensional
     if config_str in ('high_dimensional', 'high_dim_high_s_range', 'default'):
         i = 0
-        for r, theta in array([1., 2*pi]) * random.rand(n_samples, 2) + array([0., pi]):
+        for r, theta in array([1., 2*pi]) * random.rand(n_samples, 2) + array([0., -pi]):
             tests[i, :] = sqrt(r) * array([cos(theta), sin(theta)])
             # for theta in 2. * pi * random.rand(int(sqrt(n_samples))):
                 # tests[i, :] = sqrt(r) * array([cos(theta), sin(theta)])
