@@ -24,7 +24,7 @@ In the recent year, work in developmental learning has explored various families
 
 In Explauto, this strategies are called *interest models*. They implements the active exploration process,  where sensorimotor experiments are chosen to improve the forward or inverse prediction of the sensorimotor model. Efficient versions of such mechanisms are based on the active choice of learning experiments that maximize *learning progress*, for e.g. improvement of predictions or of competences to reach goals (`Schmidhuber, 1991`_ ; `Oudeyer, 2007`_). This automatically drives the system to explore and learn first easy skills, and then explore skills of progressively increasing complexity.
 
-Explauto provides a unified interface to define such models using the :class:`~explauto.interest_model.interest_model.InterestModel` class. The library comes with two built-in interest models: *random* sampling as well as sampling maximizing the *learning progress* in forward or inverse predictions (inspired by (`Oudeyer, 2007`_, `Schmidhuber, 1991`_)). 
+Explauto provides a unified interface to define such models using the :class:`~explauto.interest_model.interest_model.InterestModel` class. The library comes with two built-in interest models: *random* sampling as well as sampling maximizing the *learning progress* in forward or inverse predictions.
 
 Both *random* and *learning progress* models can act either on the motor or on the sensory space, resulting in *motor babbling* or *goal babbling* (`Oudeyer and Kaplan, 2007`_; `Rolf and Steil, 2010`_) strategies. 
 
