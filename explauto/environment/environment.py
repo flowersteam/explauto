@@ -28,19 +28,19 @@ class Environment(Observable):
         Observable.__init__(self)
 
         self.conf = make_configuration(m_mins, m_maxs, s_mins, s_maxs)
+        self.state = zeros(self.conf.ndims)
 
-    def update(self, ag_state, log=True):
-        state = zeros(self.conf.ndims)
-        m = self.compute_motor_command(ag_state)
-        state[:self.conf.m_ndims] = m
+    def update(self, m_ag, log=True):
+        m_env = self.compute_motor_command(m_ag)
+        self.state[:self.conf.m_ndims] = m_env
 
-        s = self.compute_sensori_effect(m)
-        state[-self.conf.s_ndims:] = s
+        s = self.compute_sensori_effect(m_env)
+        self.state[-self.conf.s_ndims:] = s
 
         if log:
-            self.emit('motor', m)
+            self.emit('motor', m_env)
             self.emit('sensori', s)
-        return state
+        return self.state
 
     @abstractmethod
     def compute_motor_command(self, ag_state):
