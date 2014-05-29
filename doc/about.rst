@@ -56,7 +56,7 @@ The resulting architecture is summarized below.
     :alt: alternate text
     :figclass: align-center
 
-    The explauto architecture involves three processing levels. M and S are the motor and the sensory space. X is called the *interest space*: it corresponds to M in motor babbling stategies and to S in goal babbling ones.
+    The Explauto architecture involves three processing levels. M and S are the motor and the sensory space. X is called the *interest space*: it corresponds to M in motor babbling stategies and to S in goal babbling ones. Light arrows are training signals.
 
 
 Explauto builds upon these research and provides a software library to simulate autonomous exploration in virtual an robotic agents.
