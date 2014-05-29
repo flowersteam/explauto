@@ -53,14 +53,13 @@ class SimpleArmEnvironment(Environment):
         # self.readable = range(self.conf.m_ndims + self.conf.s_ndims)
         # self.writable = range(self.conf.m_ndims)
 
-    def compute_motor_command(self, ag_state):
-        motor_cmd = ag_state
-        return bounds_min_max(motor_cmd, self.conf.m_mins, self.conf.m_maxs)
+    def compute_motor_command(self, joint_pos_ag):
+        return bounds_min_max(joint_pos_ag, self.conf.m_mins, self.conf.m_maxs)
 
-    def compute_sensori_effect(self):
-        res = np.array(forward(self.state[:self.conf.m_ndims], self.lengths))
-        res += self.noise * np.random.randn(*res.shape)
-        return res
+    def compute_sensori_effect(self, joint_pos_env):
+        hand_pos = np.array(forward(joint_pos_env, self.lengths))
+        hand_pos += self.noise * np.random.randn(*hand_pos.shape)
+        return hand_pos
 
     def plot_arm(self, ax, m, **kwargs_plot):
         x, y = joint_positions(m, self.lengths)

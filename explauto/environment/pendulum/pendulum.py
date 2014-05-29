@@ -21,9 +21,9 @@ class PendulumEnvironment(Environment):
     def compute_motor_command(self, ag_state):
         return bounds_min_max(ag_state, self.conf.m_mins, self.conf.m_maxs)
 
-    def compute_sensori_effect(self):
+    def compute_sensori_effect(self, m):
         s = copy(self.x0)
-        for u in self.bf.trajectory(self.state[:self.conf.m_ndims]).flatten():
+        for u in self.bf.trajectory(m).flatten():
             s = simple_lip.simulate(s, [u], self.dt)
         res = array(s)
         res += self.noise * random.randn(*res.shape)

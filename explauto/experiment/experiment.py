@@ -84,8 +84,8 @@ class Experiment(Observer):
 
             m = self.ag.produce()
             try:
-                self.env.update(m)
-                self.ag.perceive(self.env.state)
+                env_state = self.env.update(m)
+                self.ag.perceive(env_state)
             except ExplautoEnvironmentUpdateError:
                 logger.warning('Environment update error at time %d with '
                                'motor command %s. '
