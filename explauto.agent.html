@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     
-    <title>agent Package &mdash; explauto 1.0.0 documentation</title>
+    <title>agent Package &mdash; explauto 1.0.1 documentation</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
@@ -36,7 +36,7 @@
 <script type="text/javascript">
   var DOCUMENTATION_OPTIONS = {
             URL_ROOT:    './',
-            VERSION:     '1.0.0',
+            VERSION:     '1.0.1',
             COLLAPSE_INDEX: false,
             FILE_SUFFIX: '.html',
             HAS_SOURCE:  true
@@ -79,7 +79,7 @@
   });
 </script>
     <link rel="author" title="About these documents" href="about.html" />
-    <link rel="top" title="explauto 1.0.0 documentation" href="index.html" />
+    <link rel="top" title="explauto 1.0.1 documentation" href="index.html" />
     <link rel="up" title="Explauto’s API" href="api.html" />
     <link rel="next" title="environment Package" href="explauto.environment.html" />
     <link rel="prev" title="Explauto’s API" href="api.html" /> 
@@ -94,7 +94,7 @@
             <span class="icon-bar"></span>
           </a>
           <div role="banner">
-            <a class="brand" href="index.html">explauto 1.0.0 documentation</a>
+            <a class="brand" href="index.html">explauto 1.0.1 documentation</a>
           </div>
           <div class="nav-collapse collapse">
             <ul class="nav pull-right">
@@ -210,10 +210,14 @@
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">explauto.utils.observer.Observable</span></tt></p>
 <p>Initialize agent class
 Keyword arguments:
-m_dims &#8211; the indices of motor values
-s_dims &#8211; the indices of sensory values
-sm_model &#8211; the sensorimotor model
-i_model &#8211; the interest model</p>
+:param class im_model_cls: a subclass of InterestedModel, as those registered in the interest_model package
+:param dict im_model_config: a configuration dict as those registered in the interest_model package 
+:param expl_dims: the sensorimotor dimensions where exploration is driven in the interest model 
+:param inf_dims: the output sensorimotor dimensions of the sensorimotor model (input being expl_dims) 
+:param class sm_model_cls: a subclass of SensorimotorModel, as those registered in the sensorimotor_model package
+:param dict sensorimotor_model_config: a configuration dict as those registered in the sensorimotor_model package 
+:params list m_mins: lower bound of motor values on each motor dimension (upper for m_max) 
+:params list m_mins: lower bound of sensory values on each sensory dimension (lower for m_max)</p>
 <dl class="method">
 <dt id="explauto.agent.agent.Agent.next_state">
 <tt class="descname">next_state</tt><big>(</big><em>env_state</em><big>)</big><a class="reference internal" href="_modules/explauto/agent/agent.html#Agent.next_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.agent.agent.Agent.next_state" title="Permalink to this definition">¶</a></dt>
@@ -268,7 +272,7 @@ i_model &#8211; the interest model</p>
         <li><a href="py-modindex.html" title="Python Module Index" >modules</a></li>
         <li><a href="explauto.environment.html" title="environment Package" >next</a></li>
         <li><a href="api.html" title="Explauto’s API" >previous</a></li>
-        <li><a href="index.html">explauto 1.0.0 documentation</a></li>
+        <li><a href="index.html">explauto 1.0.1 documentation</a></li>
         <li><a href="api.html" >Explauto&#8217;s API</a></li> 
       
     </ul>

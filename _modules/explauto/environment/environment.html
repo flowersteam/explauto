@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     
-    <title>explauto.environment.environment &mdash; explauto 1.0.0 documentation</title>
+    <title>explauto.environment.environment &mdash; explauto 1.0.1 documentation</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
@@ -36,7 +36,7 @@
 <script type="text/javascript">
   var DOCUMENTATION_OPTIONS = {
             URL_ROOT:    '../../../',
-            VERSION:     '1.0.0',
+            VERSION:     '1.0.1',
             COLLAPSE_INDEX: false,
             FILE_SUFFIX: '.html',
             HAS_SOURCE:  true
@@ -79,7 +79,7 @@
   });
 </script>
     <link rel="author" title="About these documents" href="../../../about.html" />
-    <link rel="top" title="explauto 1.0.0 documentation" href="../../../index.html" />
+    <link rel="top" title="explauto 1.0.1 documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body role="document">
@@ -92,7 +92,7 @@
             <span class="icon-bar"></span>
           </a>
           <div role="banner">
-            <a class="brand" href="../../../index.html">explauto 1.0.0 documentation</a>
+            <a class="brand" href="../../../index.html">explauto 1.0.1 documentation</a>
           </div>
           <div class="nav-collapse collapse">
             <ul class="nav pull-right">
@@ -173,13 +173,17 @@
                 <div class="body">
                   
   <h1>Source code for explauto.environment.environment</h1><div class="highlight"><pre>
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">zeros</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">zeros</span><span class="p">,</span> <span class="n">array</span>
 
 <span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span><span class="p">,</span> <span class="n">abstractmethod</span>
 
 <span class="kn">from</span> <span class="nn">..utils.config</span> <span class="kn">import</span> <span class="n">make_configuration</span>
 <span class="kn">from</span> <span class="nn">..utils.observer</span> <span class="kn">import</span> <span class="n">Observable</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">ExplautoNoTestCasesError</span>
 <span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">rand_bounds</span>
+<span class="kn">from</span> <span class="nn">..third_party.models.models.testbed.testcase</span> <span class="kn">import</span> <span class="n">Lattice</span>
+<span class="kn">from</span> <span class="nn">..third_party.models_adaptors</span> <span class="kn">import</span> <span class="n">configuration</span>
+
 
 
 <div class="viewcode-block" id="Environment"><a class="viewcode-back" href="../../../explauto.environment.html#explauto.environment.environment.Environment">[docs]</a><span class="k">class</span> <span class="nc">Environment</span><span class="p">(</span><span class="n">Observable</span><span class="p">):</span>
@@ -201,16 +205,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">conf</span> <span class="o">=</span> <span class="n">make_configuration</span><span class="p">(</span><span class="n">m_mins</span><span class="p">,</span> <span class="n">m_maxs</span><span class="p">,</span> <span class="n">s_mins</span><span class="p">,</span> <span class="n">s_maxs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">ndims</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Environment.update"><a class="viewcode-back" href="../../../explauto.environment.html#explauto.environment.environment.Environment.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag_state</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_motor_command</span><span class="p">(</span><span class="n">ag_state</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">m_ndims</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span>
+<div class="viewcode-block" id="Environment.update"><a class="viewcode-back" href="../../../explauto.environment.html#explauto.environment.environment.Environment.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m_ag</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="n">m_env</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_motor_command</span><span class="p">(</span><span class="n">m_ag</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">m_ndims</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_env</span>
 
-        <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_sensori_effect</span><span class="p">()</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_sensori_effect</span><span class="p">(</span><span class="n">m_env</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">s_ndims</span><span class="p">:]</span> <span class="o">=</span> <span class="n">s</span>
 
         <span class="k">if</span> <span class="n">log</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="s">&#39;motor&#39;</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="s">&#39;motor&#39;</span><span class="p">,</span> <span class="n">m_env</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="s">&#39;sensori&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span>
 </div>
     <span class="nd">@abstractmethod</span>
 <div class="viewcode-block" id="Environment.compute_motor_command"><a class="viewcode-back" href="../../../explauto.environment.html#explauto.environment.environment.Environment.compute_motor_command">[docs]</a>    <span class="k">def</span> <span class="nf">compute_motor_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag_state</span><span class="p">):</span>
@@ -234,7 +239,21 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
             <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">m_ndims</span><span class="p">:]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">state</span><span class="p">[</span><span class="n">m_ndims</span><span class="p">:]</span>
 
-        <span class="k">return</span> <span class="n">data</span></div></div>
+        <span class="k">return</span> <span class="n">data</span>
+</div>
+<div class="viewcode-block" id="Environment.uniform_sensor"><a class="viewcode-back" href="../../../explauto.environment.html#explauto.environment.environment.Environment.uniform_sensor">[docs]</a>    <span class="k">def</span> <span class="nf">uniform_sensor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_cases</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+        <span class="n">n_random_motor</span> <span class="o">=</span> <span class="n">n_cases</span> <span class="o">*</span> <span class="mi">100</span>
+        <span class="n">m_feats</span><span class="p">,</span> <span class="n">s_feats</span><span class="p">,</span> <span class="n">m_bounds</span> <span class="o">=</span> <span class="n">configuration</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">ms_uniform_motor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">random_motors</span><span class="p">(</span><span class="n">n_random_motor</span><span class="p">))</span>
+        <span class="n">resolution</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nb">int</span><span class="p">((</span><span class="mf">1.3</span><span class="o">*</span><span class="n">n_cases</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">1.0</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">s_feats</span><span class="p">))))</span>
+        <span class="n">observations</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">ms_uniform_motor</span><span class="p">:</span>
+            <span class="n">observations</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">m_dims</span><span class="p">],</span> <span class="n">ms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">s_dims</span><span class="p">]))</span>
+        <span class="n">lattice</span> <span class="o">=</span> <span class="n">Lattice</span><span class="p">(</span><span class="n">s_feats</span><span class="p">,</span> <span class="n">observations</span><span class="p">,</span> <span class="n">res</span><span class="o">=</span><span class="n">resolution</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">lattice</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ms</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">array</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div></div>
 </pre></div>
 
                 </div>
@@ -254,7 +273,7 @@
       
         <li><a href="../../../genindex.html" title="General Index" >index</a></li>
         <li><a href="../../../py-modindex.html" title="Python Module Index" >modules</a></li>
-        <li><a href="../../../index.html">explauto 1.0.0 documentation</a></li>
+        <li><a href="../../../index.html">explauto 1.0.1 documentation</a></li>
         <li><a href="../../index.html" >Module code</a></li> 
       
     </ul>
