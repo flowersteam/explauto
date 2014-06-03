@@ -41,14 +41,14 @@ class PypotEnvironment(Environment):
 
         self.opti_get = lambda: optitrack_sensor.tracked_objects[tracked_obj].position
 
-    def compute_motor_command(self, ag_state):
+    def compute_motor_command(self, m_ag):
         """ Compute the motor command by restricting it to the bounds. """
-        motor_cmd = ag_state
-        return bounds_min_max(motor_cmd, self.conf.m_mins, self.conf.m_maxs)
+        m_env = bounds_min_max(m_ag, self.conf.m_mins, self.conf.m_maxs)
+        return m_env
 
-    def compute_sensori_effect(self):
+    def compute_sensori_effect(self, m_env):
         """ Make the robot moves and retrieve the tracked object position. """
-        cmd = numpy.rad2deg(self.state[:self.conf.m_ndims])
+        cmd = numpy.rad2deg(m_env)
         pos = dict(zip(self.motors, cmd))
         self.robot.goto_position(pos, self.move_duration, wait=True)
         time.sleep(0.5)
