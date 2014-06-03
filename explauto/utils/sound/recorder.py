@@ -1,67 +1,57 @@
-import time
-from threading import Thread, Lock
+import threading
 
-import numpy as np
 import pyaudio
+import numpy
 
 
-class Recorder(Thread):
+class Recorder(object):
+    def __init__(self, chunk=1024, rate=44100):
+        self.running = threading.Event()
+        self._data = ''
 
-    chunk = 1024
-    format_ = pyaudio.paInt16
-    channels = 1
-    #rate = 48000
-    record_seconds = 5
+        self.chunk = chunk
+        self.format = pyaudio.paInt16
+        self._samplerate = rate
+        self.channels = 1
 
-    def __init__(self, device_index=0, verbose=False):
-        super(Recorder, self).__init__()
-        self.device_index = device_index
-        self.recording = False
-        self.running = True
-        self.data = []
-        self._data_lock = Lock()
-        self._init_audio()
-        self.start()
-        self._nerrors = 0  # Count IOErrors
+        self.p = pyaudio.PyAudio()
 
-    def _init_audio(self):
-        self._audio = pyaudio.PyAudio()
-        self.rate = int(self._audio.get_device_info_by_index(self.device_index)[
-                'defaultSampleRate'])
-        self._stream = self._audio.open(
-                format=self.format_,
-                channels=self.channels,
-                rate=self.rate,
-                input=True,
-                input_device_index = self.device_index,
-                output=True,
-                frames_per_buffer=self.chunk)
+    def start(self):
+        if self.running.is_set():
+            self.stop()
 
-    def run(self):
-        while self.running:
-            try:
-                new_data = self._stream.read(self.chunk)
-            except IOError:  # Have a better idea?
-                self._nerrors += 1
-                new_data = '\x00' * self.chunk
-            if self.recording:
-                # Append data
-                self._data_lock.acquire()
-                self.data.append(new_data)
-                self._data_lock.release()
+        self._data = ''
+        self.stream = self.p.open(format=self.format,
+                                  channels=self.channels,
+                                  rate=self.samplerate,
+                                  input=True,
+                                  frames_per_buffer=self.chunk)
 
-    def get_data(self):
-        """Returns a copy of the recorded data.
-        """
-        self._data_lock.acquire()
-        data = self.data
-        self._data_lock.release()
-        self.data = []
-        return np.fromstring(''.join(data), 'int16')
+        self.running.set()
+        self.t = threading.Thread(target=self._record)
+        self.t.start()
 
-    def exit(self):
-        self.running = False
-        self._stream.close()
-        time.sleep(.01)
-        self._audio.terminate()
-        self.join()
+    def stop(self):
+        self.running.clear()
+
+        if hasattr(self, 't'):
+            self.t.join()
+
+            self.stream.stop_stream()
+            self.stream.close()
+
+    @property
+    def data(self):
+        samplewidth = 8 * self.p.get_sample_size(self.format)
+
+        data = numpy.fromstring(self._data, dtype=numpy.int16)
+        normalized_data = data.astype(numpy.float64) / (2 ** samplewidth)
+        return normalized_data
+
+    @property
+    def samplerate(self):
+        return self._samplerate
+
+    def _record(self):
+        while self.running.is_set():
+            self._data += self.stream.read(self.chunk)
