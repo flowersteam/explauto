@@ -13,11 +13,14 @@ class SoundPlayer(object):
 
         s = pygame.mixer.Sound(filename)
         s.set_volume(1.0)
+        length = s.get_length()
 
         s.play()
 
         if wait:
-            time.sleep(s.get_length())
+            time.sleep(length)
+
+        return length
 
 
 class Sampler(object):
@@ -26,8 +29,10 @@ class Sampler(object):
         self.sounds = sound_files
 
     def play(self, i, wait=False):
-        self.player.play(self.sounds[i], wait)
+        return self.player.play(self.sounds[i], wait)
 
-    def multiple_plays(self, *sound_ids):
-        for i in sound_ids:
-            self.play(i)
+    def multiple_plays(self, sound_ids, wait=False):
+        lengths = [self.play(i) for i in sound_ids]
+
+        if wait:
+            time.sleep(max(lengths))
