@@ -1,5 +1,6 @@
 import pygame
 import time
+import os
 
 
 class SoundPlayer(object):
@@ -7,6 +8,9 @@ class SoundPlayer(object):
         pygame.mixer.init(frequency=samplerate)
 
     def play(self, filename, wait=False):
+        if not os.path.exists(filename):
+            raise IOError("No such file or directory: '{}'".format(filename))
+
         s = pygame.mixer.Sound(filename)
         s.set_volume(1.0)
 
