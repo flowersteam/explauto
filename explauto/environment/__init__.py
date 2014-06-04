@@ -3,7 +3,7 @@ from .environment import Environment
 
 
 environments = {}
-for mod_name in ['simple_arm', 'pendulum', 'musical_arm']:
+for mod_name in ['simple_arm', 'pendulum', 'music']:
     module = importlib.import_module('explauto.environment.{}'.format(mod_name))
     env = getattr(module, 'environment')
     conf = getattr(module, 'configurations')
