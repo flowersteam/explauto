@@ -25,6 +25,6 @@ def estimate_tuning(y, sr):
     return tuning
 
 
-def get_key(y, sr):
+def estimate_key(y, sr):
     C = librosa.feature.chromagram(y=y, sr=sr)
     return C.argmax(axis=0).mean() / 12.
