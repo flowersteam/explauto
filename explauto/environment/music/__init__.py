@@ -18,7 +18,7 @@ config = dict(base_environment=arm,
               sound_analyser=estimate_key,
               analyser_noise=noise,
               sound_mins=sound_feature_min,
-              sound_maxs=sound_feature_min,
+              sound_maxs=sound_feature_max,
               internal_play_and_record=True)
 
 
