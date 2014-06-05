@@ -7,3 +7,5 @@
 [ ] Le robot peut contrôler la forme de sa main (poings fermés, mains ouvertes...)
 
 [ ] Définir des environnements où certaines touches sont plus ou moins prédictibles
+
+[ ] Méthode pour facilement passer d'un mode interne (sans record mais directement lire le wav) a un mode externe
