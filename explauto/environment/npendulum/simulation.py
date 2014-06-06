@@ -1,7 +1,7 @@
 from sympy import symbols
 from sympy.physics.mechanics import *
 from sympy import Dummy, lambdify
-from numpy import array, hstack, zeros, linspace, pi, cos, sin, ones
+from numpy import array, hstack, zeros, linspace, pi, cos, sin, ones, arange
 from numpy.linalg import solve
 from scipy.integrate import odeint
 
@@ -15,28 +15,20 @@ def step(weights, duration):
     """
 
     dt = duration / len(weights)
-    fct = 0
-    i = 0
 
     def activate (t, dt):
-    """This function returns 1 if t is in [0, dt[ and 0 otherwise.
+        """This function returns 1 if t is in [0, dt[ and 0 otherwise.
 
-    Args:
-       t (float): current time
-       dt (float): time step
-    """
-        if t >= 0 and t < dt:
-            return 1
-        return 0
+        Args:
+           t (float): current time
+           dt (float): time step
+        """
+        return  0 <= t < dt
 
-    for w in weights:
-        fct += w * activate (t - i * dt)
-        i += 1
-
-    return (lambda t: fct)
+    return (lambda t: sum([w * activate(t - i * dt, dt) for i, w in enumerate(weights)]))
 
 
-def simulate(n, x0, dt, func):
+def simulate(n, x0, dt,func):
     """This function simulates the n-pendulum behavior.
 
     Args:
@@ -46,11 +38,7 @@ def simulate(n, x0, dt, func):
        func (lambda function): input function
 
     Returns:
-       array that contains: 
-
-          * y: Contains all the coordinates and speeds of each point for each period of time.
-          * y[t]: Contains all the coordinates and speeds of each point at time t.
-          * y[t][p]: Returns the coordinate (p in 0..(n-1)) or the speed (n..(2n-1)) of point p at time t.
+       array that contains all the coordinates and speeds of each point at time t.
 
     .. note::
  
@@ -144,7 +132,7 @@ def simulate(n, x0, dt, func):
     for i in range(n):
         parameters += [l[i], m[i + 1]]            
         parameter_vals += [arm_length, bob_mass]
-    t = linspace(0, 70*dt, dt)
+    t = linspace(0, 1000 * dt, 1000)
 
     kane = KanesMethod(I, q_ind=q, u_ind=u, kd_eqs=kindiffs)
     fr, frstar = kane.kanes_equations(forces, particles)
@@ -165,4 +153,20 @@ def simulate(n, x0, dt, func):
 
     y = odeint(f, x0, t, args=(parameter_vals,))
 
-    return y
+    return y[-1]
+
+def cartesian(n, states):
+    """This function computes cartesians coordinates from the states returned by the simulate function.
+
+    Args:
+       n (int): number of particules suspended to the top one
+       states (array): list of the positions and speeds at a certain time.
+    """
+    length = 1./n # arm_length
+    pos_x = hstack((states[0], zeros(n)))
+    pos_y = zeros(n+1)
+    for j in arange(1, n+1):
+        pos_x[j] = pos_x[j - 1] + length * cos(states[j])
+        pos_y[j] = pos_y[j - 1] + length * sin(states[j])
+    pos = hstack((pos_x, pos_y))
+    return pos

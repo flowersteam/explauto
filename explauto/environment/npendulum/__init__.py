@@ -2,18 +2,20 @@ from numpy import array
 
 from ...utils import rand_bounds
 from .npendulum import NPendulumEnvironment
-from .config import test_config, x_min, x_max, v_min, v_max
 
+
+def make_npendulum_config(m_ndims, m_max, s_mins, s_maxs, nb_joints, noise):
+    return dict(m_mins=array([-m_max] * m_ndims),
+                m_maxs=array([m_max] * m_ndims),
+                s_mins=s_mins,
+                s_maxs=s_maxs,
+                n=nb_joints,
+                noise=noise)
+
+config1 = make_npendulum_config(10, 0.1, array([-15., -1.]), array([15., 1.]), 5, 0.02)
 
 environment = NPendulumEnvironment
-configurations = {'default': test_config}
+configurations = {'default': config1}
 
-
-def testcases(config_str, n_samples=100):
-    if config_str == 'default':
-        return rand_bounds(array([[x_min, v_min], [x_max, v_max]]), n_samples)
-    else:
-        ExplautoNoTestCasesError("Only works for default configuration")
-
-
-            
+def testcases(config_str, n_samples=-1):
+    return None
