@@ -29,6 +29,7 @@ class MusicEnvironment(Environment):
                              hstack((base_environment.conf.s_mins, sound_mins)),
                              hstack((base_environment.conf.s_maxs, sound_maxs)))
 
+        self.no_box_sound_value = sound_mins
         self.env = base_environment
         self.boxes = boxes
         self.sound_files = sound_samples
@@ -71,7 +72,7 @@ class MusicEnvironment(Environment):
 
     def play_and_record(self, hand_pos):
         to_play = [i for i, b in enumerate(self.boxes) if is_in_box(b, hand_pos)]
-
+        # if not to_play
         if self.internal_play_and_record:
             sr = 22050
             y = [librosa.load(self.sound_files[i], sr=sr)[0] for i in to_play]

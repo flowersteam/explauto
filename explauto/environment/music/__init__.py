@@ -5,6 +5,7 @@ from ...utils.sound.pitch_tracker import estimate_key
 from .music import MusicEnvironment
 
 boxes2D_1 = [[[-1, 0.], [-1., 1.]], [[0., 1.], [-1., 0.]], [[0., 1.], [0., 1.]]]
+boxes2D_keyboard = [[[0, 0.5], [-0.7, -0.5]], [[0., 0.5], [-0.5, -0.3]], [[0., 0.5], [0., 0.3]]]
 wav_files = ['../data/piano_notes/a.wav', '../data/piano_notes/b.wav', '../data/piano_notes/c.wav']
 sound_feature_min = 0.
 sound_feature_max = 1.
@@ -14,6 +15,7 @@ arm = SimpleArmEnvironment(**arm_config)
 
 config = dict(base_environment=arm,
               boxes=boxes2D_1,
+              # boxes=boxes2D_keyboard,
               sound_samples=wav_files,
               sound_analyser=estimate_key,
               analyser_noise=noise,
