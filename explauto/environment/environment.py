@@ -1,20 +1,18 @@
-from numpy import zeros, array
+from numpy import zeros, array, hstack
 
 from abc import ABCMeta, abstractmethod
 
 from ..utils.config import make_configuration
 from ..utils.observer import Observable
-from .. import ExplautoNoTestCasesError
 from ..utils import rand_bounds
 from ..third_party.models.models.testbed.testcase import Lattice
 from ..third_party.models_adaptors import configuration
 
 
-
 class Environment(Observable):
     """ Abstract class to define environments.
 
-    When defining your sub-environment, you should specify whether they could be forked and run in different processes through the use_process class variable. By default, it is set to False to guarantee that the code will work.
+        When defining your sub-environment, you should specify whether they could be forked and run in different processes through the use_process class variable. By default, it is set to False to guarantee that the code will work.
 
     """
     __metaclass__ = ABCMeta
@@ -32,15 +30,13 @@ class Environment(Observable):
 
     def update(self, m_ag, log=True):
         m_env = self.compute_motor_command(m_ag)
-        self.state[:self.conf.m_ndims] = m_env
-
         s = self.compute_sensori_effect(m_env)
-        self.state[-self.conf.s_ndims:] = s
 
         if log:
             self.emit('motor', m_env)
             self.emit('sensori', s)
-        return self.state
+
+        return hstack((m_env, s))
 
     @abstractmethod
     def compute_motor_command(self, ag_state):
