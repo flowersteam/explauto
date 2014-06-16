@@ -7,11 +7,10 @@ from scipy.integrate import odeint
 
 
 def step(weights, duration):
-    """This function creates a sum of boxcar functions.
+    """ This function creates a sum of boxcar functions.
 
-    Args:
-       weights (array): heigth of each boxcar function.
-       duration (float): duration of the generated trajectory.
+    :args array weight: height of each boxcar function.
+    :args float duration: duration of the generated trajectory.
     """
 
     dt = duration / len(weights)
@@ -19,9 +18,8 @@ def step(weights, duration):
     def activate (t, dt):
         """This function returns 1 if t is in [0, dt[ and 0 otherwise.
 
-        Args:
-           t (float): current time
-           dt (float): time step
+        :args float t: current time
+        :args float dt: time step
         """
         return  0 <= t < dt
 
@@ -29,64 +27,56 @@ def step(weights, duration):
 
 
 def simulate(n, x0, dt,func):
-    """This function simulates the n-pendulum behavior.
+    """ This function simulates the n-pendulum behavior.
 
-    Args:
-       n (int): number of particules suspended to the top one
-       x0 (array): 2*(n+1)-length array, initial conditions (q and u) for each particle
-       dt (float): time step
-       func (lambda function): input function
+    :args int n: number of particules suspended to the top one
+    :args array x0: 2*(n+1)-length array, initial conditions (q and u) for each particle
+    :args float dt: time step
+    :arg func func: input function that give forces along x_axis for each time t
 
-    Returns:
-       array that contains all the coordinates and speeds of each point at time t.
+    :rtype: array that contains all the coordinates and speeds of each point at time t.
 
-    .. note::
- 
-       **Modifiable arguments**
-       * arm_length (int): length of each segment
-       * bob_mass (int): masse of each particle
-       * t (array): time vector 
-       For more advanced setup, change the parameter_vals values. It contains the gravity, the mass and length of each particle.
- 
+    Modifiable arguments
+    --------------------
+    * arm_length (int): length of each segment
+    * bob_mass (int): masse of each particle
+    * t (array): time vector 
+    For more advanced setup, change the parameter_vals values. It contains the gravity, the mass and length of each particle.
 
     Understand the code
     -------------------
     The explanations below are for those who want to understand how this code works.
     For more detailed explanations please refer to http://www.moorepants.info/blog/npendulum.html
 
-    .. note::
- 
-       **Variables meaning**
-       * q : Generalized coordinates
-       * u : Generalized speeds
-       * f : Force applied to the cart
-       * m : Mass of each bob
-       * l : Length of each link
-       * g : Gravity
-       * t : Time
-       * I : Inertial reference frame
-       * O : Origin point. Its velocity is zero
-       * P0 : Hinge point of top link
-       * Pa0 : Particle at P0. Its position is q[0] and its velocity is q[0]
-       * forces : List to hold the n + 1 applied forces, including the input force
-       * kindiffs : List to hold kinematic ODE's
+    **Variables meaning**
+    * q : Generalized coordinates
+    * u : Generalized speeds
+    * f : Force applied to the cart
+    * m : Mass of each bob
+    * l : Length of each link
+    * g : Gravity
+    * t : Time
+    * I : Inertial reference frame
+    * O : Origin point. Its velocity is zero
+    * P0 : Hinge point of top link
+    * Pa0 : Particle at P0. Its position is q[0] and its velocity is q[0]
+    * forces : List to hold the n + 1 applied forces, including the input force
+    * kindiffs : List to hold kinematic ODE's
 
      In brief, we implement first the frames, points, particles and forces.
      Then we derive the equations of motion of the system thanks to KanesMethod.
      Next we define some constants that the user can change (mass, length, etc.), which allow us to set the differential equations, that are formatted by right_hand_side function.
      This function allows odeint to solve the differential equation.
-
      """
 
     def functor(f):
-        """This function allow us to give right_hand_side function a specific input function.
+        """ This function allows us to give to :right_hand_side: function a specific input function.
+        
         It is necessary because of the format of arguments of odeint.
 
-        Args:
-           f (function):  number of particules.
-
-        Returns:
-           differential equation that will be solved.
+        :args func f: input function
+        
+        :rtype: differential equation that will be solved.
         """
         def right_hand_side(x, t, args):
             arguments = hstack((x, f(t), args))
@@ -153,19 +143,19 @@ def simulate(n, x0, dt,func):
 
     y = odeint(f, x0, t, args=(parameter_vals,))
 
-    return y[-1]
+    return y
+
 
 def cartesian(n, states):
-    """This function computes cartesians coordinates from the states returned by the simulate function.
+    """ This function computes cartesians coordinates from the states returned by the simulate function.
 
-    Args:
-       n (int): number of particules suspended to the top one
-       states (array): list of the positions and speeds at a certain time.
+    :args int n: number of particules suspended to the top one
+    :args array states: list of the positions and speeds at a certain time.
     """
-    length = 1./n # arm_length
+    length = 1. / n # arm_length
     pos_x = hstack((states[0], zeros(n)))
-    pos_y = zeros(n+1)
-    for j in arange(1, n+1):
+    pos_y = zeros(n + 1)
+    for j in arange(1, n + 1):
         pos_x[j] = pos_x[j - 1] + length * cos(states[j])
         pos_y[j] = pos_y[j - 1] + length * sin(states[j])
     pos = hstack((pos_x, pos_y))
