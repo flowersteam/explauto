@@ -9,8 +9,8 @@ from scipy.integrate import odeint
 def step(weights, duration):
     """ This function creates a sum of boxcar functions.
 
-    :args array weight: height of each boxcar function.
-    :args float duration: duration of the generated trajectory.
+    :param array weight: height of each boxcar function.
+    :param float duration: duration of the generated trajectory.
     """
 
     dt = duration / len(weights)
@@ -18,8 +18,8 @@ def step(weights, duration):
     def activate(t, dt):
         """This function returns 1 if t is in [0, dt[ and 0 otherwise.
 
-        :args float t: current time
-        :args float dt: time step
+        :param float t: current time
+        :param float dt: time step
         """
         return 0 <= t < dt
 
@@ -29,10 +29,10 @@ def step(weights, duration):
 def simulate(n, x0, dt, func):
     """ This function simulates the n-pendulum behavior.
 
-    :args int n: number of particules suspended to the top one
-    :args array x0: 2*(n+1)-length array, initial conditions (q and u) for each particle
-    :args float dt: time step
-    :arg func func: input function that give forces along x_axis for each time t
+    :param int n: number of particules suspended to the top one
+    :param array x0: 2*(n+1)-length array, initial conditions (q and u) for each particle
+    :param float dt: time step
+    :param func func: input function that give forces along x_axis for each time t
 
     :rtype: array that contains all the coordinates and speeds of each point at time t.
 
@@ -49,19 +49,20 @@ def simulate(n, x0, dt, func):
     For more detailed explanations please refer to http://www.moorepants.info/blog/npendulum.html
 
     **Variables meaning**
-    * q : Generalized coordinates
-    * u : Generalized speeds
-    * f : Force applied to the cart
-    * m : Mass of each bob
-    * l : Length of each link
-    * g : Gravity
-    * t : Time
-    * I : Inertial reference frame
-    * O : Origin point. Its velocity is zero
-    * P0 : Hinge point of top link
-    * Pa0 : Particle at P0. Its position is q[0] and its velocity is q[0]
-    * forces : List to hold the n + 1 applied forces, including the input force
-    * kindiffs : List to hold kinematic ODE's
+
+    - q : Generalized coordinates
+    - u : Generalized speeds
+    - f : Force applied to the cart
+    - m : Mass of each bob
+    - l : Length of each link
+    - g : Gravity
+    - t : Time
+    - I : Inertial reference frame
+    - O : Origin point. Its velocity is zero
+    - P0 : Hinge point of top link
+    - Pa0 : Particle at P0. Its position is q[0] and its velocity is q[0]
+    - forces : List to hold the n + 1 applied forces, including the input force
+    - kindiffs : List to hold kinematic ODE's
 
      In brief, we implement first the frames, points, particles and forces.
      Then we derive the equations of motion of the system thanks to KanesMethod.
@@ -74,7 +75,7 @@ def simulate(n, x0, dt, func):
 
         It is necessary because of the format of arguments of odeint.
 
-        :args func f: input function
+        :param func f: input function
 
         :rtype: differential equation that will be solved.
         """
@@ -149,8 +150,8 @@ def simulate(n, x0, dt, func):
 def cartesian(n, states):
     """ This function computes cartesians coordinates from the states returned by the simulate function.
 
-    :args int n: number of particules suspended to the top one
-    :args array states: list of the positions and speeds at a certain time.
+    :param int n: number of particules suspended to the top one
+    :param array states: list of the positions and speeds at a certain time.
     """
     length = 1. / n  # arm_length
     pos_x = hstack((states[0], zeros(n)))

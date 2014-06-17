@@ -14,7 +14,7 @@ from ...models.motor_primitive import BasisFunctions
 class NPendulumEnvironment(Environment):
     """ This class implements the n-pendulum environnement.
 
-    For more information, please look at :func:`~explauto.environment.npdendulum.simulation.simulate`.
+    For more information, please look at :func:`~explauto.environment.npendulum.simulation.simulate`.
 
     """
     def __init__(self, n, m_mins, m_maxs, s_mins, s_maxs, noise):
@@ -33,8 +33,8 @@ class NPendulumEnvironment(Environment):
     def compute_sensori_effect(self, m):
         """ This function generates the end effector position at the end of the movement.
 
-        .. note:: the duration of the movement is  1000*self.dt
-        .. note:: to use basis functions rather than step functions, set :use_basis_functions: to 1
+        .. note:: The duration of the movement is  1000*self.dt
+        .. note:: To use basis functions rather than step functions, set :use_basis_functions: to 1
         """
         if self.use_basis_functions:
             func = simulation.step(m, 1000*self.dt)
