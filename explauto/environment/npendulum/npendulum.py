@@ -1,9 +1,7 @@
 import shutil
 import os
 
-from numpy import (pi, array, around, cos, sin,
-                   random, hstack, ones, zeros, linspace, arange)
-from copy import copy
+from numpy import pi, array, random, hstack, ones, zeros
 from matplotlib.pyplot import savefig, clf, axes
 
 import simulation
@@ -15,7 +13,7 @@ from ...models.motor_primitive import BasisFunctions
 
 class NPendulumEnvironment(Environment):
     """ This class implements the n-pendulum environnement.
-    
+
     For more information, please look at :func:`¬explauto.environment.npdendulum.simulation.simulate`.
     """
 
@@ -24,7 +22,7 @@ class NPendulumEnvironment(Environment):
 
         self.noise = noise
         self.n = n
-        self.x0 = hstack(( 0, -pi / 2 * ones(n), zeros(n+1)))
+        self.x0 = hstack((0, -pi / 2 * ones(n), zeros(n + 1)))
         self.dt = 0.01
         self.bf = BasisFunctions(self.conf.m_ndims, 1000*self.dt, self.dt, 4.)
         self.use_basis_functions = False
@@ -52,15 +50,16 @@ class NPendulumEnvironment(Environment):
         return end_effector_pos
 
     def plot_s(self, ax, s):
-        ax.plot(s[0], s[1], 's', ms = 6)
-        ax.axis([self.conf.s_mins[0], self.conf.s_maxs[0], self.conf.s_mins[1], self.conf.s_maxs[1]]) 
+        ax.plot(s[0], s[1], 's', ms=6)
+        ax.axis([self.conf.s_mins[0], self.conf.s_maxs[0], self.conf.s_mins[1], self.conf.s_maxs[1]])
         ax.set_xlabel('X')
         ax.set_ylabel('Y')
 
     def plot_and_compute(self, ax, m):
         s = self.compute_sensori_effect(m)
-        ax.plot(s[0], s[1], 's', ms = 6)
-        ax.axis([self.conf.s_mins[0], self.conf.s_maxs[0], self.conf.s_mins[1], self.conf.s_maxs[1]])
+        ax.plot(s[0], s[1], 's', ms=6)
+        ax.axis([self.conf.s_mins[0], self.conf.s_maxs[0],
+                 self.conf.s_mins[1], self.conf.s_maxs[1]])
         ax.set_xlabel('X')
         ax.set_ylabel('Y')
 
@@ -68,12 +67,12 @@ class NPendulumEnvironment(Environment):
         func = simulation.step(m, 1000*self.dt)
         s = simulation.simulate(self.n, self.x0, self.dt, func)
         s_cartesian = simulation.cartesian(self.n, s[time])
-        x = s_cartesian[:len(s_cartesian)/2]
-        y = s_cartesian[len(s_cartesian)/2:]
+        x = s_cartesian[:len(s_cartesian) / 2]
+        y = s_cartesian[len(s_cartesian) / 2:]
         ax.plot(x, y)
         ax.plot(x[0], y[0], 'o', ms=6)
         ax.plot(x[-1], y[-1], 's', ms=6)
-        
+
     def animate_pendulum(self, m,  path="anim_npendulum"):
         """This function generates few images at different instants in order to animate the pendulum.
 
@@ -83,9 +82,9 @@ class NPendulumEnvironment(Environment):
         if os.path.exists(path):
             shutil.rmtree(path)
         os.makedirs(path)
-           
+
         for t in range(0, 1000, 32):
             ax = axes()
             self.plot_npendulum(ax, m, t)
-            savefig(os.path.join(path,"{}.png".format(t)))
+            savefig(os.path.join(path, "{}.png".format(t)))
             clf()

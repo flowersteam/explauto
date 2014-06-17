@@ -1,7 +1,7 @@
 from sympy import symbols
 from sympy.physics.mechanics import *
 from sympy import Dummy, lambdify
-from numpy import array, hstack, zeros, linspace, pi, cos, sin, ones, arange
+from numpy import array, hstack, zeros, linspace, cos, sin, arange
 from numpy.linalg import solve
 from scipy.integrate import odeint
 
@@ -15,18 +15,18 @@ def step(weights, duration):
 
     dt = duration / len(weights)
 
-    def activate (t, dt):
+    def activate(t, dt):
         """This function returns 1 if t is in [0, dt[ and 0 otherwise.
 
         :args float t: current time
         :args float dt: time step
         """
-        return  0 <= t < dt
+        return 0 <= t < dt
 
     return (lambda t: sum([w * activate(t - i * dt, dt) for i, w in enumerate(weights)]))
 
 
-def simulate(n, x0, dt,func):
+def simulate(n, x0, dt, func):
     """ This function simulates the n-pendulum behavior.
 
     :args int n: number of particules suspended to the top one
@@ -40,7 +40,7 @@ def simulate(n, x0, dt,func):
     --------------------
     * arm_length (int): length of each segment
     * bob_mass (int): masse of each particle
-    * t (array): time vector 
+    * t (array): time vector
     For more advanced setup, change the parameter_vals values. It contains the gravity, the mass and length of each particle.
 
     Understand the code
@@ -71,11 +71,11 @@ def simulate(n, x0, dt,func):
 
     def functor(f):
         """ This function allows us to give to :right_hand_side: function a specific input function.
-        
+
         It is necessary because of the format of arguments of odeint.
 
         :args func f: input function
-        
+
         :rtype: differential equation that will be solved.
         """
         def right_hand_side(x, t, args):
@@ -120,7 +120,7 @@ def simulate(n, x0, dt,func):
     parameters = [g, m[0]]
     parameter_vals = [9.81, 0.01 / n]
     for i in range(n):
-        parameters += [l[i], m[i + 1]]            
+        parameters += [l[i], m[i + 1]]
         parameter_vals += [arm_length, bob_mass]
     t = linspace(0, 1000 * dt, 1000)
 
@@ -132,7 +132,7 @@ def simulate(n, x0, dt,func):
     dynamic = q + u
     dynamic.append(f)
     dummy_symbols = [Dummy() for i in dynamic]
-    dummy_dict = dict(zip(dynamic, dummy_symbols))                 
+    dummy_dict = dict(zip(dynamic, dummy_symbols))
     kindiff_dict = kane.kindiffdict()
     M = kane.mass_matrix_full.subs(kindiff_dict).subs(dummy_dict)
     F = kane.forcing_full.subs(kindiff_dict).subs(dummy_dict)
@@ -152,7 +152,7 @@ def cartesian(n, states):
     :args int n: number of particules suspended to the top one
     :args array states: list of the positions and speeds at a certain time.
     """
-    length = 1. / n # arm_length
+    length = 1. / n  # arm_length
     pos_x = hstack((states[0], zeros(n)))
     pos_y = zeros(n + 1)
     for j in arange(1, n + 1):

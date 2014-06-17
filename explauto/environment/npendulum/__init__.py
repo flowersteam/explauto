@@ -1,6 +1,5 @@
 from numpy import array
 
-from ...utils import rand_bounds
 from .npendulum import NPendulumEnvironment
 
 
@@ -16,6 +15,7 @@ config1 = make_npendulum_config(5, 10, 0.1, array([-450., -1.]), array([450., 1.
 
 environment = NPendulumEnvironment
 configurations = {'default': config1}
+
 
 def testcases(config_str, n_samples=-1):
     return None
