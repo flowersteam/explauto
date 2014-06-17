@@ -36,15 +36,16 @@ def simulate(n, x0, dt, func):
 
     :rtype: array that contains all the coordinates and speeds of each point at time t.
 
-    Modifiable arguments
-    --------------------
+    **Modifiable arguments**
+
     * arm_length (int): length of each segment
     * bob_mass (int): masse of each particle
     * t (array): time vector
+
     For more advanced setup, change the parameter_vals values. It contains the gravity, the mass and length of each particle.
 
-    Understand the code
-    -------------------
+    **Understand the code**
+
     The explanations below are for those who want to understand how this code works.
     For more detailed explanations please refer to http://www.moorepants.info/blog/npendulum.html
 
