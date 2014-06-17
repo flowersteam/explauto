@@ -26,6 +26,7 @@ Most of Explauto's documentation is written as [IPython notebooks](http://ipytho
 * [Comparing motor vs goal strategies](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/comparing_motor_goal_stategies.ipynb)
 * [Running pool of experiments](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/running_experiment_pool.ipynb)
 * [Introducing curiosity-driven exploration](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/introducing_curiosity_learning.ipynb)
+* [Using a simulated n-pendulum](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/plotting_npendulum.ipynb)
 * [Poppy environment](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/poppy_environment.ipynb)
 
 ### API ###
