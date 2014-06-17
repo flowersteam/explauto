@@ -14,9 +14,9 @@ from ...models.motor_primitive import BasisFunctions
 class NPendulumEnvironment(Environment):
     """ This class implements the n-pendulum environnement.
 
-    For more information, please look at :func:`¬explauto.environment.npdendulum.simulation.simulate`.
-    """
+    For more information, please look at :func:`~explauto.environment.npdendulum.simulation.simulate`.
 
+    """
     def __init__(self, n, m_mins, m_maxs, s_mins, s_maxs, noise):
         Environment.__init__(self, m_mins, m_maxs, s_mins, s_maxs)
 
