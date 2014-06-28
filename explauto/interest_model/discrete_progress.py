@@ -18,7 +18,7 @@ class DiscretizedProgress(InterestModel):
         self.space = Space(numpy.hstack((conf.m_mins, conf.s_mins))[expl_dims],
                            numpy.hstack((conf.m_maxs, conf.s_maxs))[expl_dims], card)
 
-        self.dist_min = numpy.sqrt(sum(self.space.bin_widths ** 2)) / 2.
+        self.dist_min = numpy.sqrt(sum(self.space.bin_widths ** 2)) / 1.
 
         self.comp_max = measure(numpy.array([0.]), numpy.array([0.]), dist_min=self.dist_min)
         self.comp_min = measure(numpy.array([0.]), numpy.array([numpy.linalg.norm(conf.s_mins - conf.s_maxs)]), dist_min=self.dist_min)

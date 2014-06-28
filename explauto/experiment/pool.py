@@ -38,9 +38,7 @@ class ExperimentPool(object):
         """
         if same_testcases and testcases is None:
             s = settings[0]
-            xp = Experiment.from_settings(s)
-            xp.evaluate_at(evaluate_at)
-            testcases = xp.evaluation.tester.testcases
+            testcases = s.default_testcases
 
         self._config = zip(settings,
                            itertools.repeat(evaluate_at),
@@ -49,7 +47,8 @@ class ExperimentPool(object):
     @classmethod
     def from_settings_product(cls, environments, babblings,
                               interest_models, sensorimotor_models,
-                              evaluate_at, n_bootstrap=[0], same_testcases=False):
+                              evaluate_at,
+                              testcases=None, same_testcases=False):
         """ Creates a ExperimentPool with the product of all the given settings.
 
             :param environments: e.g. [('simple_arm', 'default'), ('simple_arm', 'high_dimensional')]
@@ -66,12 +65,12 @@ class ExperimentPool(object):
 
         """
         l = itertools.product(environments, babblings,
-                              interest_models, sensorimotor_models, n_bootstrap)
+                              interest_models, sensorimotor_models)
 
-        settings = [Settings(env, env_conf, bab, im, im_conf, sm, sm_conf, n_boot)
-                    for ((env, env_conf), bab, (im, im_conf), (sm, sm_conf), n_boot) in l]
+        settings = [Settings(env, env_conf, bab, im, im_conf, sm, sm_conf)
+                    for ((env, env_conf), bab, (im, im_conf), (sm, sm_conf)) in l]
 
-        return cls(settings, evaluate_at, same_testcases=same_testcases)
+        return cls(settings, evaluate_at, testcases, same_testcases)
 
     def run(self, repeat=1, processes=None, use_thread=False):
         """ Runs all experiments using a :py:class:`multiprocessing.Pool`.
@@ -102,6 +101,11 @@ class ExperimentPool(object):
 
     @property
     def logs(self):
+        """ Returns the list of :class:`~explauto.experiment.log.ExperimentLog`.
+
+        .. note:: The logs will be returned as a vector if repeat was set as one in the :meth:`~explauto.experiment.pool.ExperimentPool.run` method else it will be a matrix where each rows represents the n repetitions of an experiment.
+
+        """
         if not hasattr(self, '_logs'):
             raise ValueError('You have to run the pool of experiments first!')
 

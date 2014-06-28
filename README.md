@@ -8,39 +8,35 @@ Explauto provides a high-level API for an easy definition of:
 * Sensorimotor learning iterative models (Sensorimotor level)
 * Active choice of sensorimotor experiments (Interest level)
 
-It is crossed-platform and has been tested on Linux, Windows and Mac OS. Do not hesitate to contact us if you want to get involved!
+It is crossed-platform and has been tested on Linux, Windows and Mac OS. Do not hesitate to contact us if you want to get involved! It has been released under the [GPLv3 license](http://www.gnu.org/copyleft/gpl.html).
 
 ## Documentation ##
 
 ### Scientific grounding ###
 
 
-Explauto's scientific roots trace back from Intelligent Adaptive Curiosity algorithmic architecture [[Oudeyer 07]](http://hal.inria.fr/hal-00793610/en), which has been extended to a more general family of autonomous exploration architecture by [(Baranes, 2013)](http://www.pyoudeyer.com/ActiveGoalExploration-RAS-2013.pdf) and recently expressed as a compact and unified formalism [(Moulin-Frier, 2013)](http://hal.inria.fr/hal-00860641). We strongly recommend to read this [short introduction](http://flowersteam.github.io/explauto/about.html) into developmental robotics before going through the tutorials.
+Explauto's scientific roots trace back from Intelligent Adaptive Curiosity algorithmic architecture [[Oudeyer, 2007]](http://hal.inria.fr/hal-00793610/en), which has been extended to a more general family of autonomous exploration architecture by [[Baranes, 2013]](http://www.pyoudeyer.com/ActiveGoalExploration-RAS-2013.pdf) and recently expressed as a compact and unified formalism [[Moulin-Frier, 2013]](http://hal.inria.fr/hal-00860641). We strongly recommend to read this [short introduction](http://flowersteam.github.io/explauto/about.html) into developmental robotics before going through the tutorials.
 
 ### Tutorials ###
 
-* [Setting a basic experiment](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/01%20Running%20a%20basic%20experiment..ipynb)
-* [Comparing motor vs goal strategies](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/02%20Comparing%20motor%20vs%20goal%20strategies.ipynb)
-* [Running pool of experiments](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/03%20Running%20pool%20of%20experiments.ipynb)
-* [Introducing curiosity-driven exploration](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/04%20Introducing%20curiosity-driven%20learning.ipynb)
-* [Poppy environment](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/05%20%20Poppy%20environment.ipynb)
+Most of Explauto's documentation is written as [IPython notebooks](http://ipython.org/notebook.html). If you do not know how to use them, please refer to the [dedicated section](http://flowersteam.github.io/explauto/notebook.html).
+
+* [Setting environments](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/setting_environments.ipynb)
+* [Setting a basic experiment](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/setting_basic_experiment.ipynb)
+* [Comparing motor vs goal strategies](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/comparing_motor_goal_stategies.ipynb)
+* [Running pool of experiments](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/running_experiment_pool.ipynb)
+* [Introducing curiosity-driven exploration](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/introducing_curiosity_learning.ipynb)
+* [Using a simulated n-pendulum](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/plotting_npendulum.ipynb)
+* [Poppy environment](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/poppy_environment.ipynb)
 
 ### API ###
 
-The Explauto documentation on a html format can be found [here](http://flowersteam.github.io/explauto/).
+Explauto's API can be found on a html format [here](http://flowersteam.github.io/explauto/).
 
 
 ## Installation ##
 
-Explauto is available via pip. It can thus be installed with the classical:
-
-    pip install explauto
-    
-or:
-    
-    easy_install explauto
-
-The core of explauto depends of the following packages:
+The best way to install Explauto at the moment is to clone the repo and used it in [development mode](http://flowersteam.github.io/explauto/installation.html#as-a-developer). It is also available as a [python package](https://pypi.python.org/pypi/explauto/). The core of explauto depends on the following packages:
 
 * [python](http://www.python.org) 2.7 or 3.*
 * [numpy](http://www.numpy.org)

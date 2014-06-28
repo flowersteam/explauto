@@ -10,7 +10,7 @@ s_goal = make_settings(environment='simple_arm',
 
 goal_expe = Experiment.from_settings(s_goal)
 
-goal_expe.evaluate_at([1, 10, 20, 30, 100, 200, 300, 400])
+goal_expe.evaluate_at([1, 10, 20, 30, 100, 200, 300, 400], s_goal.default_testcases)
 
 goal_expe.run()
 

@@ -34,7 +34,7 @@ setup(name='explauto',
 
       zip_safe=True,
 
-      author='Moulin-Frier Clement, Pierre Rouanet',
+      author='Clement Moulin-Frier, Pierre Rouanet',
       author_email='clement.moulinfrier@gmail.com',
       description='Python Library for Autonomous Exploration',
       url='https://github.com/flowersteam/explauto',

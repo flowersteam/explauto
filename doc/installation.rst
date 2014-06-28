@@ -16,7 +16,7 @@ or::
 
 The up to date archive can also be directly downloaded `here <https://pypi.python.org/pypi/explauto/>`_.
 
-Make sure to also install all the dependecies required by the extra environment or models (e.g. pypot environment or imle models) you want to use. See the section :ref:`extra` for details.
+Make sure to also install all the dependencies required by the extra environment or models (e.g. pypot environment or imle models) you want to use.
 
 From the source code
 --------------------
@@ -47,6 +47,16 @@ Once it is done, you can build and install explauto with the classical::
     python setup.py build
     python setup.py install
 
+As a developer
+--------------
+
+As Explauto is still in development, a good way to keep with an updated version is to use it in `development mode <https://pythonhosted.org/setuptools/setuptools.html#development-mode>`_. To do that, after cloning the `repository <https://github.com/flowersteam/explauto>`_, you can use the following command line::
+
+    cd explauto
+    python setup.py develop
+
+This will symlink your cloned repository to your site-packages directory. When pulling the latest modification from the repo, they will automatically be "installed".
+
 Testing your install
 --------------------
 
@@ -54,4 +64,4 @@ You can test if the installation went well with::
 
     python -m "import explauto"
 
-If you have any trouble during the installation process, please refer to the :doc:`FAQ </FAQ>`. If this does not solve your problem, please report the issue directly on the issue tracker of the repository.
+If you have any trouble during the installation process, please report the issue directly on the `issue tracker <https://github.com/flowersteam/explauto/issues>`_ of the repository.

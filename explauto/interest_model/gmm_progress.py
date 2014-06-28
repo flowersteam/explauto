@@ -66,7 +66,7 @@ class GmmInterest(InterestModel):
 
         return gmm_choice
 
-interest_models = {'gmm_progress': (GmmInterest,
-                                    {'default': {'measure': competence_exp,
-                                                 'n_samples': 40,
-                                                 'n_components': 6}})}
+interest_models = {'gmm_progress_beta': (GmmInterest,
+                                         {'default': {'measure': competence_exp,
+                                                      'n_samples': 40,
+                                                      'n_components': 6}})}

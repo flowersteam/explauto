@@ -84,8 +84,8 @@ class Experiment(Observer):
 
             m = self.ag.produce()
             try:
-                self.env.update(m)
-                self.ag.perceive(self.env.state)
+                env_state = self.env.update(m)
+                self.ag.perceive(env_state)
             except ExplautoEnvironmentUpdateError:
                 logger.warning('Environment update error at time %d with '
                                'motor command %s. '
@@ -107,22 +107,24 @@ class Experiment(Observer):
             topic, msg = self.notifications.get()
             self.log.add(topic, msg)
 
-    def evaluate_at(self, eval_at, testcases=None):
+    def evaluate_at(self, eval_at, testcases):
         """ Sets the evaluation interation indices.
 
             :param list eval_at: iteration indices where an evaluation should be performed
-            :param numpy.array testcases: use a predefined testcases, by default it will be automatically generated.
+            :param numpy.array testcases: testcases used for evaluation
 
         """
         self.eval_at = eval_at
         self.log.eval_at = eval_at
 
         self.evaluation = Evaluation(self.ag, self.env, testcases)
+        for test in testcases:
+            self.log.add('testcases', test)
 
     @classmethod
     def from_settings(cls, settings):
         """ Creates a :class:`~explauto.experiment.experiment.Experiment` object thanks to the given settings. """
-        env_cls, env_configs = environments[settings.environment]
+        env_cls, env_configs, _ = environments[settings.environment]
         config = env_configs[settings.environment_config]
 
         env = env_cls(**config)
@@ -139,7 +141,6 @@ class Experiment(Observer):
 
         agent = Agent(im_cls, im_configs[settings.interest_model_config], expl_dims,
                       sm_cls, sm_configs[settings.sensorimotor_model_config], inf_dims,
-                      env.conf.m_mins, env.conf.m_maxs, env.conf.s_mins, env.conf.s_maxs,
-                      settings.n_bootstrap)
+                      env.conf.m_mins, env.conf.m_maxs, env.conf.s_mins, env.conf.s_maxs)
 
         return cls(env, agent)

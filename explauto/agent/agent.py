@@ -17,10 +17,14 @@ class Agent(Observable):
                  m_mins, m_maxs, s_mins, s_maxs, n_bootstrap=0):
         """Initialize agent class
         Keyword arguments:
-        m_dims -- the indices of motor values
-        s_dims -- the indices of sensory values
-        sm_model -- the sensorimotor model
-        i_model -- the interest model
+        :param class im_model_cls: a subclass of InterestedModel, as those registered in the interest_model package
+        :param dict im_model_config: a configuration dict as those registered in the interest_model package 
+        :param expl_dims: the sensorimotor dimensions where exploration is driven in the interest model 
+        :param inf_dims: the output sensorimotor dimensions of the sensorimotor model (input being expl_dims) 
+        :param class sm_model_cls: a subclass of SensorimotorModel, as those registered in the sensorimotor_model package
+        :param dict sensorimotor_model_config: a configuration dict as those registered in the sensorimotor_model package 
+        :params list m_mins: lower bound of motor values on each motor dimension (upper for m_max) 
+        :params list m_mins: lower bound of sensory values on each sensory dimension (lower for m_max) 
         """
         Observable.__init__(self)
 

@@ -14,6 +14,7 @@ Welcome to explauto's documentation!
 
     about.rst
     installation.rst
+    notebook.rst
 
 **Running experiments**
 
