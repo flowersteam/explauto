@@ -65,5 +65,5 @@ class ImleGmmModel(ImleModel):
         self.update_gmm()
         return self.gmm.inference(in_dims, out_dims, x).sample().T
 
-sensorimotor_model = ImleModel
 configurations = {'default': {}}
+sensorimotor_models = {'imle': (ImleModel, configurations)}
