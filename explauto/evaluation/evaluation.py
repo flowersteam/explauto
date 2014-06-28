@@ -19,8 +19,8 @@ class Evaluation(object):
             errors = []
             for s_g in self.testcases:
                 m = self.ag.infer(self.ag.conf.s_dims, self.ag.conf.m_dims, s_g)
-                self.env.update(m, log=False)
-                s = self.env.state[self.env.conf.s_dims]
+                ms = self.env.update(m, log=False)
+                s = ms[self.env.conf.s_dims]
                 errors.append(linalg.norm(s_g - s))
         else:
             raise ValueError('mode should be "inverse"'
