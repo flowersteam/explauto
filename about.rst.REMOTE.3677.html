@@ -78,10 +78,8 @@
     }
   });
 </script>
-    <link rel="author" title="About these documents" href="#" />
-    <link rel="top" title="explauto 1.0.1 documentation" href="index.html" />
-    <link rel="next" title="Installation" href="installation.html" />
-    <link rel="prev" title="Welcome to explauto’s documentation!" href="index.html" /> 
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="top" title="explauto 1.0.1 documentation" href="index.html" /> 
   </head>
   <body role="document">
     <div class="navbar navbar-fixed-top " role="navigation" aria-label="top navigation">
@@ -104,12 +102,6 @@
                 <li>
                 <a href="py-modindex.html" title="Python Module Index" >modules</a>
                 </li>
-                <li>
-                <a href="installation.html" title="Installation" accesskey="N">next</a>
-                </li>
-                <li>
-                <a href="index.html" title="Welcome to explauto’s documentation!" accesskey="P">previous</a>
-                </li>
               
             </ul>
           </div>
@@ -128,15 +120,9 @@
 <div class="span3 ">
   <a class="visible-phone btn btn-small show-sidebar" data-toggle="collapse" data-target=".for-mobile">Open Table Of Contents</a>
   <div class="for-mobile sidebar hidden-phone" role="navigation" aria-label="main navigation">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="index.html"
-                        title="previous chapter">Welcome to explauto&#8217;s documentation!</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="installation.html"
-                        title="next chapter">Installation</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="_sources/about.txt"
+    <li><a href="_sources/about.rst.REMOTE.3677.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" role="search">
@@ -163,15 +149,9 @@
          
 <div class="span3 visible-desktop visible-tablet">
   <div class=" sidebar hidden-phone" role="navigation" aria-label="main navigation">
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="index.html"
-                        title="previous chapter">Welcome to explauto&#8217;s documentation!</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="installation.html"
-                        title="next chapter">Installation</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="_sources/about.txt"
+    <li><a href="_sources/about.rst.REMOTE.3677.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" role="search">
@@ -210,22 +190,23 @@
 </div>
 <p>Thus, if robots explore the world in an unorganized manner, e.g. randomly, learning algorithms will be often ineffective because very sparse data points will be collected. Data are precious due to the high dimensionality and the limited time, whereas date are not equally useful due to non-linearity and redundancy.
 This is why learning has to be guided using efficient exploration strategies, allowing the robot to actively drive its own interaction with the environment in order to gather maximally informative data to feed the sensorimotor model.</p>
-<p>In the recent year, work in developmental learning has explored various families of algorithmic principles which allow the efficient guiding of learning and exploration.</p>
-<p>In Explauto, this strategies are called <em>interest models</em>. They implements the active exploration process,  where sensorimotor experiments are chosen to improve the forward or inverse prediction of the sensorimotor model. Efficient versions of such mechanisms are based on the active choice of learning experiments that maximize <em>learning progress</em>, for e.g. improvement of predictions or of competences to reach goals (<a class="reference external" href="http://web.media.mit.edu/~alockerd/reading/Schmidhuber-curiositysab-1.pdf">Schmidhuber, 1991</a> ; <a class="reference external" href="http://www.pyoudeyer.com/ims.pdf">Oudeyer, 2007</a>). This automatically drives the system to explore and learn first easy skills, and then explore skills of progressively increasing complexity.</p>
-<p>Explauto provides a unified interface to define such models using the <a class="reference internal" href="explauto.interestmodel.html#explauto.interest_model.interest_model.InterestModel" title="explauto.interest_model.interest_model.InterestModel"><tt class="xref py py-class docutils literal"><span class="pre">InterestModel</span></tt></a> class. The library comes with two built-in interest models: <em>random</em> sampling as well as sampling maximizing the <em>learning progress</em> in forward or inverse predictions.</p>
-<p>Both <em>random</em> and <em>learning progress</em> models can act either on the motor or on the sensory space, resulting in <em>motor babbling</em> or <em>goal babbling</em> (<a class="reference external" href="http://www.pyoudeyer.com/oudeyer-kaplan-neurorobotics.pdf">Oudeyer and Kaplan, 2007</a>; <a class="reference external" href="http://cor-lab.org/system/files/RolfSteilGienger-TAMD2010-GoalBabbling.pdf">Rolf and Steil, 2010</a>) strategies.</p>
-<ul class="simple">
-<li>Motor babbling consists in sampling commands in the motor space according to a given strategy (<em>random</em> or <em>learning progress</em>), predicting the expected sensory consequence, executing the command through the <em>environment</em> and observing the actual sensory effect. Both sensorimotor and interest models are finally updated according to this experience.</li>
-<li>Goal babbling consists in sampling goals in the sensory effect space and to use the current state of the sensorimotor model to infer a motor action supposed to reach the goals (inverse prediction). The robot/agent then executes the command through the <em>environment</em> and observes the actual sensory effect. Both sensorimotor and interest models are finally updated according to this experience.</li>
-</ul>
-<p>It has been shown that this second strategy allows a progressive covering of the reachable sensory space much more uniformly than in a motor babbling strategy, where the agent samples directly in the motor space.</p>
-<p><a class="reference external" href="https://flowers.inria.fr/">Our research team</a> has combined both principles into a more general family of autonomous exploration architecture (<a class="reference external" href="http://www.pyoudeyer.com/ActiveGoalExploration-RAS-2013.pdf">Baranes, 2013</a>) and recently expressed as a compact and unified formalism (<a class="reference external" href="http://hal.inria.fr/hal-00860641">Moulin-Frier, 2013</a>).</p>
-<p>The resulting architecture is summarized below.</p>
+<p>In Explauto, this strategies are called <em>interest models</em>. <em>To be continued soon ...</em></p>
+<p>In the recent year, work in developmental learning has explored in particular two families of algorithmic principles which allow the efficient guiding of learning and exploration.</p>
+<p>..bla bla <span class="math">\(a^2+b^2=c^2\)</span></p>
+<p>The baseline exploration strategy is called <strong>motor babbling</strong>. It simply consists of randomly sampling motor configurations, executing them, observing the corresponding sensory consequence and updating</p>
+<p>First, the principle of goal babbling was proposed independently by <a class="reference external" href="http://www.pyoudeyer.com/epirob08OudeyerKaplan.pdf">Oudeyer and Kaplan in 2008</a> and <a class="reference external" href="http://cor-lab.org/system/files/RolfSteilGienger-TAMD2010-GoalBabbling.pdf">Rolf and Steil in 2010</a>. It consists in sampling goals in the sensory effect space and to use the current state of an inverse model to infer a motor action supposed to reach the goals. This strategy allows a progressive covering of the reachable sensory space much more uniformly than in a motor babbling strategy, where the agent samples directly in the motor space.</p>
+<div class="align-center figure align-center">
+<a class="reference internal image-reference" href="_images/motor_goal_babbling.png"><img alt="alternate text" src="_images/motor_goal_babbling.png" style="width: 50%;" /></a>
+<p class="caption">An agent is able to explore in its motor space M (<em>motor babbling</em> as in <strong>A</strong>) or in its sensory effect sapce (<em>goal babbling</em> as in <strong>B</strong>).</p>
+</div>
+<p>The second principle is that of active learning and intrinsic motivation, where sensorimotor experiments are chosen to gather maximal information gain. Efficient versions of such mechanisms are based on the active choice of learning experiments that maximize learning <em>progress</em>, for e.g. improvement of predictions or of competences to reach goals (<a class="reference external" href="http://web.media.mit.edu/~alockerd/reading/Schmidhuber-curiositysab-1.pdf">Schmidhuber, 1991</a> ; <a class="reference external" href="http://www.pyoudeyer.com/ims.pdf">Oudeyer, 2007</a>). This automatically drives the system to explore and learn first easy skills, and then explore skills of progressively increasing complexity.</p>
+<p>[Our research team](<a class="reference external" href="https://flowers.inria.fr/">https://flowers.inria.fr/</a>) has combined both principles into a more general family of autonomous exploration architecture (<a class="reference external" href="http://www.pyoudeyer.com/ActiveGoalExploration-RAS-2013.pdf">Baranes, 2013</a>) and recently expressed as a compact and unified formalism (<a class="reference external" href="http://hal.inria.fr/hal-00860641">Moulin-Frier, 2013</a>).</p>
+<p>In this latter work, we proposed to model autonomous exploration and learning within a unified cognitive architecture.</p>
 <div class="align-center figure align-center">
 <a class="reference internal image-reference" href="_images/architecture.png"><img alt="alternate text" src="_images/architecture.png" style="width: 25%;" /></a>
-<p class="caption">The Explauto architecture involves three processing levels. M and S are the motor and the sensory space. X is called the <em>interest space</em>: it corresponds to M in motor babbling stategies and to S in goal babbling ones. Light arrows are training signals.</p>
+<p class="caption">The explauto architecture involves three processing levels.</p>
 </div>
-<p>Explauto builds upon these research and provides a software library to simulate autonomous exploration in virtual an robotic agents.</p>
+<p>Explauto builds upon these researchs and provide a software library to simulate autonomous exploration in virtual an robotic agents.</p>
 </div>
 
 
@@ -246,8 +227,6 @@ This is why learning has to be guided using efficient exploration strategies, al
       
         <li><a href="genindex.html" title="General Index" >index</a></li>
         <li><a href="py-modindex.html" title="Python Module Index" >modules</a></li>
-        <li><a href="installation.html" title="Installation" >next</a></li>
-        <li><a href="index.html" title="Welcome to explauto’s documentation!" >previous</a></li>
         <li><a href="index.html">explauto 1.0.1 documentation</a></li> 
       
     </ul>
