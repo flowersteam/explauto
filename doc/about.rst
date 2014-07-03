@@ -37,13 +37,13 @@ It has been shown that this second strategy allows a progressive covering of the
 .. bla bla :math:`a^2+b^2=c^2`
 
 ..
-.. figure:: motor_goal_babbling.png
+.. .. figure:: motor_goal_babbling.png
     :width: 50%
     :align: center
     :alt: alternate text
     :figclass: align-center
 
-An agent is able to explore in its motor space M (*motor babbling* as in **A**) or in its sensory effect sapce (*goal babbling* as in **B**).
+.. An agent is able to explore in its motor space M (*motor babbling* as in **A**) or in its sensory effect sapce (*goal babbling* as in **B**).
 
 .. The second principle is that of active learning and intrinsic motivation, where sensorimotor experiments are chosen to gather maximal information gain. Efficient versions of such mechanisms are based on the active choice of learning experiments that maximize learning *progress*, for e.g. improvement of predictions or of competences to reach goals (`Schmidhuber, 1991`_ ; `Oudeyer, 2007`_). This automatically drives the system to explore and learn first easy skills, and then explore skills of progressively increasing complexity.
 
