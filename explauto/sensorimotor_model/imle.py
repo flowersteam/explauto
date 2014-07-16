@@ -25,7 +25,10 @@ class ImleModel(SensorimotorModel):
         if 'sigma0' not in kwargs_imle:  # sigma0 is None:
             kwargs_imle['sigma0'] = (conf.m_maxs[0] - conf.m_mins[0]) / 30.
         if 'Psi0' not in kwargs_imle:  # if psi0 is None:
-            kwargs_imle['Psi0'] = ((conf.s_maxs - conf.s_mins) / 30.)**2
+            kwargs_imle['Psi0'] = ((conf.s_maxs - conf.s_mins) / 100.)**2
+        if 'wPsi0' not in kwargs_imle:  # if psi0 is None:
+            kwargs_imle['wPsi'] = 1.2 ** conf.m_ndims
+            print kwargs_imle['wPsi']
         self.mode = mode
         self.t = 0
         self.imle = imle_.Imle(in_ndims=len(self.m_dims), out_ndims=len(self.s_dims), **kwargs_imle)
