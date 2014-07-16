@@ -2,7 +2,7 @@ import sys
 import os
 
 path = os.path.dirname(os.path.abspath(__file__))
-imle_path = os.path.join(path, 'imleSource/python')
+imle_path = os.path.join(path, 'IMLEv1.90/python')
 sys.path.append(imle_path)
 
 try:

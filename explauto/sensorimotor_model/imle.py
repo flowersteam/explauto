@@ -3,6 +3,7 @@
 from .sensorimotor_model import SensorimotorModel
 from ..models import imle_model as imle_
 from ..models.gmminf import GMM
+from .. import ExplautoBootstrapError
 
 
 class ImleModel(SensorimotorModel):
@@ -10,7 +11,7 @@ class ImleModel(SensorimotorModel):
         This class wraps the IMLE model from Bruno Damas ( http://users.isr.ist.utl.pt/~bdamas/IMLE ) into a sensorimotor model class to be used by ..agent.agent
         """
     # def __init__(self, m_dims, s_dims, sigma0, psi0, mode='explore'):
-    def __init__(self, conf, sigma0=None, psi0=None, mode='explore'):
+    def __init__(self, conf, mode='explore', **kwargs_imle):
         """ :param list m_dims: indices of motor dimensions
             :param list_ndims: indices of sensory dimensions
             :param float sigma0: a priori variance of the linear models on motor dimensions
@@ -20,15 +21,21 @@ class ImleModel(SensorimotorModel):
             """
         self.m_dims = conf.m_dims
         self.s_dims = conf.s_dims
-        if sigma0 is None:
-            sigma0 = (conf.m_maxs[0] - conf.m_mins[0]) / 30.
-        if psi0 is None:
-            psi0 = ((conf.s_maxs - conf.s_mins) / 30.)**2
+        if 'sigma0' not in kwargs_imle:  # sigma0 is None:
+            kwargs_imle['sigma0'] = (conf.m_maxs[0] - conf.m_mins[0]) / 30.
+        if 'Psi0' not in kwargs_imle:  # if psi0 is None:
+            kwargs_imle['Psi0'] = ((conf.s_maxs - conf.s_mins) / 100.)**2
+        if 'wPsi0' not in kwargs_imle:  # if psi0 is None:
+            kwargs_imle['wPsi'] = 1.2 ** conf.m_ndims
+            print kwargs_imle['wPsi']
         self.mode = mode
-        self.imle = imle_.Imle(in_ndims=len(self.m_dims), out_ndims=len(self.s_dims),
-                               sigma0=sigma0, Psi0=psi0)
+        self.t = 0
+        self.imle = imle_.Imle(in_ndims=len(self.m_dims), out_ndims=len(self.s_dims), **kwargs_imle)
+                               #sigma0=sigma0, Psi0=psi0)
 
     def infer(self, in_dims, out_dims, x):
+        if self.t < 1:
+            raise ExplautoBootstrapError
         if in_dims == self.s_dims and out_dims == self.m_dims:
             try:
                 sols, covars, weights = self.imle.predict_inverse(x)
@@ -55,6 +62,7 @@ class ImleModel(SensorimotorModel):
 
     def update(self, m, s):
         self.imle.update(m, s)
+        self.t += 1
 
 
 class ImleGmmModel(ImleModel):
@@ -65,5 +73,10 @@ class ImleGmmModel(ImleModel):
         self.update_gmm()
         return self.gmm.inference(in_dims, out_dims, x).sample().T
 
-configurations = {'default': {}}
+low_prior_coef = 1
+low_prior = {}
+for prior in ['wsigma', 'wSigma', 'wNu', 'wLambda', 'wPsi']:
+    low_prior[prior] = low_prior_coef
+
+configurations = {'default': {}, 'low_prior': low_prior}
 sensorimotor_models = {'imle': (ImleModel, configurations)}
