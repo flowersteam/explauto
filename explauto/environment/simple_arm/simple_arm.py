@@ -61,16 +61,13 @@ class SimpleArmEnvironment(Environment):
         hand_pos += self.noise * np.random.randn(*hand_pos.shape)
         return hand_pos
 
-    def plot_arm(self, ax, m, **kwargs_plot):
+    def plot_arm(self, ax, m_, **kwargs_plot):
+        m = self.compute_motor_command(m_)
         x, y = joint_positions(m, self.lengths)
         x, y = [np.hstack((0., a)) for a in x, y]
-
-        ax.plot(x, y, **kwargs_plot)
-        ax.plot(x[0], y[0], 'o', ms=6)
-        ax.plot(x[-1], y[-1], 's', ms=6)
+        ax.plot(x, y, 'grey', lw=2, **kwargs_plot)
+        ax.plot(x[0], y[0], 'ok', ms=6)
+        ax.plot(x[-1], y[-1], 'sk', ms=6)
         ax.axis([self.conf.s_mins[0], self.conf.s_maxs[0], self.conf.s_mins[1], self.conf.s_maxs[1]])
         ax.set_xlabel('X')
         ax.set_ylabel('Y')
-
-
-
