@@ -307,14 +307,14 @@
 
 <dl class="method">
 <dt id="explauto.environment.simple_arm.simple_arm.SimpleArmEnvironment.plot_arm">
-<tt class="descname">plot_arm</tt><big>(</big><em>ax</em>, <em>m</em>, <em>**kwargs_plot</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/simple_arm/simple_arm.html#SimpleArmEnvironment.plot_arm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.simple_arm.simple_arm.SimpleArmEnvironment.plot_arm" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">plot_arm</tt><big>(</big><em>ax</em>, <em>m_</em>, <em>**kwargs_plot</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/simple_arm/simple_arm.html#SimpleArmEnvironment.plot_arm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.simple_arm.simple_arm.SimpleArmEnvironment.plot_arm" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <span class="target" id="module-explauto.environment.pendulum.pendulum"></span><dl class="class">
 <dt id="explauto.environment.pendulum.pendulum.PendulumEnvironment">
-<em class="property">class </em><tt class="descclassname">explauto.environment.pendulum.pendulum.</tt><tt class="descname">PendulumEnvironment</tt><big>(</big><em>m_mins</em>, <em>m_maxs</em>, <em>s_mins</em>, <em>s_maxs</em>, <em>noise</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/pendulum/pendulum.html#PendulumEnvironment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.pendulum.pendulum.PendulumEnvironment" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">explauto.environment.pendulum.pendulum.</tt><tt class="descname">PendulumEnvironment</tt><big>(</big><em>m_mins</em>, <em>m_maxs</em>, <em>s_mins</em>, <em>s_maxs</em>, <em>noise</em>, <em>torque_max=0.25</em>, <em>dt=0.25</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/pendulum/pendulum.html#PendulumEnvironment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.pendulum.pendulum.PendulumEnvironment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#explauto.environment.environment.Environment" title="explauto.environment.environment.Environment"><tt class="xref py py-class docutils literal"><span class="pre">explauto.environment.environment.Environment</span></tt></a></p>
 <dl class="method">
 <dt id="explauto.environment.pendulum.pendulum.PendulumEnvironment.compute_motor_command">
@@ -322,8 +322,23 @@
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="explauto.environment.pendulum.pendulum.PendulumEnvironment.reset">
+<tt class="descname">reset</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/explauto/environment/pendulum/pendulum.html#PendulumEnvironment.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.pendulum.pendulum.PendulumEnvironment.reset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.environment.pendulum.pendulum.PendulumEnvironment.apply_torque">
+<tt class="descname">apply_torque</tt><big>(</big><em>u</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/pendulum/pendulum.html#PendulumEnvironment.apply_torque"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.pendulum.pendulum.PendulumEnvironment.apply_torque" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="explauto.environment.pendulum.pendulum.PendulumEnvironment.compute_sensori_effect">
 <tt class="descname">compute_sensori_effect</tt><big>(</big><em>m</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/pendulum/pendulum.html#PendulumEnvironment.compute_sensori_effect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.pendulum.pendulum.PendulumEnvironment.compute_sensori_effect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.environment.pendulum.pendulum.PendulumEnvironment.plot_current_state">
+<tt class="descname">plot_current_state</tt><big>(</big><em>ax</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/pendulum/pendulum.html#PendulumEnvironment.plot_current_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.pendulum.pendulum.PendulumEnvironment.plot_current_state" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

@@ -239,7 +239,7 @@
                                               <span class="n">inf_dims</span><span class="p">,</span>
                                               <span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">())</span>
         <span class="k">except</span> <span class="n">ExplautoBootstrapError</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;Sensorimotor model not bootstrapped yet, or Agent still in bootstraping phase&#39;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;Sensorimotor model not bootstrapped yet&#39;</span><span class="p">)</span>
             <span class="n">y</span> <span class="o">=</span> <span class="n">rand_bounds</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">bounds</span><span class="p">[:,</span> <span class="n">inf_dims</span><span class="p">])</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">y</span>
 </div>
@@ -247,7 +247,12 @@
         <span class="c"># if self.to_bootstrap:</span>
         <span class="c">#     return self.bootstrap()</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interest_model</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interest_model</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">ExplautoBootstrapError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;Interest model not bootstrapped yet&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">rand_bounds</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">bounds</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expl_dims</span><span class="p">])</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">infer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">expl_dims</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inf_dims</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">expl_dims</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
