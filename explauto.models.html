@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+
+
+
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    
+    <title>models Package &mdash; explauto 1.0.1 documentation</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    
+<link rel="stylesheet" href="_static/css/basicstrap-base.css" type="text/css" />
+<link rel="stylesheet" href="_static/css/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" href="_static/css/font-awesome.min.css">
+<!--[if IE 7]>
+<link rel="stylesheet" href="_static/css/font-awesome-ie7.min.css">
+<![endif]-->
+
+<style type="text/css">
+  body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+  }
+}
+</style>
+
+<link rel="stylesheet" href="_static/basicstrap.css" type="text/css" />
+<link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+<link rel="stylesheet" href="_static/css/bootstrap-responsive.min.css" type="text/css" />
+    
+<script type="text/javascript">
+  var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:    './',
+            VERSION:     '1.0.1',
+            COLLAPSE_INDEX: false,
+            FILE_SUFFIX: '.html',
+            HAS_SOURCE:  true
+  };
+</script>
+<script type="text/javascript" src="_static/js/jquery.min.js"></script>
+<script type="text/javascript" src="_static/underscore.js"></script>
+<script type="text/javascript" src="_static/doctools.js"></script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/javascript" src="_static/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('.show-sidebar').click(function(e) {
+       e.preventDefault();
+       if ($(".show-sidebar").html() == "Open Table Of Contents") {
+          $('.for-mobile').removeClass('hidden-phone');
+          $(".show-sidebar").html("Close Table Of Contents");
+       } else {
+          $(".show-sidebar").html("Open Table Of Contents");
+       }
+    });
+  });
+  $(window).load(function () {
+    /*
+
+     * Scroll the window to avoid the topnav bar
+     * https://github.com/twitter/bootstrap/issues/1768
+     */
+    if ($(".navbar.navbar-fixed-top").length > 0) {
+      // var navHeight = $(".navbar").height(),
+      var navHeight = 40,
+        shiftWindow = function() { scrollBy(0, -navHeight - 10); };
+
+      if (location.hash) {
+        setTimeout(shiftWindow, 1);
+      }
+
+      window.addEventListener("hashchange", shiftWindow);
+    }
+  });
+</script>
+    <link rel="author" title="About these documents" href="about.html" />
+    <link rel="top" title="explauto 1.0.1 documentation" href="index.html" />
+    <link rel="up" title="Explauto’s API" href="api.html" />
+    <link rel="next" title="experiment Package" href="explauto.experiment.html" />
+    <link rel="prev" title="evaluation Package" href="explauto.evaluation.html" /> 
+  </head>
+  <body role="document">
+    <div class="navbar navbar-fixed-top " role="navigation" aria-label="top navigation">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <div role="banner">
+            <a class="brand" href="index.html">explauto 1.0.1 documentation</a>
+          </div>
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              
+                <li>
+                <a href="genindex.html" title="General Index" accesskey="I">index</a>
+                </li>
+                <li>
+                <a href="py-modindex.html" title="Python Module Index" >modules</a>
+                </li>
+                <li>
+                <a href="explauto.experiment.html" title="experiment Package" accesskey="N">next</a>
+                </li>
+                <li>
+                <a href="explauto.evaluation.html" title="evaluation Package" accesskey="P">previous</a>
+                </li>
+                <li>
+                <a href="api.html" accesskey="U">Explauto&#8217;s API</a>
+                </li>
+              
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+    <!-- container -->
+    <div class="container-fluid">
+
+
+      
+      <div class="row-fluid hidden-desktop hidden-tablet">
+      
+<div class="span3 ">
+  <a class="visible-phone btn btn-small show-sidebar" data-toggle="collapse" data-target=".for-mobile">Open Table Of Contents</a>
+  <div class="for-mobile sidebar hidden-phone" role="navigation" aria-label="main navigation">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="explauto.evaluation.html"
+                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal docutils literal"><span class="pre">evaluation</span></tt> Package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="explauto.experiment.html"
+                        title="next chapter"><tt class="docutils literal docutils literal docutils literal docutils literal"><span class="pre">experiment</span></tt> Package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/explauto.models.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" role="search">
+  <h3>Quick search</h3>
+  <form class="search form-search" action="search.html" method="get">
+      <div class="input-append">
+        <input type="text" class="search-query" name="q">
+        <input type="submit" class="btn" value="Go" />
+      </div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+  </div>
+</div>
+      </div>
+      
+
+      <!-- row -->
+      <div class="row-fluid">
+         
+<div class="span3 visible-desktop visible-tablet">
+  <div class=" sidebar hidden-phone" role="navigation" aria-label="main navigation">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="explauto.evaluation.html"
+                        title="previous chapter"><tt class="docutils literal docutils literal docutils literal docutils literal"><span class="pre">evaluation</span></tt> Package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="explauto.experiment.html"
+                        title="next chapter"><tt class="docutils literal docutils literal docutils literal docutils literal"><span class="pre">experiment</span></tt> Package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/explauto.models.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" role="search">
+  <h3>Quick search</h3>
+  <form class="search form-search" action="search.html" method="get">
+      <div class="input-append">
+        <input type="text" class="search-query" name="q">
+        <input type="submit" class="btn" value="Go" />
+      </div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+  </div>
+</div> 
+        
+
+        <div class="span9">
+          <div class="document" role="main">
+            <div class="documentwrapper">
+              <div class="bodywrapper">
+                <div class="body">
+                  
+  <div class="section" id="module-explauto.models.gmminf">
+<span id="models-package"></span><h1><tt class="xref py py-mod docutils literal"><span class="pre">models</span></tt> Package<a class="headerlink" href="#module-explauto.models.gmminf" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="explauto.models.gmminf.schur_complement">
+<tt class="descclassname">explauto.models.gmminf.</tt><tt class="descname">schur_complement</tt><big>(</big><em>mat</em>, <em>row</em>, <em>col</em><big>)</big><a class="reference internal" href="_modules/explauto/models/gmminf.html#schur_complement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.models.gmminf.schur_complement" title="Permalink to this definition">¶</a></dt>
+<dd><p>compute the schur complement of the matrix block mat[row:,col:] of the matrix mat</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="explauto.models.gmminf.conditional">
+<tt class="descclassname">explauto.models.gmminf.</tt><tt class="descname">conditional</tt><big>(</big><em>mean</em>, <em>covar</em>, <em>dims_in</em>, <em>dims_out</em>, <em>covariance_type='full'</em><big>)</big><a class="reference internal" href="_modules/explauto/models/gmminf.html#conditional"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.models.gmminf.conditional" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a function f such that f(x) = p(dims_out | dims_in = x) (f actually returns the mean and covariance of the conditional distribution</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="explauto.models.gmminf.GMM">
+<em class="property">class </em><tt class="descclassname">explauto.models.gmminf.</tt><tt class="descname">GMM</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/explauto/models/gmminf.html#GMM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.models.gmminf.GMM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">sklearn.mixture.gmm.GMM</span></tt></p>
+<dl class="method">
+<dt id="explauto.models.gmminf.GMM.probability">
+<tt class="descname">probability</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="_modules/explauto/models/gmminf.html#GMM.probability"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.models.gmminf.GMM.probability" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.models.gmminf.GMM.sub_gmm">
+<tt class="descname">sub_gmm</tt><big>(</big><em>inds_k</em><big>)</big><a class="reference internal" href="_modules/explauto/models/gmminf.html#GMM.sub_gmm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.models.gmminf.GMM.sub_gmm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.models.gmminf.GMM.conditional">
+<tt class="descname">conditional</tt><big>(</big><em>in_dims</em>, <em>out_dims</em><big>)</big><a class="reference internal" href="_modules/explauto/models/gmminf.html#GMM.conditional"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.models.gmminf.GMM.conditional" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.models.gmminf.GMM.inference">
+<tt class="descname">inference</tt><big>(</big><em>in_dims</em>, <em>out_dims</em>, <em>value=None</em><big>)</big><a class="reference internal" href="_modules/explauto/models/gmminf.html#GMM.inference"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.models.gmminf.GMM.inference" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform Bayesian inference on the gmm. Let&#8217;s call V = V1...Vd the d-dimensional space on which the current GMM is defined, such that it represents P(V). Let&#8217;s call X and Y to disjoint subspaces of V, with corresponding dimension indices in ran. This method returns the GMM for P(Y | X=value).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>in_dims</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; the dimension indices of X (a subset of range(d)). This can be the empty list if one want to compute the marginal P(Y).</li>
+<li><strong>out_dims</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; the dimension indices of Y (a subset of range(d), without intersection with in_dims).</li>
+<li><strong>value</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.8)"><em>numpy.array</em></a>) &#8211; the value of X for which one want to compute the conditional (ignored of in_dims=[]).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the gmm corresponding to P(Y | X=value) (or to P(Y) if in_dims=[])</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For example, if X = V1...Vm and Y = Vm+1...Vd, then P(Y | X=v1...vm) is returned by self.inference(in_dims=range(m), out_dims=range(m, d), array([v1, ..., vm])).</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="explauto.models.gmminf.GMM.ellipses2D">
+<tt class="descname">ellipses2D</tt><big>(</big><em>colors</em><big>)</big><a class="reference internal" href="_modules/explauto/models/gmminf.html#GMM.ellipses2D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.models.gmminf.GMM.ellipses2D" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.models.gmminf.GMM.ellipses3D">
+<tt class="descname">ellipses3D</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/explauto/models/gmminf.html#GMM.ellipses3D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.models.gmminf.GMM.ellipses3D" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.models.gmminf.GMM.plot">
+<tt class="descname">plot</tt><big>(</big><em>ax</em>, <em>label=False</em><big>)</big><a class="reference internal" href="_modules/explauto/models/gmminf.html#GMM.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.models.gmminf.GMM.plot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.models.gmminf.GMM.plot_projection">
+<tt class="descname">plot_projection</tt><big>(</big><em>ax</em>, <em>dims</em>, <em>label=False</em><big>)</big><a class="reference internal" href="_modules/explauto/models/gmminf.html#GMM.plot_projection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.models.gmminf.GMM.plot_projection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        
+      </div><!-- /row -->
+
+      <!-- row -->
+      <div class="row-fluid">
+<div class="related navbar " role="navigation" aria-label="related navigation">
+  <div class="navbar-inner">
+    <ul class="nav pull-right">
+      
+        <li><a href="genindex.html" title="General Index" >index</a></li>
+        <li><a href="py-modindex.html" title="Python Module Index" >modules</a></li>
+        <li><a href="explauto.experiment.html" title="experiment Package" >next</a></li>
+        <li><a href="explauto.evaluation.html" title="evaluation Package" >previous</a></li>
+        <li><a href="index.html">explauto 1.0.1 documentation</a></li>
+        <li><a href="api.html" >Explauto&#8217;s API</a></li> 
+      
+    </ul>
+  </div>
+</div>
+      </div><!-- /row -->
+
+      <!-- footer -->
+      <footer role="contentinfo">
+          &copy; Copyright 2014, Clement Moulin-Frier, Pierre Rouanet.
+        Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.
+      </footer>
+      <!-- /footer -->
+
+    </div>
+    <!-- /container -->
+
+  </body>
+</html>

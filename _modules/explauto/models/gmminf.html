@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+
+
+
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    
+    <title>explauto.models.gmminf &mdash; explauto 1.0.1 documentation</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    
+<link rel="stylesheet" href="../../../_static/css/basicstrap-base.css" type="text/css" />
+<link rel="stylesheet" href="../../../_static/css/bootstrap.min.css" type="text/css" />
+<link rel="stylesheet" href="../../../_static/css/font-awesome.min.css">
+<!--[if IE 7]>
+<link rel="stylesheet" href="../../../_static/css/font-awesome-ie7.min.css">
+<![endif]-->
+
+<style type="text/css">
+  body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+  }
+}
+</style>
+
+<link rel="stylesheet" href="../../../_static/basicstrap.css" type="text/css" />
+<link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+<link rel="stylesheet" href="../../../_static/css/bootstrap-responsive.min.css" type="text/css" />
+    
+<script type="text/javascript">
+  var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:    '../../../',
+            VERSION:     '1.0.1',
+            COLLAPSE_INDEX: false,
+            FILE_SUFFIX: '.html',
+            HAS_SOURCE:  true
+  };
+</script>
+<script type="text/javascript" src="../../../_static/js/jquery.min.js"></script>
+<script type="text/javascript" src="../../../_static/underscore.js"></script>
+<script type="text/javascript" src="../../../_static/doctools.js"></script>
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/javascript" src="../../../_static/js/bootstrap.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function(){
+    $('.show-sidebar').click(function(e) {
+       e.preventDefault();
+       if ($(".show-sidebar").html() == "Open Table Of Contents") {
+          $('.for-mobile').removeClass('hidden-phone');
+          $(".show-sidebar").html("Close Table Of Contents");
+       } else {
+          $(".show-sidebar").html("Open Table Of Contents");
+       }
+    });
+  });
+  $(window).load(function () {
+    /*
+
+     * Scroll the window to avoid the topnav bar
+     * https://github.com/twitter/bootstrap/issues/1768
+     */
+    if ($(".navbar.navbar-fixed-top").length > 0) {
+      // var navHeight = $(".navbar").height(),
+      var navHeight = 40,
+        shiftWindow = function() { scrollBy(0, -navHeight - 10); };
+
+      if (location.hash) {
+        setTimeout(shiftWindow, 1);
+      }
+
+      window.addEventListener("hashchange", shiftWindow);
+    }
+  });
+</script>
+    <link rel="author" title="About these documents" href="../../../about.html" />
+    <link rel="top" title="explauto 1.0.1 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body role="document">
+    <div class="navbar navbar-fixed-top " role="navigation" aria-label="top navigation">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <div role="banner">
+            <a class="brand" href="../../../index.html">explauto 1.0.1 documentation</a>
+          </div>
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right">
+              
+                <li>
+                <a href="../../../genindex.html" title="General Index" accesskey="I">index</a>
+                </li>
+                <li>
+                <a href="../../../py-modindex.html" title="Python Module Index" >modules</a>
+                </li>
+                <li>
+                <a href="../../index.html" accesskey="U">Module code</a>
+                </li>
+              
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+    <!-- container -->
+    <div class="container-fluid">
+
+
+      
+      <div class="row-fluid hidden-desktop hidden-tablet">
+      
+<div class="span3 ">
+  <a class="visible-phone btn btn-small show-sidebar" data-toggle="collapse" data-target=".for-mobile">Open Table Of Contents</a>
+  <div class="for-mobile sidebar hidden-phone" role="navigation" aria-label="main navigation">
+<div id="searchbox" role="search">
+  <h3>Quick search</h3>
+  <form class="search form-search" action="../../../search.html" method="get">
+      <div class="input-append">
+        <input type="text" class="search-query" name="q">
+        <input type="submit" class="btn" value="Go" />
+      </div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+  </div>
+</div>
+      </div>
+      
+
+      <!-- row -->
+      <div class="row-fluid">
+         
+<div class="span3 visible-desktop visible-tablet">
+  <div class=" sidebar hidden-phone" role="navigation" aria-label="main navigation">
+<div id="searchbox" role="search">
+  <h3>Quick search</h3>
+  <form class="search form-search" action="../../../search.html" method="get">
+      <div class="input-append">
+        <input type="text" class="search-query" name="q">
+        <input type="submit" class="btn" value="Go" />
+      </div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+  </div>
+</div> 
+        
+
+        <div class="span9">
+          <div class="document" role="main">
+            <div class="documentwrapper">
+              <div class="bodywrapper">
+                <div class="body">
+                  
+  <h1>Source code for explauto.models.gmminf</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">sklearn.mixture</span>
+<span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="kn">import</span> <span class="n">inv</span><span class="p">,</span> <span class="n">eig</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">ix_</span><span class="p">,</span> <span class="n">array</span><span class="p">,</span> <span class="n">inf</span><span class="p">,</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">linspace</span><span class="p">,</span> <span class="n">zeros</span><span class="p">,</span> <span class="n">arctan2</span><span class="p">,</span> <span class="n">matrix</span><span class="p">,</span> <span class="n">pi</span>
+
+<span class="kn">from</span> <span class="nn">.gaussian</span> <span class="kn">import</span> <span class="n">Gaussian</span>
+
+
+<div class="viewcode-block" id="schur_complement"><a class="viewcode-back" href="../../../explauto.models.html#explauto.models.gmminf.schur_complement">[docs]</a><span class="k">def</span> <span class="nf">schur_complement</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; compute the schur complement of the matrix block mat[row:,col:] of the matrix mat &quot;&quot;&quot;</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[:</span><span class="n">row</span><span class="p">,</span> <span class="p">:</span><span class="n">col</span><span class="p">]</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[:</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">:]</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[</span><span class="n">row</span><span class="p">:,</span> <span class="p">:</span><span class="n">col</span><span class="p">]</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">mat</span><span class="p">[</span><span class="n">row</span><span class="p">:,</span> <span class="n">col</span><span class="p">:]</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">-</span> <span class="n">b</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">I</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="conditional"><a class="viewcode-back" href="../../../explauto.models.html#explauto.models.gmminf.conditional">[docs]</a><span class="k">def</span> <span class="nf">conditional</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">covar</span><span class="p">,</span> <span class="n">dims_in</span><span class="p">,</span> <span class="n">dims_out</span><span class="p">,</span> <span class="n">covariance_type</span><span class="o">=</span><span class="s">&#39;full&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Return a function f such that f(x) = p(dims_out | dims_in = x) (f actually returns the mean and covariance of the conditional distribution</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">in_in</span> <span class="o">=</span> <span class="n">covar</span><span class="p">[</span><span class="n">ix_</span><span class="p">(</span><span class="n">dims_in</span><span class="p">,</span> <span class="n">dims_in</span><span class="p">)]</span>
+    <span class="n">in_out</span> <span class="o">=</span> <span class="n">covar</span><span class="p">[</span><span class="n">ix_</span><span class="p">(</span><span class="n">dims_in</span><span class="p">,</span> <span class="n">dims_out</span><span class="p">)]</span>
+    <span class="n">out_in</span> <span class="o">=</span> <span class="n">covar</span><span class="p">[</span><span class="n">ix_</span><span class="p">(</span><span class="n">dims_out</span><span class="p">,</span> <span class="n">dims_in</span><span class="p">)]</span>
+    <span class="n">out_out</span> <span class="o">=</span> <span class="n">covar</span><span class="p">[</span><span class="n">ix_</span><span class="p">(</span><span class="n">dims_out</span><span class="p">,</span> <span class="n">dims_out</span><span class="p">)]</span>
+    <span class="n">in_in_inv</span> <span class="o">=</span> <span class="n">inv</span><span class="p">(</span><span class="n">in_in</span><span class="p">)</span>
+    <span class="n">out_in_dot_in_in_inv</span> <span class="o">=</span> <span class="n">out_in</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">in_in_inv</span><span class="p">)</span>
+
+    <span class="n">cond_covar</span> <span class="o">=</span> <span class="n">out_out</span> <span class="o">-</span> <span class="n">out_in_dot_in_in_inv</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">in_out</span><span class="p">)</span>
+    <span class="n">cond_mean</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">mean</span><span class="p">[</span><span class="n">dims_out</span><span class="p">]</span> <span class="o">+</span> <span class="n">out_in_dot_in_in_inv</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">mean</span><span class="p">[</span><span class="n">dims_in</span><span class="p">])</span>
+    <span class="k">return</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">[</span><span class="n">cond_mean</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">cond_covar</span><span class="p">]</span>
+
+</div>
+<div class="viewcode-block" id="GMM"><a class="viewcode-back" href="../../../explauto.models.html#explauto.models.gmminf.GMM">[docs]</a><span class="k">class</span> <span class="nc">GMM</span><span class="p">(</span><span class="n">sklearn</span><span class="o">.</span><span class="n">mixture</span><span class="o">.</span><span class="n">GMM</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">sklearn</span><span class="o">.</span><span class="n">mixture</span><span class="o">.</span><span class="n">GMM</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_dims</span> <span class="o">=</span> <span class="n">array</span><span class="p">([])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_dims</span> <span class="o">=</span> <span class="n">array</span><span class="p">([])</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">weight</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">covar</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">means_</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">covars_</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="p">(</span><span class="n">weight</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">covar</span><span class="p">)</span>
+
+<div class="viewcode-block" id="GMM.probability"><a class="viewcode-back" href="../../../explauto.models.html#explauto.models.gmminf.GMM.probability">[docs]</a>    <span class="k">def</span> <span class="nf">probability</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">p</span> <span class="o">+=</span> <span class="n">w</span> <span class="o">*</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,),</span> <span class="n">c</span><span class="p">)</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,))</span>
+        <span class="k">return</span> <span class="n">p</span>
+</div>
+<div class="viewcode-block" id="GMM.sub_gmm"><a class="viewcode-back" href="../../../explauto.models.html#explauto.models.gmminf.GMM.sub_gmm">[docs]</a>    <span class="k">def</span> <span class="nf">sub_gmm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inds_k</span><span class="p">):</span>
+        <span class="n">gmm</span> <span class="o">=</span> <span class="n">GMM</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">inds_k</span><span class="p">),</span> <span class="n">covariance_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">covariance_type</span><span class="p">)</span>
+
+        <span class="n">gmm</span><span class="o">.</span><span class="n">weights_</span><span class="p">,</span> <span class="n">gmm</span><span class="o">.</span><span class="n">means_</span><span class="p">,</span> <span class="n">gmm</span><span class="o">.</span><span class="n">covars_</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_</span><span class="p">[</span><span class="n">inds_k</span><span class="p">],</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">means_</span><span class="p">[</span><span class="n">inds_k</span><span class="p">,</span> <span class="p">:],</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">covars_</span><span class="p">[</span><span class="n">inds_k</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:])</span>
+        <span class="n">gmm</span><span class="o">.</span><span class="n">weights_</span> <span class="o">=</span> <span class="n">gmm</span><span class="o">.</span><span class="n">weights_</span> <span class="o">/</span> <span class="n">gmm</span><span class="o">.</span><span class="n">weights_</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">gmm</span>
+</div>
+<div class="viewcode-block" id="GMM.conditional"><a class="viewcode-back" href="../../../explauto.models.html#explauto.models.gmminf.GMM.conditional">[docs]</a>    <span class="k">def</span> <span class="nf">conditional</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_dims</span><span class="p">,</span> <span class="n">out_dims</span><span class="p">):</span>
+        <span class="n">conditionals</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="p">(</span><span class="n">weight_k</span><span class="p">,</span> <span class="n">mean_k</span><span class="p">,</span> <span class="n">covar_k</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">conditionals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">conditional</span><span class="p">(</span><span class="n">mean_k</span><span class="p">,</span> <span class="n">covar_k</span><span class="p">,</span>
+                                            <span class="n">in_dims</span><span class="p">,</span> <span class="n">out_dims</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">covariance_type</span><span class="p">))</span>
+
+        <span class="n">cond_weights</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="p">[(</span><span class="n">weight_k</span> <span class="o">*</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">mean_k</span><span class="p">[</span><span class="n">in_dims</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,),</span>
+                                  <span class="n">covar_k</span><span class="p">[</span><span class="n">ix_</span><span class="p">(</span><span class="n">in_dims</span><span class="p">,</span> <span class="n">in_dims</span><span class="p">)])</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,)))</span>
+                                  <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="p">(</span><span class="n">weight_k</span><span class="p">,</span> <span class="n">mean_k</span><span class="p">,</span> <span class="n">covar_k</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">)]</span>
+
+        <span class="k">def</span> <span class="nf">res</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+            <span class="n">gmm</span> <span class="o">=</span> <span class="n">GMM</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_components</span><span class="p">,</span>
+                      <span class="n">covariance_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">covariance_type</span><span class="p">,</span>
+                      <span class="n">random_state</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_state</span><span class="p">,</span> <span class="n">thresh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">thresh</span><span class="p">,</span>
+                      <span class="n">min_covar</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">min_covar</span><span class="p">,</span> <span class="n">n_iter</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_iter</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_init</span><span class="p">,</span>
+                      <span class="n">params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">,</span> <span class="n">init_params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">init_params</span><span class="p">)</span>
+            <span class="n">gmm</span><span class="o">.</span><span class="n">weights_</span> <span class="o">=</span> <span class="n">cond_weights</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="n">means_covars</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">conditionals</span><span class="p">]</span>
+            <span class="n">gmm</span><span class="o">.</span><span class="n">means_</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="n">mc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">mc</span> <span class="ow">in</span> <span class="n">means_covars</span><span class="p">])</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_components</span><span class="p">,</span>
+                                                                       <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">gmm</span><span class="o">.</span><span class="n">_set_covars</span><span class="p">(</span><span class="n">array</span><span class="p">([</span><span class="n">mc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">mc</span> <span class="ow">in</span> <span class="n">means_covars</span><span class="p">]))</span>
+            <span class="k">return</span> <span class="n">gmm</span>
+
+        <span class="k">return</span> <span class="n">res</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_dims</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">in_dims</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_dims</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">out_dims</span><span class="p">)</span>
+        <span class="n">means</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_components</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">out_dims</span><span class="p">)))</span>
+        <span class="n">covars</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_components</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">out_dims</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">out_dims</span><span class="p">)))</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_components</span><span class="p">,))</span>
+        <span class="n">sig_in</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">inin_inv</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">out_in</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">mu_in</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="p">(</span><span class="n">weight_k</span><span class="p">,</span> <span class="n">mean_k</span><span class="p">,</span> <span class="n">covar_k</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">sig_in</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">covar_k</span><span class="p">[</span><span class="n">ix_</span><span class="p">(</span><span class="n">in_dims</span><span class="p">,</span> <span class="n">in_dims</span><span class="p">)])</span>
+            <span class="n">inin_inv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">matrix</span><span class="p">(</span><span class="n">sig_in</span><span class="p">)</span><span class="o">.</span><span class="n">I</span><span class="p">)</span>
+            <span class="n">out_in</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">covar_k</span><span class="p">[</span><span class="n">ix_</span><span class="p">(</span><span class="n">out_dims</span><span class="p">,</span> <span class="n">in_dims</span><span class="p">)])</span>
+            <span class="n">mu_in</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mean_k</span><span class="p">[</span><span class="n">in_dims</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+
+            <span class="n">means</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">(</span><span class="n">mean_k</span><span class="p">[</span><span class="n">out_dims</span><span class="p">]</span> <span class="o">+</span>
+                           <span class="p">(</span><span class="n">out_in</span> <span class="o">*</span>
+                            <span class="n">inin_inv</span> <span class="o">*</span>
+                            <span class="p">(</span><span class="n">value</span> <span class="o">-</span> <span class="n">mu_in</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+            <span class="n">covars</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">(</span><span class="n">covar_k</span><span class="p">[</span><span class="n">ix_</span><span class="p">(</span><span class="n">out_dims</span><span class="p">,</span> <span class="n">out_dims</span><span class="p">)]</span> <span class="o">-</span>
+                               <span class="n">out_in</span> <span class="o">*</span>
+                               <span class="n">inin_inv</span> <span class="o">*</span>
+                               <span class="n">covar_k</span><span class="p">[</span><span class="n">ix_</span><span class="p">(</span><span class="n">in_dims</span><span class="p">,</span> <span class="n">out_dims</span><span class="p">)])</span>
+            <span class="n">weights</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">weight_k</span> <span class="o">*</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">mu_in</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,),</span>
+                                             <span class="n">sig_in</span><span class="p">)</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,))</span>
+        <span class="n">weights</span> <span class="o">/=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">p</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+            <span class="c"># hard copy of useful matrices local to the function</span>
+            <span class="k">pass</span>
+
+        <span class="k">return</span> <span class="n">p</span>
+</div>
+<div class="viewcode-block" id="GMM.inference"><a class="viewcode-back" href="../../../explauto.models.html#explauto.models.gmminf.GMM.inference">[docs]</a>    <span class="k">def</span> <span class="nf">inference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_dims</span><span class="p">,</span> <span class="n">out_dims</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Perform Bayesian inference on the gmm. Let&#39;s call V = V1...Vd the d-dimensional space on which the current GMM is defined, such that it represents P(V). Let&#39;s call X and Y to disjoint subspaces of V, with corresponding dimension indices in ran. This method returns the GMM for P(Y | X=value).</span>
+
+<span class="sd">        :param list in_dims: the dimension indices of X (a subset of range(d)). This can be the empty list if one want to compute the marginal P(Y).</span>
+
+<span class="sd">        :param list out_dims: the dimension indices of Y (a subset of range(d), without intersection with in_dims).</span>
+
+<span class="sd">        :param numpy.array value: the value of X for which one want to compute the conditional (ignored of in_dims=[]).</span>
+
+<span class="sd">        :returns: the gmm corresponding to P(Y | X=value) (or to P(Y) if in_dims=[])</span>
+
+<span class="sd">        .. note:: For example, if X = V1...Vm and Y = Vm+1...Vd, then P(Y | X=v1...vm) is returned by self.inference(in_dims=range(m), out_dims=range(m, d), array([v1, ..., vm])).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance_type</span> <span class="o">!=</span> <span class="s">&#39;diag&#39;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance_type</span> <span class="o">!=</span> <span class="s">&#39;full&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;covariance type other than &#39;full&#39; and &#39;diag&#39; not allowed&quot;</span><span class="p">)</span>
+        <span class="n">in_dims</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">in_dims</span><span class="p">)</span>
+        <span class="n">out_dims</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">out_dims</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="n">means</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_components</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">out_dims</span><span class="p">)))</span>
+        <span class="n">covars</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_components</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">out_dims</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">out_dims</span><span class="p">)))</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">n_components</span><span class="p">,))</span>
+        <span class="k">if</span> <span class="n">in_dims</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="p">(</span><span class="n">weight_k</span><span class="p">,</span> <span class="n">mean_k</span><span class="p">,</span> <span class="n">covar_k</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+                <span class="n">sig_in</span> <span class="o">=</span> <span class="n">covar_k</span><span class="p">[</span><span class="n">ix_</span><span class="p">(</span><span class="n">in_dims</span><span class="p">,</span> <span class="n">in_dims</span><span class="p">)]</span>
+                <span class="n">inin_inv</span> <span class="o">=</span> <span class="n">matrix</span><span class="p">(</span><span class="n">sig_in</span><span class="p">)</span><span class="o">.</span><span class="n">I</span>
+                <span class="n">out_in</span> <span class="o">=</span> <span class="n">covar_k</span><span class="p">[</span><span class="n">ix_</span><span class="p">(</span><span class="n">out_dims</span><span class="p">,</span> <span class="n">in_dims</span><span class="p">)]</span>
+                <span class="n">mu_in</span> <span class="o">=</span> <span class="n">mean_k</span><span class="p">[</span><span class="n">in_dims</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">means</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">(</span><span class="n">mean_k</span><span class="p">[</span><span class="n">out_dims</span><span class="p">]</span> <span class="o">+</span>
+                               <span class="p">(</span><span class="n">out_in</span> <span class="o">*</span>
+                                <span class="n">inin_inv</span> <span class="o">*</span>
+                                <span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">mu_in</span><span class="p">))</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance_type</span> <span class="o">==</span> <span class="s">&#39;full&#39;</span><span class="p">:</span>
+                    <span class="n">covars</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">(</span><span class="n">covar_k</span><span class="p">[</span><span class="n">ix_</span><span class="p">(</span><span class="n">out_dims</span><span class="p">,</span> <span class="n">out_dims</span><span class="p">)]</span> <span class="o">-</span>
+                                       <span class="n">out_in</span> <span class="o">*</span>
+                                       <span class="n">inin_inv</span> <span class="o">*</span>
+                                       <span class="n">covar_k</span><span class="p">[</span><span class="n">ix_</span><span class="p">(</span><span class="n">in_dims</span><span class="p">,</span> <span class="n">out_dims</span><span class="p">)])</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance_type</span> <span class="o">==</span> <span class="s">&#39;diag&#39;</span><span class="p">:</span>
+                    <span class="n">covars</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">covar_k</span><span class="p">[</span><span class="n">out_dims</span><span class="p">]</span>
+
+                <span class="n">weights</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">weight_k</span> <span class="o">*</span> <span class="n">Gaussian</span><span class="p">(</span><span class="n">mu_in</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,),</span>
+                                                 <span class="n">sig_in</span><span class="p">)</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,))</span>
+            <span class="n">weights</span> <span class="o">/=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">means</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">means_</span><span class="p">[:,</span> <span class="n">out_dims</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance_type</span> <span class="o">==</span> <span class="s">&#39;full&#39;</span><span class="p">:</span>
+                <span class="n">covars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">covars_</span><span class="p">[</span><span class="n">ix_</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_components</span><span class="p">),</span> <span class="n">out_dims</span><span class="p">,</span> <span class="n">out_dims</span><span class="p">)]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">covariance_type</span> <span class="o">==</span> <span class="s">&#39;diag&#39;</span><span class="p">:</span>
+                <span class="n">covars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">covars_</span><span class="p">[</span><span class="n">ix_</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_components</span><span class="p">),</span> <span class="n">out_dims</span><span class="p">)]</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights_</span>
+
+        <span class="n">res</span> <span class="o">=</span> <span class="n">GMM</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_components</span><span class="p">,</span>
+                  <span class="n">covariance_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">covariance_type</span><span class="p">)</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">weights_</span> <span class="o">=</span> <span class="n">weights</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">means_</span> <span class="o">=</span> <span class="n">means</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">covars_</span> <span class="o">=</span> <span class="n">covars</span>
+        <span class="k">return</span> <span class="n">res</span>
+</div>
+<div class="viewcode-block" id="GMM.ellipses2D"><a class="viewcode-back" href="../../../explauto.models.html#explauto.models.gmminf.GMM.ellipses2D">[docs]</a>    <span class="k">def</span> <span class="nf">ellipses2D</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">colors</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">matplotlib.patches</span> <span class="kn">import</span> <span class="n">Ellipse</span>
+
+        <span class="n">ellipses</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">((</span><span class="n">weight</span><span class="p">,</span> <span class="n">mean</span><span class="p">,</span> <span class="n">_</span><span class="p">),</span> <span class="n">covar</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_covars</span><span class="p">())):</span>
+            <span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">vect</span><span class="p">)</span> <span class="o">=</span> <span class="n">eig</span><span class="p">(</span><span class="n">covar</span><span class="p">)</span>
+
+            <span class="n">el</span> <span class="o">=</span> <span class="n">Ellipse</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span>
+                         <span class="mf">3.5</span> <span class="o">*</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                         <span class="mf">3.5</span> <span class="o">*</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                         <span class="mf">180.</span> <span class="o">*</span> <span class="n">arctan2</span><span class="p">(</span><span class="n">vect</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">vect</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">pi</span><span class="p">,</span>
+                         <span class="n">fill</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                         <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+            <span class="n">el</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="n">el</span><span class="o">.</span><span class="n">set_fill</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+            <span class="n">el</span><span class="o">.</span><span class="n">set_alpha</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+
+            <span class="n">ellipses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ellipses</span>
+</div>
+<div class="viewcode-block" id="GMM.ellipses3D"><a class="viewcode-back" href="../../../explauto.models.html#explauto.models.gmminf.GMM.ellipses3D">[docs]</a>    <span class="k">def</span> <span class="nf">ellipses3D</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">..utils.ellipsoid</span> <span class="kn">import</span> <span class="n">ellipsoid_3d</span>
+        <span class="n">ellipsoids</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="p">(</span><span class="n">weight_k</span><span class="p">,</span> <span class="n">mean_k</span><span class="p">,</span> <span class="n">covar_k</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">ellipsoids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ellipsoid_3d</span><span class="p">(</span><span class="n">mean_k</span><span class="p">,</span> <span class="n">covar_k</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">ellipsoids</span>
+</div>
+<div class="viewcode-block" id="GMM.plot"><a class="viewcode-back" href="../../../explauto.models.html#explauto.models.gmminf.GMM.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot_projection</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">means_</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">label</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="GMM.plot_projection"><a class="viewcode-back" href="../../../explauto.models.html#explauto.models.gmminf.GMM.plot_projection">[docs]</a>    <span class="k">def</span> <span class="nf">plot_projection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">dims</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="n">COLORS</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">weights_</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weights_</span><span class="p">)</span>
+        <span class="n">COLORS</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">COLORS</span><span class="p">]</span>
+        <span class="c"># COLORS = [&#39;r&#39;, &#39;g&#39;, &#39;b&#39;, &#39;k&#39;, &#39;m&#39;]*10000</span>
+        <span class="n">gmm_proj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inference</span><span class="p">([],</span> <span class="n">dims</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span> <span class="o">=</span> <span class="n">inf</span><span class="p">,</span> <span class="o">-</span><span class="n">inf</span>
+            <span class="k">for</span> <span class="n">w</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+                <span class="n">x_min</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">3.</span> <span class="o">*</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]))</span>
+                <span class="n">x_max</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">x_max</span><span class="p">,</span> <span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mf">3.</span> <span class="o">*</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]))</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">linspace</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">probability</span><span class="p">(</span><span class="n">xx</span><span class="p">)</span> <span class="k">for</span> <span class="n">xx</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">els</span> <span class="o">=</span> <span class="n">gmm_proj</span><span class="o">.</span><span class="n">ellipses2D</span><span class="p">(</span><span class="n">COLORS</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">els</span><span class="p">:</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">dims</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">ellipsoids</span> <span class="o">=</span> <span class="n">gmm_proj</span><span class="o">.</span><span class="n">ellipses3D</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">ellipsoids</span><span class="p">:</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">plot_wireframe</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span>  <span class="n">rstride</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">cstride</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&quot;Can only print 2D or 3D ellipses&quot;</span>
+        <span class="k">if</span> <span class="n">label</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">gmm_proj</span><span class="p">):</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="o">*</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">m</span><span class="p">),</span> <span class="n">s</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">))</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s">&#39;tight&#39;</span><span class="p">)</span></div></div>
+</pre></div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        
+      </div><!-- /row -->
+
+      <!-- row -->
+      <div class="row-fluid">
+<div class="related navbar " role="navigation" aria-label="related navigation">
+  <div class="navbar-inner">
+    <ul class="nav pull-right">
+      
+        <li><a href="../../../genindex.html" title="General Index" >index</a></li>
+        <li><a href="../../../py-modindex.html" title="Python Module Index" >modules</a></li>
+        <li><a href="../../../index.html">explauto 1.0.1 documentation</a></li>
+        <li><a href="../../index.html" >Module code</a></li> 
+      
+    </ul>
+  </div>
+</div>
+      </div><!-- /row -->
+
+      <!-- footer -->
+      <footer role="contentinfo">
+          &copy; Copyright 2014, Clement Moulin-Frier, Pierre Rouanet.
+        Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.
+      </footer>
+      <!-- /footer -->
+
+    </div>
+    <!-- /container -->
+
+  </body>
+</html>

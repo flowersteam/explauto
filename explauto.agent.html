@@ -208,20 +208,29 @@
 <dt id="explauto.agent.agent.Agent">
 <em class="property">class </em><tt class="descclassname">explauto.agent.agent.</tt><tt class="descname">Agent</tt><big>(</big><em>im_model_cls</em>, <em>im_model_config</em>, <em>expl_dims</em>, <em>sm_model_cls</em>, <em>sm_model_config</em>, <em>inf_dims</em>, <em>m_mins</em>, <em>m_maxs</em>, <em>s_mins</em>, <em>s_maxs</em>, <em>n_bootstrap=0</em><big>)</big><a class="reference internal" href="_modules/explauto/agent/agent.html#Agent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.agent.agent.Agent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">explauto.utils.observer.Observable</span></tt></p>
-<p>Initialize agent class
-Keyword arguments:
-:param class im_model_cls: a subclass of InterestedModel, as those registered in the interest_model package
-:param dict im_model_config: a configuration dict as those registered in the interest_model package
-:param expl_dims: the sensorimotor dimensions where exploration is driven in the interest model
-:param inf_dims: the output sensorimotor dimensions of the sensorimotor model (input being expl_dims)
-:param class sm_model_cls: a subclass of SensorimotorModel, as those registered in the sensorimotor_model package
-:param dict sensorimotor_model_config: a configuration dict as those registered in the sensorimotor_model package
-:params list m_mins: lower bound of motor values on each motor dimension (upper for m_max)
-:params list m_mins: lower bound of sensory values on each sensory dimension (lower for m_max)</p>
+<p>Initialize agent class</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>im_model_cls</strong> (<em>class</em>) &#8211; a subclass of InterestedModel, as those registered in the interest_model package</li>
+<li><strong>im_model_config</strong> (<a class="reference external" href="http://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; a configuration dict as those registered in the interest_model package</li>
+<li><strong>expl_dims</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; the sensorimotor dimensions where exploration is driven in the interest model</li>
+<li><strong>inf_dims</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; the output sensorimotor dimensions of the sensorimotor model (input being expl_dims)</li>
+<li><strong>sm_model_cls</strong> (<em>class</em>) &#8211; a subclass of SensorimotorModel, as those registered in the sensorimotor_model package</li>
+<li><strong>sensorimotor_model_config</strong> (<a class="reference external" href="http://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; a configuration dict as those registered in the sensorimotor_model package</li>
+<li><strong>m_mins, m_maxs, s_mins, s_max</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; lower and upper bounds of motor and sensory values on each dimension</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="explauto.agent.agent.Agent.next_state">
 <tt class="descname">next_state</tt><big>(</big><em>env_state</em><big>)</big><a class="reference internal" href="_modules/explauto/agent/agent.html#Agent.next_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.agent.agent.Agent.next_state" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>To be removed in future versions</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="explauto.agent.agent.Agent.post_production">
@@ -236,17 +245,36 @@ Keyword arguments:
 <dl class="method">
 <dt id="explauto.agent.agent.Agent.infer">
 <tt class="descname">infer</tt><big>(</big><em>expl_dims</em>, <em>inf_dims</em>, <em>x</em><big>)</big><a class="reference internal" href="_modules/explauto/agent/agent.html#Agent.infer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.agent.agent.Agent.infer" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Use the sensorimotor model to compute the expected value on inf_dims given that the value on expl_dims is x.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This corresponds to a prediction if expl_dims=self.conf.m_dims and inf_dims=self.conf.s_dims and to inverse prediction if expl_dims=self.conf.s_dims and inf_dims=self.conf.m_dims.</p>
+</div>
+</dd></dl>
 
 <dl class="method">
 <dt id="explauto.agent.agent.Agent.produce">
 <tt class="descname">produce</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/explauto/agent/agent.html#Agent.produce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.agent.agent.Agent.produce" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Exploration (see the <a class="reference external" href="about.html">Explauto introduction</a> for more detail):</p>
+<ul class="simple">
+<li>Choose a value x on expl_dims according to the interest model</li>
+<li>Infer a value y on inf_dims from x using the <a class="reference internal" href="#explauto.agent.agent.Agent.infer" title="explauto.agent.agent.Agent.infer"><tt class="xref py py-meth docutils literal"><span class="pre">infer()</span></tt></a> method</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This correspond to motor babbling if expl_dims=self.conf.m_dims and inf_dims=self.conf.s_dims and to  goal babbling if expl_dims=self.conf.s_dims and inf_dims=self.conf.m_dims.</p>
+</div>
+</dd></dl>
 
 <dl class="method">
 <dt id="explauto.agent.agent.Agent.perceive">
 <tt class="descname">perceive</tt><big>(</big><em>ms</em><big>)</big><a class="reference internal" href="_modules/explauto/agent/agent.html#Agent.perceive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.agent.agent.Agent.perceive" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Learning (see the <a class="reference external" href="about.html">Explauto introduction</a> for more detail):</p>
+<ul class="simple">
+<li>update the sensorimotor model with (m, s)</li>
+<li>update the interest model with (x, y, m, s) (x, y are stored in self.ms in <tt class="xref py py-meth docutils literal"><span class="pre">production()</span></tt>)</li>
+</ul>
+</dd></dl>
 
 </dd></dl>
 

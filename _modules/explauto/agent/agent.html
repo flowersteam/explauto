@@ -191,15 +191,21 @@
                  <span class="n">sm_model_cls</span><span class="p">,</span> <span class="n">sm_model_config</span><span class="p">,</span> <span class="n">inf_dims</span><span class="p">,</span>
                  <span class="n">m_mins</span><span class="p">,</span> <span class="n">m_maxs</span><span class="p">,</span> <span class="n">s_mins</span><span class="p">,</span> <span class="n">s_maxs</span><span class="p">,</span> <span class="n">n_bootstrap</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize agent class</span>
-<span class="sd">        Keyword arguments:</span>
+
 <span class="sd">        :param class im_model_cls: a subclass of InterestedModel, as those registered in the interest_model package</span>
+
 <span class="sd">        :param dict im_model_config: a configuration dict as those registered in the interest_model package</span>
-<span class="sd">        :param expl_dims: the sensorimotor dimensions where exploration is driven in the interest model</span>
-<span class="sd">        :param inf_dims: the output sensorimotor dimensions of the sensorimotor model (input being expl_dims)</span>
+
+<span class="sd">        :param list expl_dims: the sensorimotor dimensions where exploration is driven in the interest model</span>
+
+<span class="sd">        :param list inf_dims: the output sensorimotor dimensions of the sensorimotor model (input being expl_dims)</span>
+
 <span class="sd">        :param class sm_model_cls: a subclass of SensorimotorModel, as those registered in the sensorimotor_model package</span>
+
 <span class="sd">        :param dict sensorimotor_model_config: a configuration dict as those registered in the sensorimotor_model package</span>
-<span class="sd">        :params list m_mins: lower bound of motor values on each motor dimension (upper for m_max)</span>
-<span class="sd">        :params list m_mins: lower bound of sensory values on each sensory dimension (lower for m_max)</span>
+
+<span class="sd">        :param list m_mins, m_maxs, s_mins, s_max: lower and upper bounds of motor and sensory values on each dimension</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Observable</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
@@ -219,6 +225,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">ndims</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Agent.next_state"><a class="viewcode-back" href="../../../explauto.agent.html#explauto.agent.agent.Agent.next_state">[docs]</a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env_state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; To be removed in future versions &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">perceive</span><span class="p">(</span><span class="n">env_state</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -231,6 +238,10 @@
         <span class="k">pass</span>
 </div>
 <div class="viewcode-block" id="Agent.infer"><a class="viewcode-back" href="../../../explauto.agent.html#explauto.agent.agent.Agent.infer">[docs]</a>    <span class="k">def</span> <span class="nf">infer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expl_dims</span><span class="p">,</span> <span class="n">inf_dims</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Use the sensorimotor model to compute the expected value on inf_dims given that the value on expl_dims is x.</span>
+
+<span class="sd">        .. note:: This corresponds to a prediction if expl_dims=self.conf.m_dims and inf_dims=self.conf.s_dims and to inverse prediction if expl_dims=self.conf.s_dims and inf_dims=self.conf.m_dims.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_bootstrap</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">n_bootstrap</span> <span class="o">-=</span> <span class="mi">1</span>
@@ -244,8 +255,14 @@
         <span class="k">return</span> <span class="n">y</span>
 </div>
 <div class="viewcode-block" id="Agent.produce"><a class="viewcode-back" href="../../../explauto.agent.html#explauto.agent.agent.Agent.produce">[docs]</a>    <span class="k">def</span> <span class="nf">produce</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="c"># if self.to_bootstrap:</span>
-        <span class="c">#     return self.bootstrap()</span>
+        <span class="sd">&quot;&quot;&quot; Exploration (see the `Explauto introduction &lt;about.html&gt;`__ for more detail):</span>
+
+<span class="sd">        * Choose a value x on expl_dims according to the interest model</span>
+<span class="sd">        * Infer a value y on inf_dims from x using the :meth:`~explauto.agent.agent.Agent.infer` method</span>
+
+
+<span class="sd">        .. note:: This correspond to motor babbling if expl_dims=self.conf.m_dims and inf_dims=self.conf.s_dims and to  goal babbling if expl_dims=self.conf.s_dims and inf_dims=self.conf.m_dims.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interest_model</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
@@ -268,11 +285,12 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">m_dims</span><span class="p">]</span>
 </div>
 <div class="viewcode-block" id="Agent.perceive"><a class="viewcode-back" href="../../../explauto.agent.html#explauto.agent.agent.Agent.perceive">[docs]</a>    <span class="k">def</span> <span class="nf">perceive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
-        <span class="c"># Todo: put competence function in i_model.py and call it from i_model</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pre_perception</span><span class="p">()</span>
+        <span class="sd">&quot;&quot;&quot; Learning (see the `Explauto introduction &lt;about.html&gt;`__ for more detail):</span>
 
-        <span class="c"># self.comp = self.competence(self.ms[self.s_dims], ms[self.s_dims])</span>
-        <span class="c"># self.comps[self.t] = self.comp</span>
+<span class="sd">        * update the sensorimotor model with (m, s)</span>
+<span class="sd">        * update the interest model with (x, y, m, s) (x, y are stored in self.ms in :meth:`~explauto.agent.agent.Agent.production`)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pre_perception</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">sensorimotor_model</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">m_dims</span><span class="p">],</span> <span class="n">ms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">s_dims</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">interest_model</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="n">ms</span><span class="p">)</span>

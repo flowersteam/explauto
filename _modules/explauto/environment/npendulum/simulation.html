@@ -184,7 +184,7 @@
 <div class="viewcode-block" id="step"><a class="viewcode-back" href="../../../../explauto.environment.html#explauto.environment.npendulum.simulation.step">[docs]</a><span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">duration</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; This function creates a sum of boxcar functions.</span>
 
-<span class="sd">    :param array weight: height of each boxcar function.</span>
+<span class="sd">    :param numpy.array weight: height of each boxcar function.</span>
 <span class="sd">    :param float duration: duration of the generated trajectory.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -205,7 +205,7 @@
     <span class="sd">&quot;&quot;&quot; This function simulates the n-pendulum behavior.</span>
 
 <span class="sd">    :param int n: number of particules suspended to the top one</span>
-<span class="sd">    :param array x0: 2*(n+1)-length array, initial conditions (q and u) for each particle</span>
+<span class="sd">    :param numpy.array x0: 2*(n+1)-length array, initial conditions (q and u) for each particle</span>
 <span class="sd">    :param float dt: time step</span>
 <span class="sd">    :param func func: input function that give forces along x_axis for each time t</span>
 
@@ -327,7 +327,7 @@
     <span class="sd">&quot;&quot;&quot; This function computes cartesians coordinates from the states returned by the simulate function.</span>
 
 <span class="sd">    :param int n: number of particules suspended to the top one</span>
-<span class="sd">    :param array states: list of the positions and speeds at a certain time.</span>
+<span class="sd">    :param numpy.array states: list of the positions and speeds at a certain time.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">length</span> <span class="o">=</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">n</span>  <span class="c"># arm_length</span>
     <span class="n">pos_x</span> <span class="o">=</span> <span class="n">hstack</span><span class="p">((</span><span class="n">states</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">)))</span>
