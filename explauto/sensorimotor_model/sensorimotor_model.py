@@ -13,7 +13,7 @@ class SensorimotorModel(object):
 
         :param list out_dims: list of output dimensions. For example, use self.conf.s_dims to perform forward prediction (i.e. infer the expected output sensory effect for a given input motor command) or self.conf.m_dims to perform inverse prediction (i.e. infer a output motor command in order to reach an input sensory goal).
 
-        :param array x: value array for input dimensions. For example, if in_dims = self.conf.m_dims, x is the value of the motor configuration for which we want to predict a sensory effect.
+        :param numpy.array x: value array for input dimensions. For example, if in_dims = self.conf.m_dims, x is the value of the motor configuration for which we want to predict a sensory effect.
 
         :returns: an array of size len(out_dims) containing the forward or inverse prediction
         

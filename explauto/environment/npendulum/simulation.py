@@ -9,7 +9,7 @@ from scipy.integrate import odeint
 def step(weights, duration):
     """ This function creates a sum of boxcar functions.
 
-    :param array weight: height of each boxcar function.
+    :param numpy.array weight: height of each boxcar function.
     :param float duration: duration of the generated trajectory.
     """
 
@@ -30,7 +30,7 @@ def simulate(n, x0, dt, func):
     """ This function simulates the n-pendulum behavior.
 
     :param int n: number of particules suspended to the top one
-    :param array x0: 2*(n+1)-length array, initial conditions (q and u) for each particle
+    :param numpy.array x0: 2*(n+1)-length array, initial conditions (q and u) for each particle
     :param float dt: time step
     :param func func: input function that give forces along x_axis for each time t
 
@@ -152,7 +152,7 @@ def cartesian(n, states):
     """ This function computes cartesians coordinates from the states returned by the simulate function.
 
     :param int n: number of particules suspended to the top one
-    :param array states: list of the positions and speeds at a certain time.
+    :param numpy.array states: list of the positions and speeds at a certain time.
     """
     length = 1. / n  # arm_length
     pos_x = hstack((states[0], zeros(n)))
