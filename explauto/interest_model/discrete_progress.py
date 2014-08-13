@@ -4,7 +4,7 @@ from copy import deepcopy
 from collections import deque
 
 from ..utils.config import Space
-from .competences import competence_exp, competence_dist  # TODO try without exp (now that we update on goal AND effect). Could solve the "interest for precision" problem   
+from .competences import competence_exp, competence_dist  # TODO try without exp (now that we update on goal AND effect). Could solve the "interest for precision" problem
 from ..utils import discrete_random_draw
 from .interest_model import InterestModel
 
@@ -63,9 +63,9 @@ class DiscreteProgress(InterestModel):
                             for q in self.queues])
 
     def sample(self, temp=3.):
-        w = abs(self.progress())
-        w = numpy.exp(temp * w - temp * w.max())  # / numpy.exp(3.)
-        return discrete_random_draw(w)
+        self.w = abs(self.progress())
+        self.w = numpy.exp(temp * self.w - temp * self.w.max())  # / numpy.exp(3.)
+        return discrete_random_draw(self.w)
 
     def update(self, xy, ms):
         measure = self.measure(xy, ms)
@@ -74,6 +74,9 @@ class DiscreteProgress(InterestModel):
         # self.comps[self.t] = measure
         # self.t += 1
 
+
+    def update_from_index_and_competence(self, index, competence):
+        self.queues[index].append(competence)
 
 interest_models = {'discretized_progress': (DiscretizedProgress,
                                             {'default': {'x_card': 400,
