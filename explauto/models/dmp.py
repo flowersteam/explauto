@@ -1,4 +1,4 @@
-from numpy import zeros
+from numpy import zeros, ones, array
 from copy import copy
 
 from pydmps.dmp_rhythmic import DMPs_rhythmic
@@ -13,7 +13,7 @@ class MotorPrimitive(object):
 
 class DmpPrimitive(object):
     def __init__(self, dmps, bfs,used=None, default=None, type='discrete'):
-        self.used = ones(dmp*(bfs + 2)) if used is None else used
+        self.used = ones(dmps * (bfs + 2), dtype=bool) if used is None else array(used, dtype=bool)
         self.default = zeros(dmps*(bfs + 2)) if default is None else default
         self.motor = copy(self.default)
         if type == 'discrete':
@@ -23,11 +23,15 @@ class DmpPrimitive(object):
         else:
             raise ValueError('Invalid type specified. Valid choices \
                                  are discrete or rhythmic.')
-    def trajectory(self, m):
+    def trajectory(self, m, n_times=1):
+        self.dmp.cs.run_time *= n_times
+        self.dmp.timesteps *= n_times
         self.motor[self.used] = m
         # print self.motor
         self.dmp.y0 = self.motor[:self.dmp.dmps]
         self.dmp.goal = self.motor[-self.dmp.dmps:]
         self.dmp.w = self.motor[self.dmp.dmps:-self.dmp.dmps].reshape(self.dmp.dmps, self.dmp.bfs)
         y, dy, ddy = self.dmp.rollout()
+        self.dmp.cs.run_time /= n_times
+        self.dmp.timesteps /= n_times
         return y
