@@ -50,17 +50,7 @@ class Environment(Observable):
         return rand_bounds(self.conf.bounds[:, self.conf.m_dims], n)
 
     def dataset(self, orders):
-        n = orders.shape[0]
-        m_ndims = orders.shape[1]
-
-        data = zeros((n, self.conf.ndims))
-        data[:, :m_ndims] = orders
-
-        for i, m in enumerate(orders):
-            self.update(m)
-            data[i, m_ndims:] = self.state[m_ndims:]
-
-        return data
+        return array([self.update(m) for m in orders])
 
     def uniform_sensor(self, n_cases=100):
         n_random_motor = n_cases * 100

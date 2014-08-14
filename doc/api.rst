@@ -4,6 +4,7 @@ Explauto's API
     explauto.agent
     explauto.environment
     explauto.evaluation
+    explauto.models    
     explauto.experiment
     explauto.interestmodel
     explauto.sensorimotormodel
