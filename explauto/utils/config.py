@@ -5,13 +5,18 @@ from collections import namedtuple
 from . import rand_bounds
 
 
-Configuration = namedtuple('Configuration', ('m_mins', 'm_maxs', 's_mins', 's_maxs',
+Configuration = namedtuple('Configuration', ('m_mins', 'm_maxs', 's_mins', 's_maxs', 'mins', 'maxs',
                                              'm_ndims', 's_ndims', 'ndims',
                                              'm_dims', 's_dims', 'dims',
-                                             'm_bounds', 's_bounds', 'bounds'))
+                                             'm_bounds', 's_bounds', 'bounds',
+                                             'm_centers', 's_centers', 'centers',
+                                             'm_ranges', 's_ranges', 'ranges'))
 
 
 def make_configuration(m_mins, m_maxs, s_mins, s_maxs):
+    mins = hstack((m_mins, s_mins))
+    maxs = hstack((m_maxs, s_maxs))
+
     m_ndims = len(m_mins)
     s_ndims = len(s_mins)
     ndims = m_ndims + s_ndims
@@ -24,10 +29,21 @@ def make_configuration(m_mins, m_maxs, s_mins, s_maxs):
     s_bounds = vstack((s_mins, s_maxs))
     bounds = hstack((m_bounds, s_bounds))
 
-    return Configuration(m_mins, m_maxs, s_mins, s_maxs,
+    m_ranges = array(m_maxs) - array(m_mins)
+    s_ranges = array(s_maxs) - array(s_mins)
+    ranges = hstack((m_ranges, s_ranges))
+
+    m_centers = array(m_mins) + m_ranges / 2.
+    s_centers = array(s_mins) + s_ranges / 2.
+    centers = hstack((m_centers, s_centers))
+
+    return Configuration(m_mins, m_maxs, s_mins, s_maxs, mins, maxs,
                          m_ndims, s_ndims, ndims,
                          m_dims, s_dims, dims,
-                         m_bounds, s_bounds, bounds)
+                         m_bounds, s_bounds, bounds,
+                         m_centers, s_centers, centers,
+                         m_ranges, s_ranges, ranges)
+
 
 
 class Space(object):
@@ -40,11 +56,11 @@ class Space(object):
         self.bin_widths = self.widths / self.cardinalities
 
         if cardinalities is not None:
-            self.bins = [linspace(self.mins[d] + self.bin_widths[d], 
+            self.bins = [linspace(self.mins[d] + self.bin_widths[d],
                          self.maxs[d] - self.bin_widths[d],
                          cardinalities[d] - 1) for d in range(self.ndims)]
             self.card = product(cardinalities)
-        
+
     def discretize(self, values, dims):
         return array([digitize([values[d]], self.bins[d])[0] for d in dims])
         # return array([digitize(values[:, d], self.bins[d]) for d in dims]).T
@@ -70,7 +86,7 @@ class Space(object):
     def index2multi(self, index):
         return unravel_index(index, self.cardinalities)
 
-    def test(self):
+    def _test(self):
         ok = True
         for v in rand_bounds(vstack((self.mins, self.maxs)), n=100):
             # print v
@@ -85,5 +101,3 @@ class Space(object):
         return ok
 
     # def continuize(self, indexes):
-
-
