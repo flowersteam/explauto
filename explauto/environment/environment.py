@@ -8,6 +8,7 @@ from ..utils import rand_bounds
 from ..third_party.models.models.testbed.testcase import Lattice
 from ..third_party.models_adaptors import configuration
 
+from . import environments
 
 class Environment(Observable):
     """ Abstract class to define environments.
@@ -20,15 +21,19 @@ class Environment(Observable):
 
     def __init__(self, m_mins, m_maxs, s_mins, s_maxs):
         """
-        :param array m_mins, m_maxs, s_mins, s_maxs: bounds of the motor (m) and sensory (s) spaces
+        :param numpy.array m_mins, m_maxs, s_mins, s_maxs: bounds of the motor (m) and sensory (s) spaces
 
         """
         Observable.__init__(self)
 
         self.conf = make_configuration(m_mins, m_maxs, s_mins, s_maxs)
-        self.state = zeros(self.conf.ndims)
 
-    def update(self, m_ag, log=True):
+    @classmethod
+    def from_configuration(cls, env_name, config_name='default'):
+        env_cls, env_configs, _ = environments[env_name]
+        return env_cls(**env_configs[config_name])
+
+    def one_update(self, m_ag, log=True):
         m_env = self.compute_motor_command(m_ag)
         s = self.compute_sensori_effect(m_env)
 
@@ -37,6 +42,13 @@ class Environment(Observable):
             self.emit('sensori', s)
 
         return hstack((m_env, s))
+
+    def update(self, m_ag, log=True):
+        if len(m_ag.shape) == 1:
+            ms = self.one_update(m_ag, log)
+        else:
+            ms = array([self.one_update(m, log) for m in m_ag])
+        return ms
 
     @abstractmethod
     def compute_motor_command(self, ag_state):
