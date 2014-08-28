@@ -1,9 +1,16 @@
 from abc import ABCMeta, abstractmethod
 
+from . import sensorimotor_models
+
 
 class SensorimotorModel(object):
     """ This abstract class provides the common interface for sensorimotor models. """
     __metaclass__ = ABCMeta
+
+    @classmethod
+    def from_configuration(cls, conf, sm_name, config_name='default'):
+        sm_cls, sm_configs = sensorimotor_models[sm_name]
+        return sm_cls(conf, **sm_configs[config_name])
 
     @abstractmethod
     def infer(self, in_dims, out_dims, x):
@@ -16,7 +23,7 @@ class SensorimotorModel(object):
         :param numpy.array x: value array for input dimensions. For example, if in_dims = self.conf.m_dims, x is the value of the motor configuration for which we want to predict a sensory effect.
 
         :returns: an array of size len(out_dims) containing the forward or inverse prediction
-        
+
         .. note:: Although it is especially used to perform either forward or inverse predictions, Explauto's sensorimotor models are generally suitable to do all kind of general prediction from X (input) to Y (output), where X and Y are to distinct subspaces of the sensorimotor space.
         """
         pass

@@ -1,7 +1,7 @@
 import logging
 import threading
 
-from .. import ExplautoEnvironmentUpdateError
+from ..exceptions import ExplautoEnvironmentUpdateError
 from ..utils.observer import Observer
 from ..evaluation import Evaluation
 
@@ -139,7 +139,7 @@ class Experiment(Observer):
         expl_dims = env.conf.m_dims if (babbling == 'motor') else env.conf.s_dims
         inf_dims = env.conf.s_dims if (babbling == 'motor') else env.conf.m_dims
 
-        agent = Agent(im_cls, im_configs[settings.interest_model_config], expl_dims,
+        agent = Agent.from_classes(im_cls, im_configs[settings.interest_model_config], expl_dims,
                       sm_cls, sm_configs[settings.sensorimotor_model_config], inf_dims,
                       env.conf.m_mins, env.conf.m_maxs, env.conf.s_mins, env.conf.s_maxs)
 
