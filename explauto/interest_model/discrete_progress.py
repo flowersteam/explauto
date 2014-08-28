@@ -31,7 +31,7 @@ class DiscretizedProgress(InterestModel):
 
     def sample(self):
         index = self.discrete_progress.sample(temp=self.space.card)[0]
-        return self.space.rand_value(index)
+        return self.space.rand_value(index).flatten()
 
     def update(self, xy, ms):
         measure = self.measure(xy, ms, dist_min=self.dist_min)

@@ -10,7 +10,7 @@ class RandomInterest(InterestModel):
         # self.ndims = bounds.shape[1]
 
     def sample(self):
-        return rand_bounds(self.bounds)
+        return rand_bounds(self.bounds).flatten()
 
     def update(self, xy, ms):
         pass
