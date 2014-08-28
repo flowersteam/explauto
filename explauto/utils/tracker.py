@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 
-from .. import ExplautoEnvironmentUpdateError
+from ..exceptions import ExplautoEnvironmentUpdateError
 
 
 class Tracker(object):

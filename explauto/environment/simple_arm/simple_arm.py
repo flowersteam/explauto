@@ -1,6 +1,6 @@
 import numpy as np
 
-from .. import Environment
+from ..environment import Environment
 from ...utils import bounds_min_max
 
 

@@ -6,7 +6,7 @@ from matplotlib.pyplot import savefig, clf, axes
 
 import simulation
 
-from .. import Environment
+from ..environment import Environment
 from ...utils.utils import bounds_min_max
 from ...models.motor_primitive import BasisFunctions
 

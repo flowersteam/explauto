@@ -2,7 +2,7 @@ from sklearn.mixture import sample_gaussian
 from numpy import inf, ones  # array, vstack
 from numpy.linalg import norm
 
-from .. import ExplautoBootstrapError
+from ..exceptions import ExplautoBootstrapError
 from .sensorimotor_model import SensorimotorModel
 from ..third_party.models.models.dataset import Dataset
 

@@ -2,7 +2,7 @@ from numpy import array, pi, sqrt, cos, sin, linspace, zeros
 from numpy import random
 
 
-from ... import ExplautoNoTestCasesError
+from ...exceptions import ExplautoNoTestCasesError
 from .simple_arm import SimpleArmEnvironment
 
 
