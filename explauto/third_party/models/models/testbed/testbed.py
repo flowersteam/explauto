@@ -5,8 +5,6 @@ import numpy as np
 from ....toolbox import toolbox
 from . import testcase
 
-from explauto import ExplautoEnvironmentUpdateError
-
 
 class Testbed(object):
 
@@ -87,11 +85,8 @@ class Testbed(object):
         errors = []
         for order, effect in self.testcases:
             predicted_order = self.learner.infer_order(effect)
-            try:
-                obtained_effect = self.robot.execute_order(predicted_order)
-                errors.append(toolbox.dist(obtained_effect, effect))
-            except ExplautoEnvironmentUpdateError:
-                errors.append(np.inf)
+            obtained_effect = self.robot.execute_order(predicted_order)
+            errors.append(toolbox.dist(obtained_effect, effect))
         return errors
 
     def avg_std(self, errors):

@@ -3,8 +3,6 @@
 import random
 # import pandas
 
-from explauto import ExplautoEnvironmentUpdateError
-
 
 def uniform_motor_testcases(robot, n):
     """Generates n test uniformly distributed in the motor space"""
@@ -14,14 +12,11 @@ def uniform_motor_testcases(robot, n):
         #                       for mi_min, mi_max in robot.m_bounds],
         #                      index = robot.m_feats)
         while True:
-            try:
-                order = [random.uniform(mi_min, mi_max)
-                         for mi_min, mi_max in robot.m_bounds]
-                effect = robot.execute_order(order)
-                tb.append((order, effect))
-                break
-            except ExplautoEnvironmentUpdateError:
-                pass
+            order = [random.uniform(mi_min, mi_max)
+                     for mi_min, mi_max in robot.m_bounds]
+            effect = robot.execute_order(order)
+            tb.append((order, effect))
+            break
     return tb
 
 
