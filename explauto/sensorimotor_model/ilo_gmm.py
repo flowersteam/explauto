@@ -10,6 +10,7 @@ n_neighbors = 1
 
 class IloGmm(SensorimotorModel):
     def __init__(self, conf, n_components=3):  # , n_components=None):
+        SensorimotorModel.__init__(self, conf)
         # self.n_components = n_neighbors/20 if n_components is None else n_components
         self.n_components = n_components
         self.n_neighbors = max(100, (conf.ndims) ** 2)  # at least 100 neighbors
@@ -46,7 +47,7 @@ class IloGmm(SensorimotorModel):
         data = array(data)
         gmm = GMM(n_components=self.n_components, covariance_type='full')
         gmm.fit(data)
-        return gmm.inference(in_dims, out_dims, x).sample()
+        return gmm.inference(in_dims, out_dims, x).sample().flatten()
 
     def update(self, m, s):
         self.dataset.add_xy(tuple(m), tuple(s))
