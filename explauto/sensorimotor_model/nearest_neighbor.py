@@ -19,8 +19,10 @@ class NearestNeighbor(SensorimotorModel):
         :type conf: :class:`~explauto.utils.config.Configuration`
 
         :param int n_explore: the number of exploration trials for each goal
-        :param float sigma_ratio: the standard deviation of the exploration will be (conf.m_maxs - conf.m_mins) sigma_ratio. Hence, low values of this parameters means larger exploration
+        :param float sigma_ratio: the standard deviation of the exploration will be (conf.m_maxs - conf.m_mins) * sigma_ratio. Hence, high values of this parameters means larger exploration
         """
+
+        SensorimotorModel.__init__(self, conf)
         self.dataset = Dataset(conf.m_ndims, conf.s_ndims)
         self.m_dims = conf.m_dims
         self.s_dims = conf.s_dims
@@ -67,5 +69,7 @@ class NearestNeighbor(SensorimotorModel):
         self.dataset.add_xy(tuple(m), tuple(s))
         self.t += 1
 
-configurations = {'default': {'sigma_ratio': 1./6.}}
+configurations = {'default': {'sigma_ratio': 1./6.},
+                  'exact': {'sigma_ratio': 0.}
+                 }
 sensorimotor_models = {'nearest_neighbor': (NearestNeighbor, configurations)}

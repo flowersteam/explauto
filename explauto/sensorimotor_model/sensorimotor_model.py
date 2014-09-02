@@ -7,6 +7,9 @@ class SensorimotorModel(object):
     """ This abstract class provides the common interface for sensorimotor models. """
     __metaclass__ = ABCMeta
 
+    def __init__(self, conf):
+        self.conf = conf
+
     @classmethod
     def from_configuration(cls, conf, sm_name, config_name='default'):
         sm_cls, sm_configs = sensorimotor_models[sm_name]
@@ -33,3 +36,14 @@ class SensorimotorModel(object):
         """ Update the sensorimotor model given a new (m, s) pair, where m is a motor command and s is the corresponding observed sensory effect.
         """
         pass
+
+    def forward_prediction(self, m):
+        """ Compute the expected sensory effect of the motor command m. It is a shortcut for self.infer(self.conf.m_dims, self.conf.s_dims, m)
+        """
+        return self.infer(self.conf.m_dims, self.conf.s_dims, m)
+
+
+    def inverse_prediction(self, s_g):
+        """ Compute a motor command to reach the sensory goal s_g. It is a shortcut for self.infer(self.conf.s_dims, self.conf.m_dims, s_g)
+        """
+        return self.infer(self.conf.s_dims, self.conf.m_dims, s_g)

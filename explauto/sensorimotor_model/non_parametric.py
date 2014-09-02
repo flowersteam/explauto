@@ -10,6 +10,8 @@ class NonParametric(SensorimotorModel):
 
     """
     def __init__(self, conf, fwd='LWLR', inv='L-BFGS-B', **learner_kwargs):
+
+        SensorimotorModel.__init__(self, conf)
         for attr in ['m_ndims', 's_ndims', 'm_dims', 's_dims', 'bounds']:
             setattr(self, attr, getattr(conf, attr))
 
