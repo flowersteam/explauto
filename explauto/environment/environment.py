@@ -30,6 +30,39 @@ class Environment(Observable):
 
     @classmethod
     def from_configuration(cls, env_name, config_name='default'):
+        """ Environment factory from name and configuration strings.
+
+        :param str env_name: the name string of the environment
+
+        :param str config_name: the configuration string for env_name
+
+        Environment name strings are available using::
+
+            from explauto.environment import environments
+            print environments.keys()
+
+        This will return the available environment names, something like::
+
+            '['npendulum', 'pendulum', 'simple_arm']'
+
+        Once you have choose an environment, e.g. 'simple_arm', corresponding available configurations are available using::
+
+            env_cls, env_configs, _ = environments['simple_arm']
+            print env_configs.keys()
+
+        This will return the available configuration names for the 'simple_arm' environment, something like::
+
+            '['mid_dimensional', 'default', 'high_dim_high_s_range', 'low_dimensional', 'high_dimensional']'
+
+        Once you have choose a configuration, for example the 'mid_dimensional' one, you can contruct the environment using::
+
+            from explauto import Environment
+            my_environment = Environment.from_configuration('simple_arm', 'mid_dimensional')
+
+        Or, in an equivalent manner::
+
+            my_environment = env_cls(**env_configs['mid_dimensional'])
+        """
         env_cls, env_configs, _ = environments[env_name]
         return env_cls(**env_configs[config_name])
 
@@ -44,7 +77,18 @@ class Environment(Observable):
         return hstack((m_env, s))
 
     def update(self, m_ag, log=True):
-        if len(m_ag.shape) == 1:
+        """ Computes sensorimotor values from motor orders.
+
+        :param numpy.array m_ag: a motor command with shape (self.conf.m_ndims, ) or a set of n motor commands of shape (n, self.conf.m_ndims)
+
+        :param bool log: emit the motor and sensory values for logging purpose (default: True).
+
+        :returns: an array of shape (self.conf.ndims, ) or (n, self.conf.ndims) according to the shape of the m_ag parameter, containing the motor values (which can be different from m_ag, e.g. bounded according to self.conf.m_bounds) and the corresponding sensory values.
+
+        .. note:: self.conf.ndims = self.conf.m_ndims + self.conf.s_ndims is the dimensionality of the sensorimotor space (dim of the motor space + dim of the sensory space). 
+        """
+
+        if len(array(m_ag).shape) == 1:
             ms = self.one_update(m_ag, log)
         else:
             ms = array([self.one_update(m, log) for m in m_ag])

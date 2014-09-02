@@ -6,9 +6,12 @@ from ...utils import bounds_min_max
 
 def forward(angles, lengths):
     """ Link object as defined by the standard DH representation.
+
     :param list angles: angles of each joint
+
     :param list lengths: length of each segment
-    :return tuple: x, y end-effector postion
+
+    :returns: a tuple (x, y) of the end-effector position
 
     .. warning:: angles and lengths should be the same size.
     """
@@ -18,9 +21,12 @@ def forward(angles, lengths):
 
 def joint_positions(angles, lengths):
     """ Link object as defined by the standard DH representation.
+
     :param list angles: angles of each joint
+
     :param list lengths: length of each segment
-    :return tuple: x positions of each joint, y positions of each joints, except the first one wich is fixed at (0, 0)
+
+    :returns: x positions of each joint, y positions of each joints, except the first one wich is fixed at (0, 0)
 
     .. warning:: angles and lengths should be the same size.
     """
