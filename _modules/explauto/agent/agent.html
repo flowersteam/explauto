@@ -180,13 +180,28 @@
 <span class="kn">from</span> <span class="nn">..utils.config</span> <span class="kn">import</span> <span class="n">make_configuration</span>
 <span class="kn">from</span> <span class="nn">..utils.observer</span> <span class="kn">import</span> <span class="n">Observable</span>
 <span class="kn">from</span> <span class="nn">..utils</span> <span class="kn">import</span> <span class="n">rand_bounds</span><span class="p">,</span> <span class="n">bounds_min_max</span>
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">ExplautoBootstrapError</span>
+<span class="kn">from</span> <span class="nn">..exceptions</span> <span class="kn">import</span> <span class="n">ExplautoBootstrapError</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="Agent"><a class="viewcode-back" href="../../../explauto.agent.html#explauto.agent.agent.Agent">[docs]</a><span class="k">class</span> <span class="nc">Agent</span><span class="p">(</span><span class="n">Observable</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conf</span><span class="p">,</span> <span class="n">sm_model</span><span class="p">,</span> <span class="n">im_model</span><span class="p">,</span> <span class="n">n_bootstrap</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="n">Observable</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conf</span> <span class="o">=</span> <span class="n">conf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">ndims</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expl_dims</span> <span class="o">=</span> <span class="n">im_model</span><span class="o">.</span><span class="n">expl_dims</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">inf_dims</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">expl_dims</span><span class="p">)))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">sensorimotor_model</span> <span class="o">=</span> <span class="n">sm_model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interest_model</span> <span class="o">=</span> <span class="n">im_model</span>
+
+        <span class="c"># self.competence = competence</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_bootstrap</span> <span class="o">=</span> <span class="n">n_bootstrap</span>
+
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Agent.from_classes"><a class="viewcode-back" href="../../../explauto.agent.html#explauto.agent.agent.Agent.from_classes">[docs]</a>    <span class="k">def</span> <span class="nf">from_classes</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span>
                  <span class="n">im_model_cls</span><span class="p">,</span> <span class="n">im_model_config</span><span class="p">,</span> <span class="n">expl_dims</span><span class="p">,</span>
                  <span class="n">sm_model_cls</span><span class="p">,</span> <span class="n">sm_model_config</span><span class="p">,</span> <span class="n">inf_dims</span><span class="p">,</span>
                  <span class="n">m_mins</span><span class="p">,</span> <span class="n">m_maxs</span><span class="p">,</span> <span class="n">s_mins</span><span class="p">,</span> <span class="n">s_maxs</span><span class="p">,</span> <span class="n">n_bootstrap</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
@@ -207,35 +222,34 @@
 <span class="sd">        :param list m_mins, m_maxs, s_mins, s_max: lower and upper bounds of motor and sensory values on each dimension</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">Observable</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">conf</span> <span class="o">=</span> <span class="n">make_configuration</span><span class="p">(</span><span class="n">m_mins</span><span class="p">,</span> <span class="n">m_maxs</span><span class="p">,</span> <span class="n">s_mins</span><span class="p">,</span> <span class="n">s_maxs</span><span class="p">)</span>
+        <span class="n">conf</span> <span class="o">=</span> <span class="n">make_configuration</span><span class="p">(</span><span class="n">m_mins</span><span class="p">,</span> <span class="n">m_maxs</span><span class="p">,</span> <span class="n">s_mins</span><span class="p">,</span> <span class="n">s_maxs</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">ms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">ndims</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">expl_dims</span> <span class="o">=</span> <span class="n">expl_dims</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">inf_dims</span> <span class="o">=</span> <span class="n">inf_dims</span>
+        <span class="c"># self.ms = np.zeros(self.conf.ndims)</span>
+        <span class="c"># self.expl_dims = expl_dims</span>
+        <span class="c"># self.inf_dims = inf_dims</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">sensorimotor_model</span> <span class="o">=</span> <span class="n">sm_model_cls</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="p">,</span> <span class="o">**</span><span class="n">sm_model_config</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">interest_model</span> <span class="o">=</span> <span class="n">im_model_cls</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expl_dims</span><span class="p">,</span>
+        <span class="n">sm_model</span> <span class="o">=</span> <span class="n">sm_model_cls</span><span class="p">(</span><span class="n">conf</span><span class="p">,</span> <span class="o">**</span><span class="n">sm_model_config</span><span class="p">)</span>
+        <span class="n">im_model</span> <span class="o">=</span> <span class="n">im_model_cls</span><span class="p">(</span><span class="n">conf</span><span class="p">,</span> <span class="n">expl_dims</span><span class="p">,</span>
                                            <span class="o">**</span><span class="n">im_model_config</span><span class="p">)</span>
 
-        <span class="c"># self.competence = competence</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_bootstrap</span> <span class="o">=</span> <span class="n">n_bootstrap</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">ndims</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="n">conf</span><span class="p">,</span> <span class="n">sm_model</span><span class="p">,</span> <span class="n">im_model</span><span class="p">)</span>
+        <span class="c"># # self.competence = competence</span>
+        <span class="c"># self.t = 0</span>
+        <span class="c"># self.n_bootstrap = n_bootstrap</span>
+        <span class="c"># self.state = np.zeros(self.conf.ndims)</span>
 
-<div class="viewcode-block" id="Agent.next_state"><a class="viewcode-back" href="../../../explauto.agent.html#explauto.agent.agent.Agent.next_state">[docs]</a>    <span class="k">def</span> <span class="nf">next_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">env_state</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; To be removed in future versions &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">perceive</span><span class="p">(</span><span class="n">env_state</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">produce</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="Agent.post_production"><a class="viewcode-back" href="../../../explauto.agent.html#explauto.agent.agent.Agent.post_production">[docs]</a>    <span class="k">def</span> <span class="nf">post_production</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span>
-</div>
-<div class="viewcode-block" id="Agent.pre_perception"><a class="viewcode-back" href="../../../explauto.agent.html#explauto.agent.agent.Agent.pre_perception">[docs]</a>    <span class="k">def</span> <span class="nf">pre_perception</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">pass</span>
+<div class="viewcode-block" id="Agent.choose"><a class="viewcode-back" href="../../../explauto.agent.html#explauto.agent.agent.Agent.choose">[docs]</a>    <span class="k">def</span> <span class="nf">choose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a point chosen by the interest model</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interest_model</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">ExplautoBootstrapError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;Interest model not bootstrapped yet&#39;</span><span class="p">)</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">rand_bounds</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">bounds</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expl_dims</span><span class="p">])</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">x</span>
+
 </div>
 <div class="viewcode-block" id="Agent.infer"><a class="viewcode-back" href="../../../explauto.agent.html#explauto.agent.agent.Agent.infer">[docs]</a>    <span class="k">def</span> <span class="nf">infer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expl_dims</span><span class="p">,</span> <span class="n">inf_dims</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Use the sensorimotor model to compute the expected value on inf_dims given that the value on expl_dims is x.</span>
@@ -253,47 +267,64 @@
             <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;Sensorimotor model not bootstrapped yet&#39;</span><span class="p">)</span>
             <span class="n">y</span> <span class="o">=</span> <span class="n">rand_bounds</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">bounds</span><span class="p">[:,</span> <span class="n">inf_dims</span><span class="p">])</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">y</span>
+
+</div>
+<div class="viewcode-block" id="Agent.extract_ms"><a class="viewcode-back" href="../../../explauto.agent.html#explauto.agent.agent.Agent.extract_ms">[docs]</a>    <span class="k">def</span> <span class="nf">extract_ms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the motor and sensory parts from a point in the exploration</span>
+<span class="sd">        space (expl_dims) and a point in the inference space (inf_dims).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">ndims</span><span class="p">)</span>
+        <span class="n">ms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">expl_dims</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="n">ms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">inf_dims</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="k">return</span> <span class="n">ms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">m_dims</span><span class="p">],</span> <span class="n">ms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">s_dims</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="Agent.motor_primitive"><a class="viewcode-back" href="../../../explauto.agent.html#explauto.agent.agent.Agent.motor_primitive">[docs]</a>    <span class="k">def</span> <span class="nf">motor_primitive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Prepare the movement from a command m. To be overridded in order to generate more complex movement (tutorial to come). This version simply bounds the command.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">bounds_min_max</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">m_mins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">m_maxs</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Agent.sensory_primitive"><a class="viewcode-back" href="../../../explauto.agent.html#explauto.agent.agent.Agent.sensory_primitive">[docs]</a>    <span class="k">def</span> <span class="nf">sensory_primitive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Extract features from a sensory effect s. To be overridded in order to process more complex feature extraction (tutorial to come). This version simply bounds the sensory effect.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">bounds_min_max</span><span class="p">(</span><span class="n">ms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">mins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">maxs</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Agent.produce"><a class="viewcode-back" href="../../../explauto.agent.html#explauto.agent.agent.Agent.produce">[docs]</a>    <span class="k">def</span> <span class="nf">produce</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Exploration (see the `Explauto introduction &lt;about.html&gt;`__ for more detail):</span>
 
 <span class="sd">        * Choose a value x on expl_dims according to the interest model</span>
 <span class="sd">        * Infer a value y on inf_dims from x using the :meth:`~explauto.agent.agent.Agent.infer` method</span>
+<span class="sd">        * Extract the motor m and sensory s parts of x, y</span>
+<span class="sd">        * generate a movement from m</span>
 
+<span class="sd">        :returns: the generated movement</span>
 
 <span class="sd">        .. note:: This correspond to motor babbling if expl_dims=self.conf.m_dims and inf_dims=self.conf.s_dims and to  goal babbling if expl_dims=self.conf.s_dims and inf_dims=self.conf.m_dims.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">interest_model</span><span class="o">.</span><span class="n">sample</span><span class="p">()</span>
-        <span class="k">except</span> <span class="n">ExplautoBootstrapError</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;Interest model not bootstrapped yet&#39;</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">rand_bounds</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">bounds</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">expl_dims</span><span class="p">])</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">choose</span><span class="p">()</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">infer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">expl_dims</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inf_dims</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">infer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">expl_dims</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">inf_dims</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_ms</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">expl_dims</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">inf_dims</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
+        <span class="n">movement</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">motor_primitive</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">post_production</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="s">&#39;choice&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="s">&#39;inference&#39;</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="s">&#39;movement&#39;</span><span class="p">,</span> <span class="n">movement</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">m_dims</span><span class="p">]</span> <span class="o">=</span> <span class="n">bounds_min_max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">m_dims</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">m_mins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">m_maxs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">movement</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="s">&#39;choice&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">expl_dims</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="s">&#39;inference&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">inf_dims</span><span class="p">])</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">m_dims</span><span class="p">]</span>
 </div>
-<div class="viewcode-block" id="Agent.perceive"><a class="viewcode-back" href="../../../explauto.agent.html#explauto.agent.agent.Agent.perceive">[docs]</a>    <span class="k">def</span> <span class="nf">perceive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
+<div class="viewcode-block" id="Agent.perceive"><a class="viewcode-back" href="../../../explauto.agent.html#explauto.agent.agent.Agent.perceive">[docs]</a>    <span class="k">def</span> <span class="nf">perceive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ms_</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Learning (see the `Explauto introduction &lt;about.html&gt;`__ for more detail):</span>
 
 <span class="sd">        * update the sensorimotor model with (m, s)</span>
-<span class="sd">        * update the interest model with (x, y, m, s) (x, y are stored in self.ms in :meth:`~explauto.agent.agent.Agent.production`)</span>
+<span class="sd">        * update the interest model with (x, y, m, s)</span>
+<span class="sd">          (x, y are stored in self.ms in :meth:`~explauto.agent.agent.Agent.production`)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">pre_perception</span><span class="p">()</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">sensorimotor_model</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">m_dims</span><span class="p">],</span> <span class="n">ms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">s_dims</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">interest_model</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ms</span><span class="p">,</span> <span class="n">ms</span><span class="p">)</span>
+        <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sensory_primitive</span><span class="p">(</span><span class="n">ms_</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sensorimotor_model</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">,</span> <span class="n">ms</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">s_dims</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interest_model</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">s</span><span class="p">)),</span> <span class="n">ms</span><span class="p">)</span>
         <span class="c"># self.t += 1</span></div></div>
 </pre></div>
 

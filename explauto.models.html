@@ -103,6 +103,9 @@
                 <a href="genindex.html" title="General Index" accesskey="I">index</a>
                 </li>
                 <li>
+                <a href="py-modindex.html" title="Python Module Index" >modules</a>
+                </li>
+                <li>
                 <a href="explauto.experiment.html" title="experiment Package" accesskey="N">next</a>
                 </li>
                 <li>
@@ -199,8 +202,87 @@
               <div class="bodywrapper">
                 <div class="body">
                   
-  <div class="section" id="models-package">
-<h1><tt class="xref py py-mod docutils literal"><span class="pre">models</span></tt> Package<a class="headerlink" href="#models-package" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-explauto.models.gmminf">
+<span id="models-package"></span><h1><tt class="xref py py-mod docutils literal"><span class="pre">models</span></tt> Package<a class="headerlink" href="#module-explauto.models.gmminf" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="explauto.models.gmminf.schur_complement">
+<tt class="descclassname">explauto.models.gmminf.</tt><tt class="descname">schur_complement</tt><big>(</big><em>mat</em>, <em>row</em>, <em>col</em><big>)</big><a class="reference internal" href="_modules/explauto/models/gmminf.html#schur_complement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.models.gmminf.schur_complement" title="Permalink to this definition">¶</a></dt>
+<dd><p>compute the schur complement of the matrix block mat[row:,col:] of the matrix mat</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="explauto.models.gmminf.conditional">
+<tt class="descclassname">explauto.models.gmminf.</tt><tt class="descname">conditional</tt><big>(</big><em>mean</em>, <em>covar</em>, <em>dims_in</em>, <em>dims_out</em>, <em>covariance_type='full'</em><big>)</big><a class="reference internal" href="_modules/explauto/models/gmminf.html#conditional"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.models.gmminf.conditional" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a function f such that f(x) = p(dims_out | dims_in = x) (f actually returns the mean and covariance of the conditional distribution</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="explauto.models.gmminf.GMM">
+<em class="property">class </em><tt class="descclassname">explauto.models.gmminf.</tt><tt class="descname">GMM</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/explauto/models/gmminf.html#GMM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.models.gmminf.GMM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">sklearn.mixture.gmm.GMM</span></tt></p>
+<dl class="method">
+<dt id="explauto.models.gmminf.GMM.probability">
+<tt class="descname">probability</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="_modules/explauto/models/gmminf.html#GMM.probability"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.models.gmminf.GMM.probability" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.models.gmminf.GMM.sub_gmm">
+<tt class="descname">sub_gmm</tt><big>(</big><em>inds_k</em><big>)</big><a class="reference internal" href="_modules/explauto/models/gmminf.html#GMM.sub_gmm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.models.gmminf.GMM.sub_gmm" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.models.gmminf.GMM.conditional">
+<tt class="descname">conditional</tt><big>(</big><em>in_dims</em>, <em>out_dims</em><big>)</big><a class="reference internal" href="_modules/explauto/models/gmminf.html#GMM.conditional"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.models.gmminf.GMM.conditional" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.models.gmminf.GMM.inference">
+<tt class="descname">inference</tt><big>(</big><em>in_dims</em>, <em>out_dims</em>, <em>value=None</em><big>)</big><a class="reference internal" href="_modules/explauto/models/gmminf.html#GMM.inference"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.models.gmminf.GMM.inference" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform Bayesian inference on the gmm. Let&#8217;s call V = V1...Vd the d-dimensional space on which the current GMM is defined, such that it represents P(V). Let&#8217;s call X and Y to disjoint subspaces of V, with corresponding dimension indices in ran. This method returns the GMM for P(Y | X=value).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>in_dims</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; the dimension indices of X (a subset of range(d)). This can be the empty list if one want to compute the marginal P(Y).</li>
+<li><strong>out_dims</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; the dimension indices of Y (a subset of range(d), without intersection with in_dims).</li>
+<li><strong>value</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.8)"><em>numpy.array</em></a>) &#8211; the value of X for which one want to compute the conditional (ignored of in_dims=[]).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the gmm corresponding to P(Y | X=value) (or to P(Y) if in_dims=[])</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">For example, if X = V1...Vm and Y = Vm+1...Vd, then P(Y | X=v1...vm) is returned by self.inference(in_dims=range(m), out_dims=range(m, d), array([v1, ..., vm])).</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="explauto.models.gmminf.GMM.ellipses2D">
+<tt class="descname">ellipses2D</tt><big>(</big><em>colors</em><big>)</big><a class="reference internal" href="_modules/explauto/models/gmminf.html#GMM.ellipses2D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.models.gmminf.GMM.ellipses2D" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.models.gmminf.GMM.ellipses3D">
+<tt class="descname">ellipses3D</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/explauto/models/gmminf.html#GMM.ellipses3D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.models.gmminf.GMM.ellipses3D" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.models.gmminf.GMM.plot">
+<tt class="descname">plot</tt><big>(</big><em>ax</em>, <em>label=False</em><big>)</big><a class="reference internal" href="_modules/explauto/models/gmminf.html#GMM.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.models.gmminf.GMM.plot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.models.gmminf.GMM.plot_projection">
+<tt class="descname">plot_projection</tt><big>(</big><em>ax</em>, <em>dims</em>, <em>label=False</em><big>)</big><a class="reference internal" href="_modules/explauto/models/gmminf.html#GMM.plot_projection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.models.gmminf.GMM.plot_projection" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 
 
@@ -220,6 +302,7 @@
     <ul class="nav pull-right">
       
         <li><a href="genindex.html" title="General Index" >index</a></li>
+        <li><a href="py-modindex.html" title="Python Module Index" >modules</a></li>
         <li><a href="explauto.experiment.html" title="experiment Package" >next</a></li>
         <li><a href="explauto.evaluation.html" title="evaluation Package" >previous</a></li>
         <li><a href="index.html">explauto 1.0.1 documentation</a></li>

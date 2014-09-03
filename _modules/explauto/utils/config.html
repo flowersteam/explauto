@@ -180,13 +180,18 @@
 <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">rand_bounds</span>
 
 
-<span class="n">Configuration</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s">&#39;Configuration&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;m_mins&#39;</span><span class="p">,</span> <span class="s">&#39;m_maxs&#39;</span><span class="p">,</span> <span class="s">&#39;s_mins&#39;</span><span class="p">,</span> <span class="s">&#39;s_maxs&#39;</span><span class="p">,</span>
+<span class="n">Configuration</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s">&#39;Configuration&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;m_mins&#39;</span><span class="p">,</span> <span class="s">&#39;m_maxs&#39;</span><span class="p">,</span> <span class="s">&#39;s_mins&#39;</span><span class="p">,</span> <span class="s">&#39;s_maxs&#39;</span><span class="p">,</span> <span class="s">&#39;mins&#39;</span><span class="p">,</span> <span class="s">&#39;maxs&#39;</span><span class="p">,</span>
                                              <span class="s">&#39;m_ndims&#39;</span><span class="p">,</span> <span class="s">&#39;s_ndims&#39;</span><span class="p">,</span> <span class="s">&#39;ndims&#39;</span><span class="p">,</span>
                                              <span class="s">&#39;m_dims&#39;</span><span class="p">,</span> <span class="s">&#39;s_dims&#39;</span><span class="p">,</span> <span class="s">&#39;dims&#39;</span><span class="p">,</span>
-                                             <span class="s">&#39;m_bounds&#39;</span><span class="p">,</span> <span class="s">&#39;s_bounds&#39;</span><span class="p">,</span> <span class="s">&#39;bounds&#39;</span><span class="p">))</span>
+                                             <span class="s">&#39;m_bounds&#39;</span><span class="p">,</span> <span class="s">&#39;s_bounds&#39;</span><span class="p">,</span> <span class="s">&#39;bounds&#39;</span><span class="p">,</span>
+                                             <span class="s">&#39;m_centers&#39;</span><span class="p">,</span> <span class="s">&#39;s_centers&#39;</span><span class="p">,</span> <span class="s">&#39;centers&#39;</span><span class="p">,</span>
+                                             <span class="s">&#39;m_ranges&#39;</span><span class="p">,</span> <span class="s">&#39;s_ranges&#39;</span><span class="p">,</span> <span class="s">&#39;ranges&#39;</span><span class="p">))</span>
 
 
 <div class="viewcode-block" id="make_configuration"><a class="viewcode-back" href="../../../explauto.utils.html#explauto.utils.config.make_configuration">[docs]</a><span class="k">def</span> <span class="nf">make_configuration</span><span class="p">(</span><span class="n">m_mins</span><span class="p">,</span> <span class="n">m_maxs</span><span class="p">,</span> <span class="n">s_mins</span><span class="p">,</span> <span class="n">s_maxs</span><span class="p">):</span>
+    <span class="n">mins</span> <span class="o">=</span> <span class="n">hstack</span><span class="p">((</span><span class="n">m_mins</span><span class="p">,</span> <span class="n">s_mins</span><span class="p">))</span>
+    <span class="n">maxs</span> <span class="o">=</span> <span class="n">hstack</span><span class="p">((</span><span class="n">m_maxs</span><span class="p">,</span> <span class="n">s_maxs</span><span class="p">))</span>
+
     <span class="n">m_ndims</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">m_mins</span><span class="p">)</span>
     <span class="n">s_ndims</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">s_mins</span><span class="p">)</span>
     <span class="n">ndims</span> <span class="o">=</span> <span class="n">m_ndims</span> <span class="o">+</span> <span class="n">s_ndims</span>
@@ -199,10 +204,21 @@
     <span class="n">s_bounds</span> <span class="o">=</span> <span class="n">vstack</span><span class="p">((</span><span class="n">s_mins</span><span class="p">,</span> <span class="n">s_maxs</span><span class="p">))</span>
     <span class="n">bounds</span> <span class="o">=</span> <span class="n">hstack</span><span class="p">((</span><span class="n">m_bounds</span><span class="p">,</span> <span class="n">s_bounds</span><span class="p">))</span>
 
-    <span class="k">return</span> <span class="n">Configuration</span><span class="p">(</span><span class="n">m_mins</span><span class="p">,</span> <span class="n">m_maxs</span><span class="p">,</span> <span class="n">s_mins</span><span class="p">,</span> <span class="n">s_maxs</span><span class="p">,</span>
+    <span class="n">m_ranges</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">m_maxs</span><span class="p">)</span> <span class="o">-</span> <span class="n">array</span><span class="p">(</span><span class="n">m_mins</span><span class="p">)</span>
+    <span class="n">s_ranges</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">s_maxs</span><span class="p">)</span> <span class="o">-</span> <span class="n">array</span><span class="p">(</span><span class="n">s_mins</span><span class="p">)</span>
+    <span class="n">ranges</span> <span class="o">=</span> <span class="n">hstack</span><span class="p">((</span><span class="n">m_ranges</span><span class="p">,</span> <span class="n">s_ranges</span><span class="p">))</span>
+
+    <span class="n">m_centers</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">m_mins</span><span class="p">)</span> <span class="o">+</span> <span class="n">m_ranges</span> <span class="o">/</span> <span class="mf">2.</span>
+    <span class="n">s_centers</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="n">s_mins</span><span class="p">)</span> <span class="o">+</span> <span class="n">s_ranges</span> <span class="o">/</span> <span class="mf">2.</span>
+    <span class="n">centers</span> <span class="o">=</span> <span class="n">hstack</span><span class="p">((</span><span class="n">m_centers</span><span class="p">,</span> <span class="n">s_centers</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">Configuration</span><span class="p">(</span><span class="n">m_mins</span><span class="p">,</span> <span class="n">m_maxs</span><span class="p">,</span> <span class="n">s_mins</span><span class="p">,</span> <span class="n">s_maxs</span><span class="p">,</span> <span class="n">mins</span><span class="p">,</span> <span class="n">maxs</span><span class="p">,</span>
                          <span class="n">m_ndims</span><span class="p">,</span> <span class="n">s_ndims</span><span class="p">,</span> <span class="n">ndims</span><span class="p">,</span>
                          <span class="n">m_dims</span><span class="p">,</span> <span class="n">s_dims</span><span class="p">,</span> <span class="n">dims</span><span class="p">,</span>
-                         <span class="n">m_bounds</span><span class="p">,</span> <span class="n">s_bounds</span><span class="p">,</span> <span class="n">bounds</span><span class="p">)</span>
+                         <span class="n">m_bounds</span><span class="p">,</span> <span class="n">s_bounds</span><span class="p">,</span> <span class="n">bounds</span><span class="p">,</span>
+                         <span class="n">m_centers</span><span class="p">,</span> <span class="n">s_centers</span><span class="p">,</span> <span class="n">centers</span><span class="p">,</span>
+                         <span class="n">m_ranges</span><span class="p">,</span> <span class="n">s_ranges</span><span class="p">,</span> <span class="n">ranges</span><span class="p">)</span>
+
 
 </div>
 <div class="viewcode-block" id="Space"><a class="viewcode-back" href="../../../explauto.utils.html#explauto.utils.config.Space">[docs]</a><span class="k">class</span> <span class="nc">Space</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -215,11 +231,11 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">bin_widths</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">widths</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">cardinalities</span>
 
         <span class="k">if</span> <span class="n">cardinalities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">bins</span> <span class="o">=</span> <span class="p">[</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mins</span><span class="p">[</span><span class="n">d</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_widths</span><span class="p">[</span><span class="n">d</span><span class="p">],</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">bins</span> <span class="o">=</span> <span class="p">[</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mins</span><span class="p">[</span><span class="n">d</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_widths</span><span class="p">[</span><span class="n">d</span><span class="p">],</span>
                          <span class="bp">self</span><span class="o">.</span><span class="n">maxs</span><span class="p">[</span><span class="n">d</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">bin_widths</span><span class="p">[</span><span class="n">d</span><span class="p">],</span>
                          <span class="n">cardinalities</span><span class="p">[</span><span class="n">d</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ndims</span><span class="p">)]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">card</span> <span class="o">=</span> <span class="n">product</span><span class="p">(</span><span class="n">cardinalities</span><span class="p">)</span>
-        
+
 <div class="viewcode-block" id="Space.discretize"><a class="viewcode-back" href="../../../explauto.utils.html#explauto.utils.config.Space.discretize">[docs]</a>    <span class="k">def</span> <span class="nf">discretize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">dims</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">array</span><span class="p">([</span><span class="n">digitize</span><span class="p">([</span><span class="n">values</span><span class="p">[</span><span class="n">d</span><span class="p">]],</span> <span class="bp">self</span><span class="o">.</span><span class="n">bins</span><span class="p">[</span><span class="n">d</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dims</span><span class="p">])</span>
         <span class="c"># return array([digitize(values[:, d], self.bins[d]) for d in dims]).T</span>
@@ -245,7 +261,7 @@
 <div class="viewcode-block" id="Space.index2multi"><a class="viewcode-back" href="../../../explauto.utils.html#explauto.utils.config.Space.index2multi">[docs]</a>    <span class="k">def</span> <span class="nf">index2multi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">unravel_index</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cardinalities</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Space.test"><a class="viewcode-back" href="../../../explauto.utils.html#explauto.utils.config.Space.test">[docs]</a>    <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_test</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">ok</span> <span class="o">=</span> <span class="bp">True</span>
         <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">rand_bounds</span><span class="p">(</span><span class="n">vstack</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">mins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxs</span><span class="p">)),</span> <span class="n">n</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
             <span class="c"># print v</span>
@@ -259,8 +275,8 @@
             <span class="n">ok</span> <span class="o">&amp;=</span> <span class="n">i</span> <span class="o">==</span> <span class="n">i2</span>
         <span class="k">return</span> <span class="n">ok</span>
 
-    <span class="c"># def continuize(self, indexes):</span>
-</pre></div></div></div>
+    <span class="c"># def continuize(self, indexes):</span></div>
+</pre></div>
 
                 </div>
               </div>

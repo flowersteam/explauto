@@ -185,7 +185,7 @@
         <span class="c"># self.ndims = bounds.shape[1]</span>
 
 <div class="viewcode-block" id="RandomInterest.sample"><a class="viewcode-back" href="../../../explauto.interestmodel.html#explauto.interest_model.random.RandomInterest.sample">[docs]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">rand_bounds</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">rand_bounds</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bounds</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="RandomInterest.update"><a class="viewcode-back" href="../../../explauto.interestmodel.html#explauto.interest_model.random.RandomInterest.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xy</span><span class="p">,</span> <span class="n">ms</span><span class="p">):</span>
         <span class="k">pass</span>

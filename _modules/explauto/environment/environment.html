@@ -183,6 +183,7 @@
 <span class="kn">from</span> <span class="nn">..third_party.models.models.testbed.testcase</span> <span class="kn">import</span> <span class="n">Lattice</span>
 <span class="kn">from</span> <span class="nn">..third_party.models_adaptors</span> <span class="kn">import</span> <span class="n">configuration</span>
 
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">environments</span>
 
 <div class="viewcode-block" id="Environment"><a class="viewcode-back" href="../../../explauto.environment.html#explauto.environment.environment.Environment">[docs]</a><span class="k">class</span> <span class="nc">Environment</span><span class="p">(</span><span class="n">Observable</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Abstract class to define environments.</span>
@@ -202,7 +203,45 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">conf</span> <span class="o">=</span> <span class="n">make_configuration</span><span class="p">(</span><span class="n">m_mins</span><span class="p">,</span> <span class="n">m_maxs</span><span class="p">,</span> <span class="n">s_mins</span><span class="p">,</span> <span class="n">s_maxs</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Environment.update"><a class="viewcode-back" href="../../../explauto.environment.html#explauto.environment.environment.Environment.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m_ag</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Environment.from_configuration"><a class="viewcode-back" href="../../../explauto.environment.html#explauto.environment.environment.Environment.from_configuration">[docs]</a>    <span class="k">def</span> <span class="nf">from_configuration</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">env_name</span><span class="p">,</span> <span class="n">config_name</span><span class="o">=</span><span class="s">&#39;default&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Environment factory from name and configuration strings.</span>
+
+<span class="sd">        :param str env_name: the name string of the environment</span>
+
+<span class="sd">        :param str config_name: the configuration string for env_name</span>
+
+<span class="sd">        Environment name strings are available using::</span>
+
+<span class="sd">            from explauto.environment import environments</span>
+<span class="sd">            print environments.keys()</span>
+
+<span class="sd">        This will return the available environment names, something like::</span>
+
+<span class="sd">            &#39;[&#39;npendulum&#39;, &#39;pendulum&#39;, &#39;simple_arm&#39;]&#39;</span>
+
+<span class="sd">        Once you have choose an environment, e.g. &#39;simple_arm&#39;, corresponding available configurations are available using::</span>
+
+<span class="sd">            env_cls, env_configs, _ = environments[&#39;simple_arm&#39;]</span>
+<span class="sd">            print env_configs.keys()</span>
+
+<span class="sd">        This will return the available configuration names for the &#39;simple_arm&#39; environment, something like::</span>
+
+<span class="sd">            &#39;[&#39;mid_dimensional&#39;, &#39;default&#39;, &#39;high_dim_high_s_range&#39;, &#39;low_dimensional&#39;, &#39;high_dimensional&#39;]&#39;</span>
+
+<span class="sd">        Once you have choose a configuration, for example the &#39;mid_dimensional&#39; one, you can contruct the environment using::</span>
+
+<span class="sd">            from explauto import Environment</span>
+<span class="sd">            my_environment = Environment.from_configuration(&#39;simple_arm&#39;, &#39;mid_dimensional&#39;)</span>
+
+<span class="sd">        Or, in an equivalent manner::</span>
+
+<span class="sd">            my_environment = env_cls(**env_configs[&#39;mid_dimensional&#39;])</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">env_cls</span><span class="p">,</span> <span class="n">env_configs</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">environments</span><span class="p">[</span><span class="n">env_name</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">env_cls</span><span class="p">(</span><span class="o">**</span><span class="n">env_configs</span><span class="p">[</span><span class="n">config_name</span><span class="p">])</span>
+</div>
+<div class="viewcode-block" id="Environment.one_update"><a class="viewcode-back" href="../../../explauto.environment.html#explauto.environment.environment.Environment.one_update">[docs]</a>    <span class="k">def</span> <span class="nf">one_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m_ag</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="n">m_env</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_motor_command</span><span class="p">(</span><span class="n">m_ag</span><span class="p">)</span>
         <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_sensori_effect</span><span class="p">(</span><span class="n">m_env</span><span class="p">)</span>
 
@@ -211,6 +250,24 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="s">&#39;sensori&#39;</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">hstack</span><span class="p">((</span><span class="n">m_env</span><span class="p">,</span> <span class="n">s</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="Environment.update"><a class="viewcode-back" href="../../../explauto.environment.html#explauto.environment.environment.Environment.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m_ag</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Computes sensorimotor values from motor orders.</span>
+
+<span class="sd">        :param numpy.array m_ag: a motor command with shape (self.conf.m_ndims, ) or a set of n motor commands of shape (n, self.conf.m_ndims)</span>
+
+<span class="sd">        :param bool log: emit the motor and sensory values for logging purpose (default: True).</span>
+
+<span class="sd">        :returns: an array of shape (self.conf.ndims, ) or (n, self.conf.ndims) according to the shape of the m_ag parameter, containing the motor values (which can be different from m_ag, e.g. bounded according to self.conf.m_bounds) and the corresponding sensory values.</span>
+
+<span class="sd">        .. note:: self.conf.ndims = self.conf.m_ndims + self.conf.s_ndims is the dimensionality of the sensorimotor space (dim of the motor space + dim of the sensory space). </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="p">(</span><span class="n">m_ag</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">ms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">one_update</span><span class="p">(</span><span class="n">m_ag</span><span class="p">,</span> <span class="n">log</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ms</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">one_update</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">log</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">m_ag</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">ms</span>
 </div>
     <span class="nd">@abstractmethod</span>
 <div class="viewcode-block" id="Environment.compute_motor_command"><a class="viewcode-back" href="../../../explauto.environment.html#explauto.environment.environment.Environment.compute_motor_command">[docs]</a>    <span class="k">def</span> <span class="nf">compute_motor_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ag_state</span><span class="p">):</span>
