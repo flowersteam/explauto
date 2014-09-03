@@ -61,6 +61,6 @@ Testing your install
 
 You can test if the installation went well with::
 
-    python -m "import explauto"
+    python -c "import explauto"
 
 If you have any trouble during the installation process, please report the issue directly on the `issue tracker <https://github.com/flowersteam/explauto/issues>`_ of the repository.
