@@ -103,9 +103,6 @@
                 <a href="genindex.html" title="General Index" accesskey="I">index</a>
                 </li>
                 <li>
-                <a href="py-modindex.html" title="Python Module Index" >modules</a>
-                </li>
-                <li>
                 <a href="explauto.utils.html" title="utils Package" accesskey="N">next</a>
                 </li>
                 <li>
@@ -202,77 +199,8 @@
               <div class="bodywrapper">
                 <div class="body">
                   
-  <div class="section" id="module-explauto.sensorimotor_model.sensorimotor_model">
-<span id="sensorimotor-model-package"></span><h1><tt class="xref py py-mod docutils literal"><span class="pre">sensorimotor_model</span></tt> Package<a class="headerlink" href="#module-explauto.sensorimotor_model.sensorimotor_model" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel">
-<em class="property">class </em><tt class="descclassname">explauto.sensorimotor_model.sensorimotor_model.</tt><tt class="descname">SensorimotorModel</tt><a class="reference internal" href="_modules/explauto/sensorimotor_model/sensorimotor_model.html#SensorimotorModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
-<p>This abstract class provides the common interface for sensorimotor models.</p>
-<dl class="method">
-<dt id="explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel.infer">
-<tt class="descname">infer</tt><big>(</big><em>in_dims</em>, <em>out_dims</em>, <em>x</em><big>)</big><a class="reference internal" href="_modules/explauto/sensorimotor_model/sensorimotor_model.html#SensorimotorModel.infer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel.infer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Performs inference in the sensorimotor space.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>in_dims</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; list of input dimensions. For example, use self.conf.m_dims to perform forward prediction (i.e. infer the expected sensory effect for a given input motor command) or self.conf.s_dims to perform inverse prediction (i.e. infer a motor command in order to reach an input sensory goal).</li>
-<li><strong>out_dims</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; list of output dimensions. For example, use self.conf.s_dims to perform forward prediction (i.e. infer the expected output sensory effect for a given input motor command) or self.conf.m_dims to perform inverse prediction (i.e. infer a output motor command in order to reach an input sensory goal).</li>
-<li><strong>x</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.8)"><em>numpy.array</em></a>) &#8211; value array for input dimensions. For example, if in_dims = self.conf.m_dims, x is the value of the motor configuration for which we want to predict a sensory effect.</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">an array of size len(out_dims) containing the forward or inverse prediction</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Although it is especially used to perform either forward or inverse predictions, Explauto&#8217;s sensorimotor models are generally suitable to do all kind of general prediction from X (input) to Y (output), where X and Y are to distinct subspaces of the sensorimotor space.</p>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel.update">
-<tt class="descname">update</tt><big>(</big><em>m</em>, <em>s</em><big>)</big><a class="reference internal" href="_modules/explauto/sensorimotor_model/sensorimotor_model.html#SensorimotorModel.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel.update" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update the sensorimotor model given a new (m, s) pair, where m is a motor command and s is the corresponding observed sensory effect.</p>
-</dd></dl>
-
-</dd></dl>
-
-<span class="target" id="module-explauto.sensorimotor_model.nearest_neighbor"></span><dl class="class">
-<dt id="explauto.sensorimotor_model.nearest_neighbor.NearestNeighbor">
-<em class="property">class </em><tt class="descclassname">explauto.sensorimotor_model.nearest_neighbor.</tt><tt class="descname">NearestNeighbor</tt><big>(</big><em>conf</em>, <em>sigma_ratio</em><big>)</big><a class="reference internal" href="_modules/explauto/sensorimotor_model/nearest_neighbor.html#NearestNeighbor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.sensorimotor_model.nearest_neighbor.NearestNeighbor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel" title="explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel"><tt class="xref py py-class docutils literal"><span class="pre">explauto.sensorimotor_model.sensorimotor_model.SensorimotorModel</span></tt></a></p>
-<p>This class implements a simple sensorimotor model based on nearest neighbor look-up. Used as a forward model, it simply returns the image in S of nearest neighbor in M. Used as an inverse model, it looks at the nearest neighbor in S, then explore during the n_explore following calls to self.infer around that neighborhood. It is inspired by the experiment in the section 4.4.1 and 4.4.2 of <a class="reference external" href="http://www.pyoudeyer.com/ActiveGoalExploration-RAS-2013.pdf">Baranes and Oudeyer (2013)</a>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>conf</strong> (<a class="reference internal" href="explauto.utils.html#explauto.utils.config.Configuration" title="explauto.utils.config.Configuration"><tt class="xref py py-class docutils literal"><span class="pre">Configuration</span></tt></a>) &#8211; a Configuration instance</li>
-<li><strong>n_explore</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; the number of exploration trials for each goal</li>
-<li><strong>sigma_ratio</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; the standard deviation of the exploration will be (conf.m_maxs - conf.m_mins) sigma_ratio. Hence, low values of this parameters means larger exploration</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="explauto.sensorimotor_model.nearest_neighbor.NearestNeighbor.infer">
-<tt class="descname">infer</tt><big>(</big><em>in_dims</em>, <em>out_dims</em>, <em>x</em><big>)</big><a class="reference internal" href="_modules/explauto/sensorimotor_model/nearest_neighbor.html#NearestNeighbor.infer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.sensorimotor_model.nearest_neighbor.NearestNeighbor.infer" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="explauto.sensorimotor_model.nearest_neighbor.NearestNeighbor.update">
-<tt class="descname">update</tt><big>(</big><em>m</em>, <em>s</em><big>)</big><a class="reference internal" href="_modules/explauto/sensorimotor_model/nearest_neighbor.html#NearestNeighbor.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.sensorimotor_model.nearest_neighbor.NearestNeighbor.update" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+  <div class="section" id="sensorimotor-model-package">
+<h1><tt class="xref py py-mod docutils literal"><span class="pre">sensorimotor_model</span></tt> Package<a class="headerlink" href="#sensorimotor-model-package" title="Permalink to this headline">¶</a></h1>
 </div>
 
 
@@ -292,7 +220,6 @@
     <ul class="nav pull-right">
       
         <li><a href="genindex.html" title="General Index" >index</a></li>
-        <li><a href="py-modindex.html" title="Python Module Index" >modules</a></li>
         <li><a href="explauto.utils.html" title="utils Package" >next</a></li>
         <li><a href="explauto.interestmodel.html" title="interest_model Package" >previous</a></li>
         <li><a href="index.html">explauto 1.0.1 documentation</a></li>

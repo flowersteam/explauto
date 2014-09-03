@@ -35,7 +35,6 @@ Before you start building Explauto, you need to make sure that the following pac
 Other optional packages may be installed depending on extra environment, interest, and sensorimotor models you need:
 
 * `pypot <https://github.com/poppy-project/pypot>`_ for using dynamixel based robot as enviroment
-* `diva <http://www.bu.edu/speechlab/software/diva-source-code/>`_ (for the diva....)
 
 If you want to build the documentation from the source:
 
@@ -55,7 +54,7 @@ As Explauto is still in development, a good way to keep with an updated version 
     cd explauto
     python setup.py develop
 
-This will symlink your cloned repository to your site-packages directory. When pulling the latest modification from the repo, they will automatically be "installed".
+This will symlink your cloned repository to your site-packages directory (run the last command as a super user if you are on Linux). When pulling the latest modification from the repo, they will automatically be "installed".
 
 Testing your install
 --------------------
