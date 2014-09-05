@@ -1,5 +1,7 @@
 # Explauto: A library to study, model and simulate curiosity-driven learning and exploration in virtual and robotic agents #
 
+For the last development version check our Github repository: https://github.com/flowersteam/explauto/
+
 Explauto is a framework developed in the [Inria FLOWERS](https://flowers.inria.fr/) research team which provides a common interface for the implementation of active sensorimotor learning algorithm.
 
 Explauto provides a high-level API for an easy definition of:
