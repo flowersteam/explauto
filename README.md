@@ -17,7 +17,9 @@ It is crossed-platform and has been tested on Linux, Windows and Mac OS. Do not 
 
 Explauto's scientific roots trace back from Intelligent Adaptive Curiosity algorithmic architecture [[Oudeyer, 2007]](http://hal.inria.fr/hal-00793610/en), which has been extended to a more general family of autonomous exploration architecture by [[Baranes, 2013]](http://www.pyoudeyer.com/ActiveGoalExploration-RAS-2013.pdf) and recently expressed as a compact and unified formalism [[Moulin-Frier, 2013]](http://hal.inria.fr/hal-00860641). We strongly recommend to read this [short introduction](http://flowersteam.github.io/explauto/about.html) into developmental robotics before going through the tutorials.
 
-[A short paper](http://hal.inria.fr/hal-01061708) describing the library has been accepted at the [ICDL-Epirob conference](http://www.icdl-epirob.org/).
+**If you use the library in a scientific paper, please cite** (follow the link for bibtex and pdf files):
+
+Moulin-Frier, C.; Rouanet, P. & Oudeyer, P.-Y. [Explauto: an open-source Python library to study autonomous exploration in developmental robotics](http://hal.inria.fr/hal-01061708) *International Conference on Development and Learning, ICDL/Epirob, Genova, Italy*, 2014
 
 ### Tutorials ###
 
