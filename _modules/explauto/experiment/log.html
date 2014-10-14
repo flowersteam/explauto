@@ -234,10 +234,16 @@
         <span class="k">return</span> <span class="n">data</span>
 </div>
 <div class="viewcode-block" id="ExperimentLog.scatter_plot"><a class="viewcode-back" href="../../../explauto.experiment.html#explauto.experiment.log.ExperimentLog.scatter_plot">[docs]</a>    <span class="k">def</span> <span class="nf">scatter_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">topic_dims</span><span class="p">,</span> <span class="n">t</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">ms_limits</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_plot</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; 2D or 3D scatter plot</span>
+        <span class="sd">&quot;&quot;&quot; 2D or 3D scatter plot.</span>
+
 <span class="sd">            :param axes ax: matplotlib axes (use Axes3D if 3D data)</span>
+
 <span class="sd">            :param tuple topic_dims: list of (topic, dims) tuples, where topic is a string and dims is a list of dimensions to be plotted for that topic.</span>
-<span class="sd">            :param int t: time indexes to be plotted            :param dict kwargs_plot: argument to be passed to matplotlib&#39;s plot function, e.g. the style of the plotted points &#39;or&#39;</span>
+
+<span class="sd">            :param int t: time indexes to be plotted</span>
+
+<span class="sd">            :param dict kwargs_plot: argument to be passed to matplotlib&#39;s plot function, e.g. the style of the plotted points &#39;or&#39;</span>
+
 <span class="sd">            :param bool ms_limits: if set to True, automatically set axes boundaries to the sensorimotor boundaries (default: True)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">plot_specs</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;marker&#39;</span><span class="p">:</span> <span class="s">&#39;o&#39;</span><span class="p">,</span> <span class="s">&#39;linestyle&#39;</span><span class="p">:</span> <span class="s">&#39;None&#39;</span><span class="p">}</span>
@@ -318,7 +324,7 @@
       <!-- footer -->
       <footer role="contentinfo">
           &copy; Copyright 2014, Clement Moulin-Frier, Pierre Rouanet.
-        Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.
+        Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
       </footer>
       <!-- /footer -->
 

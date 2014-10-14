@@ -231,8 +231,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">noise</span> <span class="o">=</span> <span class="n">noise</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">lengths</span> <span class="o">=</span> <span class="n">lengths</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">m_ndims</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">length_ratio</span><span class="p">)</span>
-        <span class="c"># self.readable = range(self.conf.m_ndims + self.conf.s_ndims)</span>
-        <span class="c"># self.writable = range(self.conf.m_ndims)</span>
 
 <div class="viewcode-block" id="SimpleArmEnvironment.compute_motor_command"><a class="viewcode-back" href="../../../../explauto.environment.html#explauto.environment.simple_arm.simple_arm.SimpleArmEnvironment.compute_motor_command">[docs]</a>    <span class="k">def</span> <span class="nf">compute_motor_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">joint_pos_ag</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">bounds_min_max</span><span class="p">(</span><span class="n">joint_pos_ag</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">m_mins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">m_maxs</span><span class="p">)</span>
@@ -282,7 +280,7 @@
       <!-- footer -->
       <footer role="contentinfo">
           &copy; Copyright 2014, Clement Moulin-Frier, Pierre Rouanet.
-        Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.
+        Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
       </footer>
       <!-- /footer -->
 
