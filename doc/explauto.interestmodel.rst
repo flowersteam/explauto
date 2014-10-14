@@ -10,3 +10,8 @@
     :members:
     :undoc-members:
     :show-inheritance:
+
+.. automodule:: explauto.interest_model.discrete_progress
+    :members:
+    :undoc-members:
+    :show-inheritance:
