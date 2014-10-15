@@ -56,8 +56,6 @@ class SimpleArmEnvironment(Environment):
         self.noise = noise
 
         self.lengths = lengths(self.conf.m_ndims, self.length_ratio)
-        # self.readable = range(self.conf.m_ndims + self.conf.s_ndims)
-        # self.writable = range(self.conf.m_ndims)
 
     def compute_motor_command(self, joint_pos_ag):
         return bounds_min_max(joint_pos_ag, self.conf.m_mins, self.conf.m_maxs)
