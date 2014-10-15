@@ -59,10 +59,16 @@ class ExperimentLog(object):
         return data
 
     def scatter_plot(self, ax, topic_dims, t=None, ms_limits=True, **kwargs_plot):
-        """ 2D or 3D scatter plot
+        """ 2D or 3D scatter plot.
+
             :param axes ax: matplotlib axes (use Axes3D if 3D data)
+
             :param tuple topic_dims: list of (topic, dims) tuples, where topic is a string and dims is a list of dimensions to be plotted for that topic.
-            :param int t: time indexes to be plotted            :param dict kwargs_plot: argument to be passed to matplotlib's plot function, e.g. the style of the plotted points 'or'
+
+            :param int t: time indexes to be plotted
+
+            :param dict kwargs_plot: argument to be passed to matplotlib's plot function, e.g. the style of the plotted points 'or'
+
             :param bool ms_limits: if set to True, automatically set axes boundaries to the sensorimotor boundaries (default: True)
         """
         plot_specs = {'marker': 'o', 'linestyle': 'None'}
