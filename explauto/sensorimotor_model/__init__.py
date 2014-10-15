@@ -10,3 +10,7 @@ for mod_name in ['non_parametric', 'nearest_neighbor', 'ilo_gmm']:
 
     for name, (sm, conf) in models.iteritems():
         sensorimotor_models[name] = (sm, conf)
+
+def available_configurations(model):
+    _, sm_configs = sensorimotor_models[model]
+    return sm_configs

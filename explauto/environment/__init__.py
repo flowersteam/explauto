@@ -9,3 +9,7 @@ for mod_name in ['simple_arm', 'pendulum']:
     conf = getattr(module, 'configurations')
     testcases = getattr(module, 'testcases')
     environments[mod_name] = (env, conf, testcases)
+
+def available_configurations(environment):
+    _, env_configs, _ = environments[environment]
+    return env_configs

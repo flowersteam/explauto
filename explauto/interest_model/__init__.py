@@ -10,3 +10,7 @@ for mod_name in ['random', 'gmm_progress', 'discrete_progress']:
 
     for name, (im, conf) in models.iteritems():
         interest_models[name] = (im, conf)
+
+def available_configurations(model):
+    _, im_configs = interest_models[model]
+    return im_configs
