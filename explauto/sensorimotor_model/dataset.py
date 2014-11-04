@@ -1,3 +1,9 @@
+"""
+From Fabien Benureau's models library.
+
+https://github.com/humm/models
+
+"""
 
 try:
     import numpy as np
