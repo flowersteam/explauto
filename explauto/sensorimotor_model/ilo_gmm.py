@@ -3,7 +3,7 @@ from numpy import array, hstack
 from ..models.gmminf import GMM
 from ..exceptions import ExplautoBootstrapError
 from .sensorimotor_model import SensorimotorModel
-from ..third_party.models.models.dataset import Dataset
+from .dataset import Dataset
 
 n_neighbors = 1
 

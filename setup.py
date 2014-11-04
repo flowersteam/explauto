@@ -18,11 +18,12 @@ setup(name='explauto',
       version=version(),
       packages=find_packages(),
 
-      install_requires=['numpy', 'scipy', 'scikit-learn', 'pandas'],
+      install_requires=['numpy', 'scipy', 'scikit-learn'],
 
       extra_require={
           'diva': ['pymatlab'],
           'pypot': ['pypot'],
+          'non_parametric': [],  # See https://github.com/humm/models
           'imle': [],
           'doc': ['sphinx', 'sphinx-bootstrap-theme'],
       },

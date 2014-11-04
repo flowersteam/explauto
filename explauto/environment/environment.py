@@ -5,8 +5,7 @@ from abc import ABCMeta, abstractmethod
 from ..utils.config import make_configuration
 from ..utils.observer import Observable
 from ..utils import rand_bounds
-from ..third_party.models.models.testbed.testcase import Lattice
-from ..third_party.models_adaptors import configuration
+from .testcase import Lattice
 
 from . import environments
 
@@ -85,7 +84,7 @@ class Environment(Observable):
 
         :returns: an array of shape (self.conf.ndims, ) or (n, self.conf.ndims) according to the shape of the m_ag parameter, containing the motor values (which can be different from m_ag, e.g. bounded according to self.conf.m_bounds) and the corresponding sensory values.
 
-        .. note:: self.conf.ndims = self.conf.m_ndims + self.conf.s_ndims is the dimensionality of the sensorimotor space (dim of the motor space + dim of the sensory space). 
+        .. note:: self.conf.ndims = self.conf.m_ndims + self.conf.s_ndims is the dimensionality of the sensorimotor space (dim of the motor space + dim of the sensory space).
         """
 
         if len(array(m_ag).shape) == 1:
@@ -110,7 +109,11 @@ class Environment(Observable):
 
     def uniform_sensor(self, n_cases=100):
         n_random_motor = n_cases * 100
-        m_feats, s_feats, m_bounds = configuration(self)
+        m_feats = tuple(range(-self.conf.m_ndims, 0))
+        s_feats = tuple(range(self.conf.s_ndims))
+        m_bounds = tuple([(self.conf.m_mins[d], self.conf.m_maxs[d])
+                          for d in self.conf.m_dims])
+
         ms_uniform_motor = self.dataset(self.random_motors(n_random_motor))
         resolution = max(2, int((1.3*n_cases)**(1.0/len(s_feats))))
         observations = []
