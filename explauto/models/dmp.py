@@ -12,10 +12,12 @@ class MotorPrimitive(object):
         pass
 
 class DmpPrimitive(object):
-    def __init__(self, dmps, bfs,used=None, default=None, type='discrete'):
+    def __init__(self, dmps, bfs,used=None, default=None, type='discrete', run_time=1):
         self.used = ones(dmps * (bfs + 2), dtype=bool) if used is None else array(used, dtype=bool)
-        self.default = zeros(dmps*(bfs + 2)) if default is None else default
+        self.default = zeros(dmps*(bfs + 2)) if default is None else array(default)
         self.motor = copy(self.default)
+        self.n_dmps = dmps
+        self.n_bfs = bfs
         if type == 'discrete':
             self.dmp = DMPs_discrete(dmps=dmps, bfs=bfs)
         elif type =='rythmic':
@@ -23,6 +25,8 @@ class DmpPrimitive(object):
         else:
             raise ValueError('Invalid type specified. Valid choices \
                                  are discrete or rhythmic.')
+        self.dmp.cs.run_time *= run_time
+        #self.dmp.timesteps *= run_time
     def trajectory(self, m, n_times=1):
         self.dmp.cs.run_time *= n_times
         self.dmp.timesteps *= n_times
