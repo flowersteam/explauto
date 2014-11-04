@@ -50,6 +50,5 @@ The best way to install Explauto at the moment is to clone the repo and use it i
 * [numpy](http://www.numpy.org)
 * [scipy](http://www.scipy.org)
 * [scikit-learn](http://scikit-learn.org/)
-* [pandas](http://pandas.pydata.org)
 
 For more details, please refer to the [installation section](http://flowersteam.github.io/explauto/installation.html) of the documentation.
