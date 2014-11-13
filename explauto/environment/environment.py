@@ -73,7 +73,7 @@ class Environment(Observable):
             self.emit('motor', m_env)
             self.emit('sensori', s)
 
-        return hstack((m_env, s))
+        return s
 
     def update(self, m_ag, log=True):
         """ Computes sensorimotor values from motor orders.
@@ -88,10 +88,10 @@ class Environment(Observable):
         """
 
         if len(array(m_ag).shape) == 1:
-            ms = self.one_update(m_ag, log)
+            s = self.one_update(m_ag, log)
         else:
-            ms = array([self.one_update(m, log) for m in m_ag])
-        return ms
+            s = array([self.one_update(m, log) for m in m_ag])
+        return s
 
     @abstractmethod
     def compute_motor_command(self, ag_state):
@@ -105,7 +105,7 @@ class Environment(Observable):
         return rand_bounds(self.conf.bounds[:, self.conf.m_dims], n)
 
     def dataset(self, orders):
-        return array([self.update(m) for m in orders])
+        return array([hstack((m, self.update(m))) for m in orders])
 
     def uniform_sensor(self, n_cases=100):
         n_random_motor = n_cases * 100

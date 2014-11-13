@@ -21,7 +21,9 @@ class Evaluation(object):
                 m = self.ag.infer(self.ag.conf.s_dims, self.ag.conf.m_dims, s_g).flatten()
                 ms = self.env.update(m, log=False)
                 s = ms[self.env.conf.s_dims]
+                s = self.env.update(m, log=False)
                 errors.append(linalg.norm(s_g - s))
+                s = self.env.update(m, log=False)
         else:
             raise ValueError('mode should be "inverse"'
                              '("forward" and "general" predictions coming soon)')

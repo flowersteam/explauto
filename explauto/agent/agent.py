@@ -108,10 +108,10 @@ class Agent(Observable):
         """
         return bounds_min_max(m, self.conf.m_mins, self.conf.m_maxs)
 
-    def sensory_primitive(self, ms):
+    def sensory_primitive(self, s):
         """ Extract features from a sensory effect s. To be overridded in order to process more complex feature extraction (tutorial to come). This version simply bounds the sensory effect.
         """
-        return bounds_min_max(ms, self.conf.mins, self.conf.maxs)
+        return bounds_min_max(s, self.conf.s_mins, self.conf.s_maxs)
 
     def produce(self):
         """ Exploration (see the `Explauto introduction <about.html>`__ for more detail):
@@ -126,28 +126,28 @@ class Agent(Observable):
         .. note:: This correspond to motor babbling if expl_dims=self.conf.m_dims and inf_dims=self.conf.s_dims and to  goal babbling if expl_dims=self.conf.s_dims and inf_dims=self.conf.m_dims.
         """
 
-        x = self.choose()
-        y = self.infer(self.expl_dims, self.inf_dims, x)
+        self.x = self.choose()
+        self.y = self.infer(self.expl_dims, self.inf_dims, self.x)
 
-        self.m, self.s = self.extract_ms(x, y)
+        self.m, self.s = self.extract_ms(self.x, self.y)
 
         movement = self.motor_primitive(self.m)
 
-        self.emit('choice', x)
-        self.emit('inference', y)
+        self.emit('choice', self.x)
+        self.emit('inference', self.y)
         self.emit('movement', movement)
 
         return movement
 
 
-    def perceive(self, ms_):
+    def perceive(self, s_):
         """ Learning (see the `Explauto introduction <about.html>`__ for more detail):
 
         * update the sensorimotor model with (m, s)
         * update the interest model with (x, y, m, s)
           (x, y are stored in self.ms in :meth:`~explauto.agent.agent.Agent.production`)
         """
-        ms = self.sensory_primitive(ms_)
-        self.sensorimotor_model.update(self.m, ms[self.conf.s_dims])
-        self.interest_model.update(np.hstack((self.m, self.s)), ms)
+        s = self.sensory_primitive(s_)
+        self.sensorimotor_model.update(self.m, s)
+        self.interest_model.update(np.hstack((self.m, self.s)), np.hstack((self.m, s)))
         # self.t += 1
