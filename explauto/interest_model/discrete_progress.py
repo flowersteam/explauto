@@ -90,9 +90,9 @@ interest_models = {'discretized_progress': (DiscretizedProgress,
                                             {'default': {'x_card': 400,
                                                          'win_size': 10,
                                                          'measure': competence_dist},
-                                             'low_card': {'x_card': 10,
+                                             'low_card': {'x_card': 8,
                                                          'win_size': 15,
-                                                         'temp': 10.,
+                                                         'temp': 6.,
                                                          'dist_min': 0.02,
                                                          'measure': competence_dist}}
                                                          )}
