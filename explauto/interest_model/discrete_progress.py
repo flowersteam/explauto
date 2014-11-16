@@ -10,7 +10,7 @@ from .interest_model import InterestModel
 
 
 class DiscretizedProgress(InterestModel):
-    def __init__(self, conf, expl_dims, x_card, win_size, measure):
+    def __init__(self, conf, expl_dims, x_card, win_size, measure, dist_min=None, temp=None):
         InterestModel.__init__(self, expl_dims)
         self.conf = conf
         self.measure = measure
@@ -18,19 +18,26 @@ class DiscretizedProgress(InterestModel):
         self.space = Space(numpy.hstack((conf.m_mins, conf.s_mins))[expl_dims],
                            numpy.hstack((conf.m_maxs, conf.s_maxs))[expl_dims], card)
 
-        self.dist_min = numpy.sqrt(sum(self.space.bin_widths ** 2)) / 1.
+        if dist_min is None:
+            self.dist_min = numpy.sqrt(sum(self.space.bin_widths ** 2)) / 1.
+        else:
+            self.dist_min = dist_min
 
         self.comp_max = measure(numpy.array([0.]), numpy.array([0.]), dist_min=self.dist_min)
         self.comp_min = measure(numpy.array([0.]), numpy.array([numpy.linalg.norm(conf.s_mins - conf.s_maxs)]), dist_min=self.dist_min)
         self.discrete_progress = DiscreteProgress(0, self.space.card,
                                                   win_size, measure, self.comp_min)
 
+        if temp is None:
+            self.temp = self.space.card
+        else:
+            self.temp = temp
 
     def normalize_measure(self, measure):
         return (measure - self.comp_min)/(self.comp_max - self.comp_min)
 
     def sample(self):
-        index = self.discrete_progress.sample(temp=self.space.card)[0]
+        index = self.discrete_progress.sample(self.temp)[0]
         return self.space.rand_value(index).flatten()
 
     def update(self, xy, ms):
@@ -64,6 +71,7 @@ class DiscreteProgress(InterestModel):
 
     def sample(self, temp=3.):
         self.w = abs(self.progress())
+        #self.w = self.w / self.w.sum()
         self.w = numpy.exp(temp * self.w - temp * self.w.max())  # / numpy.exp(3.)
         return discrete_random_draw(self.w)
 
@@ -81,7 +89,13 @@ class DiscreteProgress(InterestModel):
 interest_models = {'discretized_progress': (DiscretizedProgress,
                                             {'default': {'x_card': 400,
                                                          'win_size': 10,
-                                                         'measure': competence_dist}})}
+                                                         'measure': competence_dist},
+                                             'low_card': {'x_card': 10,
+                                                         'win_size': 15,
+                                                         'temp': 10.,
+                                                         'dist_min': 0.02,
+                                                         'measure': competence_dist}}
+                                                         )}
                                              # 'comp_dist': {'x_card': 400,
                                                            # 'win_size': 10,
                                                            # 'measure': competence_dist}})}

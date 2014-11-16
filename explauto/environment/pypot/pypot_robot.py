@@ -2,6 +2,7 @@ import time
 import numpy
 import json
 import os
+from copy import copy
 
 from ..environment import Environment
 from ...utils import bounds_min_max
@@ -20,7 +21,7 @@ class PypotEnvironment(Environment):
 
     def __init__(self,
                  robot_cls, robot_conf, motors, move_duration,
-                 tracked_obj,
+                 pause_one_step, tracked_obj,
                  m_mins, m_maxs, s_mins, s_maxs):
         """ :param get_pypot_robot: function returning the pypot robot used as the environment
             :type pypot_robot: :class:`~pypot.robot.robot.Robot`
@@ -36,7 +37,7 @@ class PypotEnvironment(Environment):
             :param numpy.array s_maxs: maximum sensor dims
 
         """
-        Environment.__init__(self, m_mins, m_maxs, s_mins, s_maxs)
+        Environment.__init__(self, m_mins, m_maxs, s_mins, s_maxs, pause_one_step)
 
         self.robot_explauto = robot_cls(**robot_conf)
         self.robot = self.robot_explauto.robot
@@ -53,12 +54,14 @@ class PypotEnvironment(Environment):
 
     def compute_sensori_effect(self, m_env):
         """ Make the robot moves and retrieve the tracked object position. """
-        cmd = numpy.rad2deg(m_env)
+        cmd = numpy.rad2deg(m_env)  # Why???
+        print "Why the fuck are we converting from rad 2 deg here???"
         pos = dict(zip(self.motors, cmd))
         self.robot.goto_position(pos, self.move_duration, wait=True)
         time.sleep(0.5)
 
         return self.robot_explauto.get_position(self.tracked_obj)
+
 
 
 from numpy import deg2rad, array
@@ -132,11 +135,15 @@ conf_vrep = {'robot_cls': VrepRobot,
                             'port':19997,             'tracked_objects':['left_hand_tracker']},
               'motors': 'l_arm',
               'move_duration': 1.0,
+              'pause_one_step': 0.02,
               'tracked_obj': 'left_hand_tracker',
               'm_mins': l_m_mins,
               'm_maxs': l_m_maxs,
               's_mins': l_s_mins,
               's_maxs': l_s_maxs}
+
+# conf_vrep_lying = copy(conf_vrep)
+# conf_vrep_lying['robot_conf']['scene_path'] = os.path.join(pypot_path, 'samples/notebooks/poppy-lying.ttt'
 
 
 configurations = {'poppy': conf_poppy, 'vrep':conf_vrep, 'default':conf_vrep}
