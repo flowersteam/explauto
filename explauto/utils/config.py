@@ -14,6 +14,7 @@ Configuration = namedtuple('Configuration', ('m_mins', 'm_maxs', 's_mins', 's_ma
 
 
 def make_configuration(m_mins, m_maxs, s_mins, s_maxs):
+    m_mins, m_maxs, s_mins, s_maxs = array(m_mins), array(m_maxs), array(s_mins), array(s_maxs)
     mins = hstack((m_mins, s_mins))
     maxs = hstack((m_maxs, s_maxs))
 
