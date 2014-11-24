@@ -1,5 +1,5 @@
+import time
 from numpy import zeros, array, hstack
-
 from abc import ABCMeta, abstractmethod
 
 from ..utils.config import make_configuration
@@ -18,7 +18,7 @@ class Environment(Observable):
     __metaclass__ = ABCMeta
     use_process = False
 
-    def __init__(self, m_mins, m_maxs, s_mins, s_maxs):
+    def __init__(self, m_mins, m_maxs, s_mins, s_maxs, pause_one_step=0):
         """
         :param numpy.array m_mins, m_maxs, s_mins, s_maxs: bounds of the motor (m) and sensory (s) spaces
 
@@ -26,6 +26,7 @@ class Environment(Observable):
         Observable.__init__(self)
 
         self.conf = make_configuration(m_mins, m_maxs, s_mins, s_maxs)
+        self.pause_one_step = pause_one_step
 
     @classmethod
     def from_configuration(cls, env_name, config_name='default'):
@@ -87,11 +88,20 @@ class Environment(Observable):
         .. note:: self.conf.ndims = self.conf.m_ndims + self.conf.s_ndims is the dimensionality of the sensorimotor space (dim of the motor space + dim of the sensory space).
         """
 
+        self.reset()
         if len(array(m_ag).shape) == 1:
             s = self.one_update(m_ag, log)
         else:
-            s = array([self.one_update(m, log) for m in m_ag])
+            s = []
+            for m in m_ag:
+                time.sleep(self.pause_one_step)
+                s.append(self.one_update(m, log))
+            s = array(s)
         return s
+
+    def reset(self):
+        """ reset environment before update """
+        pass
 
     @abstractmethod
     def compute_motor_command(self, ag_state):
