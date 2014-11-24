@@ -20,8 +20,7 @@ class PypotEnvironment(Environment):
     use_process = False
 
     def __init__(self,
-                 robot_cls, robot_conf, motors, move_duration,
-                 pause_one_step, tracked_obj,
+                 robot_cls, robot_conf, motors, move_duration, tracked_obj,
                  m_mins, m_maxs, s_mins, s_maxs):
         """ :param get_pypot_robot: function returning the pypot robot used as the environment
             :type pypot_robot: :class:`~pypot.robot.robot.Robot`
@@ -37,7 +36,7 @@ class PypotEnvironment(Environment):
             :param numpy.array s_maxs: maximum sensor dims
 
         """
-        Environment.__init__(self, m_mins, m_maxs, s_mins, s_maxs, pause_one_step)
+        Environment.__init__(self, m_mins, m_maxs, s_mins, s_maxs)
 
         self.robot_explauto = robot_cls(**robot_conf)
         self.robot = self.robot_explauto.robot
@@ -135,7 +134,6 @@ conf_vrep = {'robot_cls': VrepRobot,
                             'port':19997,             'tracked_objects':['left_hand_tracker']},
               'motors': 'l_arm',
               'move_duration': 1.0,
-              'pause_one_step': 0.02,
               'tracked_obj': 'left_hand_tracker',
               'm_mins': l_m_mins,
               'm_maxs': l_m_maxs,
