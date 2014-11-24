@@ -2,8 +2,9 @@ import sys
 import os
 
 path = os.path.dirname(os.path.abspath(__file__))
-imle_path = os.path.join(path, 'imleSource/python')
-sys.path.append(imle_path)
+# imle_path = os.path.join(path, 'IMLEv1.90/python')
+#imle_path = os.path.join(path, 'imleSource/python')
+#sys.path.append(imle_path)
 
 try:
     import imle
@@ -12,6 +13,7 @@ except ImportError:
     print 'Please check the doc.'
     raise
 
+# print imle.__file__
 
 from numpy import zeros, ones
 
