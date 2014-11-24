@@ -40,8 +40,7 @@ class Experiment(Observer):
 
         self.ag.subscribe('choice', self)
         self.ag.subscribe('inference', self)
-        self.ag.subscribe('perception', self)
-        self.ag.subscribe('movement', self)
+        self.ag.subscribe('motor', self)
         self.env.subscribe('sensori', self)
 
         self._running = threading.Event()
