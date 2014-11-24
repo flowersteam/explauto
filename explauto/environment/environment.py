@@ -94,7 +94,6 @@ class Environment(Observable):
         else:
             s = []
             for m in m_ag:
-                time.sleep(self.pause_one_step)
                 s.append(self.one_update(m, log))
             s = array(s)
         return s
