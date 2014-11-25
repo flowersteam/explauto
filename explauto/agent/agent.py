@@ -148,6 +148,7 @@ class Agent(Observable):
           (x, y are stored in self.ms in :meth:`~explauto.agent.agent.Agent.production`)
         """
         s = self.sensory_primitive(s_)
+        self.emit('perception', s)
         self.sensorimotor_model.update(self.m, s)
         self.interest_model.update(np.hstack((self.m, self.s)), np.hstack((self.m, s)))
         self.t += 1
