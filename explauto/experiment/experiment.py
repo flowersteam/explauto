@@ -1,5 +1,7 @@
 import logging
 import threading
+from copy import copy
+from numpy import hstack
 
 from ..exceptions import ExplautoEnvironmentUpdateError
 from ..utils.observer import Observer
@@ -36,11 +38,12 @@ class Experiment(Observer):
         # self.i_rec = 0
         self.eval_at = []
 
-        self.log = ExperimentLog(self.env.conf, self.ag.expl_dims, self.ag.inf_dims)
+        self.log = ExperimentLog(self.ag.conf, self.ag.expl_dims, self.ag.inf_dims)
 
         self.ag.subscribe('choice', self)
         self.ag.subscribe('inference', self)
-        self.ag.subscribe('motor', self)
+        self.ag.subscribe('perception', self)
+        self.env.subscribe('motor', self)
         self.env.subscribe('sensori', self)
 
         self._running = threading.Event()
@@ -73,6 +76,15 @@ class Experiment(Observer):
     def stop(self):
         """ Stop the experiment. """
         self._running.clear()
+
+    def fast_forward(self, log):
+        self.log = copy(log)
+        for x, y, s in zip(*[log.logs[topic] for topic in ['choice', 'inference', 'perception']]):
+            m, s_ag = self.ag.extract_ms(x, y)
+            self.ag.sensorimotor_model.update(m, s)
+            self.ag.interest_model.update(hstack((m, s_ag)), hstack((m, s)))
+
+
 
     def _run(self, n_iter):
         for t in range(n_iter):
