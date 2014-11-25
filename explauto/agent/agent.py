@@ -150,4 +150,4 @@ class Agent(Observable):
         s = self.sensory_primitive(s_)
         self.sensorimotor_model.update(self.m, s)
         self.interest_model.update(np.hstack((self.m, self.s)), np.hstack((self.m, s)))
-        # self.t += 1
+        self.t += 1
