@@ -36,6 +36,7 @@ Most of Explauto's documentation is written as [IPython notebooks](http://ipytho
     * [Running pool of experiments](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/running_experiment_pool.ipynb)
     * [Introducing curiosity-driven exploration](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/introducing_curiosity_learning.ipynb)
     * [Poppy environment](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/poppy_environment.ipynb)
+    * [Fast-forward a previous experiment](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/fast_forward_experiment.ipynb)
 
 ### API ###
 
