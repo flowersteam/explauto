@@ -18,7 +18,7 @@ class Environment(Observable):
     __metaclass__ = ABCMeta
     use_process = False
 
-    def __init__(self, m_mins, m_maxs, s_mins, s_maxs, pause_one_step=0):
+    def __init__(self, m_mins, m_maxs, s_mins, s_maxs):
         """
         :param numpy.array m_mins, m_maxs, s_mins, s_maxs: bounds of the motor (m) and sensory (s) spaces
 
@@ -26,7 +26,6 @@ class Environment(Observable):
         Observable.__init__(self)
 
         self.conf = make_configuration(m_mins, m_maxs, s_mins, s_maxs)
-        self.pause_one_step = pause_one_step
 
     @classmethod
     def from_configuration(cls, env_name, config_name='default'):
