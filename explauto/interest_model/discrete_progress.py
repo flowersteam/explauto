@@ -11,6 +11,9 @@ from .interest_model import InterestModel
 
 class DiscretizedProgress(InterestModel):
     def __init__(self, conf, expl_dims, x_card, win_size, measure, dist_min=None, temp=None):
+        if int(x_card ** (1./len(expl_dims))) == 1 or len(expl_dims) >= 8:
+            print("Warning: expl_dims too big. discretized_progress only work in low-dimensional interest space (e.g. < 8). Behavior not waranted, should use random babbling instead.")
+
         InterestModel.__init__(self, expl_dims)
         self.conf = conf
         self.measure = measure
@@ -18,13 +21,16 @@ class DiscretizedProgress(InterestModel):
         self.space = Space(numpy.hstack((conf.m_mins, conf.s_mins))[expl_dims],
                            numpy.hstack((conf.m_maxs, conf.s_maxs))[expl_dims], card)
 
+
+
         if dist_min is None:
             self.dist_min = numpy.sqrt(sum(self.space.bin_widths ** 2)) / 1.
         else:
             self.dist_min = dist_min
 
         self.comp_max = measure(numpy.array([0.]), numpy.array([0.]), dist_min=self.dist_min)
-        self.comp_min = measure(numpy.array([0.]), numpy.array([numpy.linalg.norm(conf.s_mins - conf.s_maxs)]), dist_min=self.dist_min)
+        self.comp_min = measure(numpy.array([0.]), numpy.array([numpy.linalg.norm(conf.mins[self.expl_dims] - conf.maxs[self.expl_dims])]), dist_min=self.dist_min)
+
         self.discrete_progress = DiscreteProgress(0, self.space.card,
                                                   win_size, measure, self.comp_min)
 
