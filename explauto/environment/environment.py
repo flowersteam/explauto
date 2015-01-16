@@ -103,11 +103,11 @@ class Environment(Observable):
 
     @abstractmethod
     def compute_motor_command(self, ag_state):
-        pass
+        raise NotImplementedError
 
     @abstractmethod
     def compute_sensori_effect(self):
-        pass
+        raise NotImplementedError
 
     def random_motors(self, n=1):
         return rand_bounds(self.conf.bounds[:, self.conf.m_dims], n)
