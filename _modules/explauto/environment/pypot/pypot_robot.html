@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     
-    <title>explauto.environment.pypot.pypot_robot &mdash; explauto 1.1.0 documentation</title>
+    <title>explauto.environment.pypot.pypot_robot &mdash; explauto 1.1.1 documentation</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
@@ -36,7 +36,7 @@
 <script type="text/javascript">
   var DOCUMENTATION_OPTIONS = {
             URL_ROOT:    '../../../../',
-            VERSION:     '1.1.0',
+            VERSION:     '1.1.1',
             COLLAPSE_INDEX: false,
             FILE_SUFFIX: '.html',
             HAS_SOURCE:  true
@@ -79,7 +79,7 @@
   });
 </script>
     <link rel="author" title="About these documents" href="../../../../about.html" />
-    <link rel="top" title="explauto 1.1.0 documentation" href="../../../../index.html" />
+    <link rel="top" title="explauto 1.1.1 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body role="document">
@@ -92,7 +92,7 @@
             <span class="icon-bar"></span>
           </a>
           <div role="banner">
-            <a class="brand" href="../../../../index.html">explauto 1.1.0 documentation</a>
+            <a class="brand" href="../../../../index.html">explauto 1.1.1 documentation</a>
           </div>
           <div class="nav-collapse collapse">
             <ul class="nav pull-right">
@@ -175,9 +175,14 @@
   <h1>Source code for explauto.environment.pypot.pypot_robot</h1><div class="highlight"><pre>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">os</span>
 
 <span class="kn">from</span> <span class="nn">..environment</span> <span class="kn">import</span> <span class="n">Environment</span>
 <span class="kn">from</span> <span class="nn">...utils</span> <span class="kn">import</span> <span class="n">bounds_min_max</span>
+
+<span class="kn">import</span> <span class="nn">pypot</span>
+<span class="n">pypot_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">pypot</span><span class="o">.</span><span class="n">__file__</span><span class="p">)),</span> <span class="n">os</span><span class="o">.</span><span class="n">pardir</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="PypotEnvironment"><a class="viewcode-back" href="../../../../explauto.environment.html#explauto.environment.pypot.pypot_robot.PypotEnvironment">[docs]</a><span class="k">class</span> <span class="nc">PypotEnvironment</span><span class="p">(</span><span class="n">Environment</span><span class="p">):</span>
@@ -189,10 +194,10 @@
     <span class="n">use_process</span> <span class="o">=</span> <span class="bp">False</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-                 <span class="n">pypot_robot</span><span class="p">,</span> <span class="n">motors</span><span class="p">,</span> <span class="n">move_duration</span><span class="p">,</span>
-                 <span class="n">tracker</span><span class="p">,</span> <span class="n">tracked_obj</span><span class="p">,</span>
+                 <span class="n">robot_cls</span><span class="p">,</span> <span class="n">robot_conf</span><span class="p">,</span> <span class="n">motors</span><span class="p">,</span> <span class="n">move_duration</span><span class="p">,</span>
+                 <span class="n">tracked_obj</span><span class="p">,</span>
                  <span class="n">m_mins</span><span class="p">,</span> <span class="n">m_maxs</span><span class="p">,</span> <span class="n">s_mins</span><span class="p">,</span> <span class="n">s_maxs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; :param pypot_robot: robot used as the environment</span>
+        <span class="sd">&quot;&quot;&quot; :param get_pypot_robot: function returning the pypot robot used as the environment</span>
 <span class="sd">            :type pypot_robot: :class:`~pypot.robot.robot.Robot`</span>
 <span class="sd">            :param motors: list of motors used by the environment</span>
 <span class="sd">            :type motors: list of :class:`~pypot.dynamixel.motor.DxlMotor`</span>
@@ -207,14 +212,14 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Environment</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m_mins</span><span class="p">,</span> <span class="n">m_maxs</span><span class="p">,</span> <span class="n">s_mins</span><span class="p">,</span> <span class="n">s_maxs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">readable</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">ndims</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">robot</span> <span class="o">=</span> <span class="n">pypot_robot</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">motors</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">motors</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">robot_explauto</span> <span class="o">=</span> <span class="n">robot_cls</span><span class="p">(</span><span class="o">**</span><span class="n">robot_conf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">robot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">robot_explauto</span><span class="o">.</span><span class="n">robot</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">motors</span> <span class="o">=</span> <span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">robot</span><span class="p">,</span> <span class="n">motors</span><span class="p">)]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">move_duration</span> <span class="o">=</span> <span class="n">move_duration</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">tracker</span> <span class="o">=</span> <span class="n">tracker</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tracked_obj</span> <span class="o">=</span> <span class="n">tracked_obj</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">robot</span><span class="o">.</span><span class="n">start_sync</span><span class="p">()</span>
 
 <div class="viewcode-block" id="PypotEnvironment.compute_motor_command"><a class="viewcode-back" href="../../../../explauto.environment.html#explauto.environment.pypot.pypot_robot.PypotEnvironment.compute_motor_command">[docs]</a>    <span class="k">def</span> <span class="nf">compute_motor_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m_ag</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Compute the motor command by restricting it to the bounds. &quot;&quot;&quot;</span>
@@ -228,7 +233,92 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">robot</span><span class="o">.</span><span class="n">goto_position</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">move_duration</span><span class="p">,</span> <span class="n">wait</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
         <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tracker</span><span class="o">.</span><span class="n">get_position</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tracked_obj</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">robot_explauto</span><span class="o">.</span><span class="n">get_position</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tracked_obj</span><span class="p">)</span>
+
+</div></div>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">deg2rad</span><span class="p">,</span> <span class="n">array</span>
+
+<span class="c"># motor bounds for the left arm</span>
+<span class="n">l_m_mins</span> <span class="o">=</span> <span class="n">deg2rad</span><span class="p">(</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">]))</span>
+<span class="n">l_m_maxs</span> <span class="o">=</span> <span class="n">deg2rad</span><span class="p">(</span><span class="n">array</span><span class="p">([</span><span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">]))</span>
+
+<span class="c"># motor bounds for the right arm</span>
+<span class="n">r_m_mins</span> <span class="o">=</span> <span class="n">deg2rad</span><span class="p">(</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">15</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">,</span> <span class="o">-</span><span class="mi">90</span><span class="p">]))</span>
+<span class="n">r_m_maxs</span> <span class="o">=</span> <span class="n">deg2rad</span><span class="p">(</span><span class="n">array</span><span class="p">([</span><span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">0</span><span class="p">]))</span>
+
+<span class="c"># sensor bounds for the left arm</span>
+<span class="n">l_s_mins</span> <span class="o">=</span> <span class="n">array</span><span class="p">((</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+<span class="n">l_s_maxs</span> <span class="o">=</span> <span class="n">array</span><span class="p">((</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">))</span>
+
+<span class="c"># sensor bounds for the right arm</span>
+<span class="n">r_s_mins</span> <span class="o">=</span> <span class="n">array</span><span class="p">((</span><span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
+<span class="n">r_s_maxs</span> <span class="o">=</span> <span class="n">array</span><span class="p">((</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">))</span>
+
+
+
+<div class="viewcode-block" id="VrepRobot"><a class="viewcode-back" href="../../../../explauto.environment.html#explauto.environment.pypot.pypot_robot.VrepRobot">[docs]</a><span class="k">class</span> <span class="nc">VrepRobot</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_path</span><span class="p">,</span> <span class="n">scene_path</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">19997</span><span class="p">,</span> <span class="n">tracked_objects</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;left_hand_tracker&#39;</span><span class="p">,</span> <span class="s">&#39;right_hand_tracker&#39;</span><span class="p">]):</span>
+        <span class="kn">from</span> <span class="nn">pypot.vrep</span> <span class="kn">import</span> <span class="n">from_vrep</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">cf</span><span class="p">:</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">cf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">robot</span> <span class="o">=</span> <span class="n">from_vrep</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">scene_path</span><span class="p">,</span>
+                          <span class="n">tracked_objects</span><span class="p">)</span>
+<div class="viewcode-block" id="VrepRobot.get_position"><a class="viewcode-back" href="../../../../explauto.environment.html#explauto.environment.pypot.pypot_robot.VrepRobot.get_position">[docs]</a>    <span class="k">def</span> <span class="nf">get_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tracked_object</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">robot</span><span class="p">,</span> <span class="n">tracked_object</span><span class="p">)</span><span class="o">.</span><span class="n">position</span>
+</div></div>
+<div class="viewcode-block" id="PoppyRobot"><a class="viewcode-back" href="../../../../explauto.environment.html#explauto.environment.pypot.pypot_robot.PoppyRobot">[docs]</a><span class="k">class</span> <span class="nc">PoppyRobot</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config_path</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">pypot.robot</span>
+
+        <span class="kn">from</span> <span class="nn">explauto.utils.tracker</span> <span class="kn">import</span> <span class="n">OptiTracker</span>
+        <span class="kn">from</span> <span class="nn">pypot.sensor.optibridge</span> <span class="kn">import</span> <span class="n">OptiTrackClient</span>
+        <span class="n">opti</span> <span class="o">=</span> <span class="n">OptiTrackClient</span><span class="p">(</span><span class="s">&#39;193.50.110.222&#39;</span><span class="p">,</span> <span class="mi">8989</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;l_hand&#39;</span><span class="p">,</span> <span class="s">&#39;r_hand&#39;</span><span class="p">,</span> <span class="s">&#39;wand&#39;</span><span class="p">))</span>
+        <span class="n">opti</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tracker</span> <span class="o">=</span> <span class="n">OptiTracker</span><span class="p">(</span><span class="n">opti</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">robot</span> <span class="o">=</span> <span class="n">pypot</span><span class="o">.</span><span class="n">robot</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">config_path</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="PoppyRobot.get_position"><a class="viewcode-back" href="../../../../explauto.environment.html#explauto.environment.pypot.pypot_robot.PoppyRobot.get_position">[docs]</a>    <span class="k">def</span> <span class="nf">get_position</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tracked_object</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tracker</span><span class="o">.</span><span class="n">get_position</span><span class="p">(</span><span class="n">tracked_object</span><span class="p">)</span>
+
+</div></div>
+<div class="viewcode-block" id="get_configuration"><a class="viewcode-back" href="../../../../explauto.environment.html#explauto.environment.pypot.pypot_robot.get_configuration">[docs]</a><span class="k">def</span> <span class="nf">get_configuration</span><span class="p">(</span><span class="n">get_robot</span><span class="p">,</span> <span class="n">tracker_cls</span><span class="p">,</span> <span class="n">tracked_obj</span><span class="p">,</span>
+                      <span class="n">m_mins</span><span class="o">=</span><span class="n">l_m_mins</span><span class="p">,</span> <span class="n">m_maxs</span><span class="o">=</span><span class="n">l_m_maxs</span><span class="p">,</span>
+                      <span class="n">s_mins</span><span class="o">=</span><span class="n">l_s_mins</span><span class="p">,</span> <span class="n">s_maxs</span><span class="o">=</span><span class="n">l_s_maxs</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+</div>
+<span class="n">conf_poppy</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;robot_cls&#39;</span><span class="p">:</span> <span class="n">PoppyRobot</span><span class="p">,</span>
+              <span class="s">&#39;robot_conf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;config_path&#39;</span><span class="p">:</span><span class="s">&#39;../../poppy-software/poppytools/configuration/poppy_config.json&#39;</span><span class="p">},</span>
+              <span class="s">&#39;motors&#39;</span><span class="p">:</span> <span class="s">&#39;l_arm&#39;</span><span class="p">,</span>
+              <span class="s">&#39;move_duration&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+              <span class="s">&#39;tracked_obj&#39;</span><span class="p">:</span> <span class="s">&#39;left_hand_tracker&#39;</span><span class="p">,</span>
+              <span class="s">&#39;m_mins&#39;</span><span class="p">:</span> <span class="n">l_m_mins</span><span class="p">,</span>
+              <span class="s">&#39;m_maxs&#39;</span><span class="p">:</span> <span class="n">l_m_maxs</span><span class="p">,</span>
+              <span class="s">&#39;s_mins&#39;</span><span class="p">:</span> <span class="n">l_s_mins</span><span class="p">,</span>
+              <span class="s">&#39;s_maxs&#39;</span><span class="p">:</span> <span class="n">l_s_maxs</span><span class="p">}</span>
+
+<span class="n">conf_vrep</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;robot_cls&#39;</span><span class="p">:</span> <span class="n">VrepRobot</span><span class="p">,</span>
+             <span class="s">&#39;robot_conf&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;config_path&#39;</span><span class="p">:</span> <span class="s">&#39;../../poppy-software/poppytools/configuration/poppy_config.json&#39;</span><span class="p">,</span>
+                            <span class="s">&#39;scene_path&#39;</span><span class="p">:</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pypot_path</span><span class="p">,</span> <span class="s">&#39;samples/notebooks/poppy-sitting.ttt&#39;</span><span class="p">),</span>
+                            <span class="s">&#39;host&#39;</span><span class="p">:</span><span class="s">&#39;127.0.0.1&#39;</span><span class="p">,</span>
+                            <span class="s">&#39;port&#39;</span><span class="p">:</span><span class="mi">19997</span><span class="p">,</span>             <span class="s">&#39;tracked_objects&#39;</span><span class="p">:[</span><span class="s">&#39;left_hand_tracker&#39;</span><span class="p">]},</span>
+              <span class="s">&#39;motors&#39;</span><span class="p">:</span> <span class="s">&#39;l_arm&#39;</span><span class="p">,</span>
+              <span class="s">&#39;move_duration&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+              <span class="s">&#39;tracked_obj&#39;</span><span class="p">:</span> <span class="s">&#39;left_hand_tracker&#39;</span><span class="p">,</span>
+              <span class="s">&#39;m_mins&#39;</span><span class="p">:</span> <span class="n">l_m_mins</span><span class="p">,</span>
+              <span class="s">&#39;m_maxs&#39;</span><span class="p">:</span> <span class="n">l_m_maxs</span><span class="p">,</span>
+              <span class="s">&#39;s_mins&#39;</span><span class="p">:</span> <span class="n">l_s_mins</span><span class="p">,</span>
+              <span class="s">&#39;s_maxs&#39;</span><span class="p">:</span> <span class="n">l_s_maxs</span><span class="p">}</span>
+
+
+<span class="n">configurations</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;poppy&#39;</span><span class="p">:</span> <span class="n">conf_poppy</span><span class="p">,</span> <span class="s">&#39;vrep&#39;</span><span class="p">:</span><span class="n">conf_vrep</span><span class="p">,</span> <span class="s">&#39;default&#39;</span><span class="p">:</span><span class="n">conf_vrep</span><span class="p">}</span>
+
+<span class="n">environment</span> <span class="o">=</span> <span class="n">PypotEnvironment</span>
+
+<span class="n">testcases</span> <span class="o">=</span> <span class="bp">None</span>
 </pre></div>
 
                 </div>
@@ -248,7 +338,7 @@
       
         <li><a href="../../../../genindex.html" title="General Index" >index</a></li>
         <li><a href="../../../../py-modindex.html" title="Python Module Index" >modules</a></li>
-        <li><a href="../../../../index.html">explauto 1.1.0 documentation</a></li>
+        <li><a href="../../../../index.html">explauto 1.1.1 documentation</a></li>
         <li><a href="../../../index.html" >Module code</a></li> 
       
     </ul>
@@ -259,7 +349,7 @@
       <!-- footer -->
       <footer role="contentinfo">
           &copy; Copyright 2014, Clement Moulin-Frier, Pierre Rouanet.
-        Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.2.
+        Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.2.3.
       </footer>
       <!-- /footer -->
 
