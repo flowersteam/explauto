@@ -22,7 +22,7 @@
     :show-inheritance:
 
 
-.. automodule:: explauto.environment.diva.config
+.. automodule:: explauto.environment.diva.diva
     :members:
     :undoc-members:
     :show-inheritance:

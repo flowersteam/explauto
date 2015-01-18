@@ -520,10 +520,46 @@
 <dd><p>alias of <a class="reference internal" href="#explauto.environment.pypot.pypot_robot.PypotEnvironment" title="explauto.environment.pypot.pypot_robot.PypotEnvironment"><tt class="xref py py-class docutils literal"><span class="pre">PypotEnvironment</span></tt></a></p>
 </dd></dl>
 
-<span class="target" id="module-explauto.environment.diva.config"></span><dl class="function">
-<dt id="explauto.environment.diva.config.make_diva_config">
-<tt class="descclassname">explauto.environment.diva.config.</tt><tt class="descname">make_diva_config</tt><big>(</big><em>m_max</em>, <em>m_used</em>, <em>s_used</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/diva/config.html#make_diva_config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.diva.config.make_diva_config" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="module-explauto.environment.diva.diva"></span><dl class="class">
+<dt id="explauto.environment.diva.diva.DivaSynth">
+<em class="property">class </em><tt class="descclassname">explauto.environment.diva.diva.</tt><tt class="descname">DivaSynth</tt><big>(</big><em>diva_path</em>, <em>sample_rate=11025</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/diva/diva.html#DivaSynth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.diva.diva.DivaSynth" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="explauto.environment.diva.diva.DivaSynth.execute">
+<tt class="descname">execute</tt><big>(</big><em>art</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/diva/diva.html#DivaSynth.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.diva.diva.DivaSynth.execute" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.environment.diva.diva.DivaSynth.sound_wave">
+<tt class="descname">sound_wave</tt><big>(</big><em>art</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/diva/diva.html#DivaSynth.sound_wave"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.diva.diva.DivaSynth.sound_wave" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.environment.diva.diva.DivaSynth.stop">
+<tt class="descname">stop</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/explauto/environment/diva/diva.html#DivaSynth.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.diva.diva.DivaSynth.stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="explauto.environment.diva.diva.DivaEnvironment">
+<em class="property">class </em><tt class="descclassname">explauto.environment.diva.diva.</tt><tt class="descname">DivaEnvironment</tt><big>(</big><em>m_mins</em>, <em>m_maxs</em>, <em>s_mins</em>, <em>s_maxs</em>, <em>m_used=None</em>, <em>s_used=None</em>, <em>m_default=None</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/diva/diva.html#DivaEnvironment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.diva.diva.DivaEnvironment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#explauto.environment.environment.Environment" title="explauto.environment.environment.Environment"><tt class="xref py py-class docutils literal"><span class="pre">explauto.environment.environment.Environment</span></tt></a></p>
+<dl class="method">
+<dt id="explauto.environment.diva.diva.DivaEnvironment.compute_motor_command">
+<tt class="descname">compute_motor_command</tt><big>(</big><em>m_ag</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/diva/diva.html#DivaEnvironment.compute_motor_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.diva.diva.DivaEnvironment.compute_motor_command" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.environment.diva.diva.DivaEnvironment.compute_sensori_effect">
+<tt class="descname">compute_sensori_effect</tt><big>(</big><em>m_env</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/diva/diva.html#DivaEnvironment.compute_sensori_effect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.diva.diva.DivaEnvironment.compute_sensori_effect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="explauto.environment.diva.diva.DivaEnvironment.sound_wave">
+<tt class="descname">sound_wave</tt><big>(</big><em>art_traj</em><big>)</big><a class="reference internal" href="_modules/explauto/environment/diva/diva.html#DivaEnvironment.sound_wave"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#explauto.environment.diva.diva.DivaEnvironment.sound_wave" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
 
 </div>
 
