@@ -1,5 +1,14 @@
-from config import get_config, art1__7, F1_F2, DivaEnvironment
+# from config import environment, configurations, testcases
+from .diva import DivaEnvironment, DivaSynth
+from .config import default_config, vowel_config, low_config, full_config
 
 
-vowel_config = get_config(7, 2, art1__7, F1_F2)
+environment = DivaEnvironment
+configurations = {'default': default_config,
+                  'vowel_config': vowel_config,
+                  'low_config': low_config,
+                  'full_config': full_config
+                 }
 
+def testcases(config_str, n_samples=100):
+    raise NotImplementedError('No testcases available for the diva environment')
