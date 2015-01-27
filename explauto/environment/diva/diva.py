@@ -25,8 +25,6 @@ class DivaSynth:
 
     def sound_wave(self, art):
         self.session.putvalue('art', art)
-        # self.session.run('sr = sr(1)')
-        # print self.session.getvalue('sr')
         self.session.run('wave = diva_synth(art, \'sound\')')
         return self.session.getvalue('wave')
 
@@ -56,7 +54,7 @@ class DivaEnvironment(Environment):
     def compute_sensori_effect(self, m_env):
         self.art[self.m_used] = m_env
         res = self.synth.execute(self.art.reshape(-1,1))[0]
-        return hstack((self.art[self.m_used], res[self.s_used]))
+        return res[self.s_used]
 
     def sound_wave(self, art_traj):
         synth_art = self.m_default.reshape(1, -1).repeat(len(art_traj), axis=0)
