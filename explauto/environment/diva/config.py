@@ -2,9 +2,6 @@ from numpy import array
 from collections import namedtuple
 
 
-diva_path = '../../../DIVAsimulink/'
-
-
 # Useless names strings, just for information:
 articulator_names = ['art' + str(n) for n in range(10)] + ['pitch', 'pressure', 'voicing']
 somato_names = ['pharyngeal', 'uvular', 'velar', 'palatal', 'alveodental', 'labial', 'pressure', 'voicing']

@@ -10,10 +10,8 @@ from .config import diva_path
 class DivaSynth:
     def __init__(self, diva_path=diva_path, sample_rate=11025):
         self.session = pymatlab.session_factory()
-        self.session.run('path(\'' + diva_path + '\', path)')
+        # sample rate setting not working yet
         self.session.putvalue('sr', array([sample_rate]))
-        diva_path = os.path.abspath(diva_path)
-        self.session.run(['path(\'', diva_path, '\', path)'])
 
     def execute(self, art):
         self.session.putvalue('art', art)
