@@ -5,10 +5,8 @@ from numpy import array, hstack
 from ..environment import Environment
 from ...utils import bounds_min_max
 
-from .config import diva_path
-
 class DivaSynth:
-    def __init__(self, diva_path=diva_path, sample_rate=11025):
+    def __init__(self, sample_rate=11025):
         self.session = pymatlab.session_factory()
         # sample rate setting not working yet
         self.session.putvalue('sr', array([sample_rate]))
@@ -34,7 +32,7 @@ class DivaEnvironment(Environment):
 
     def __init__(self, m_mins, m_maxs, s_mins, s_maxs, m_used = None, s_used = None, m_default = None):
         Environment.__init__(self, m_mins, m_maxs, s_mins, s_maxs)
-        self.synth = DivaSynth(diva_path)
+        self.synth = DivaSynth()
         self.m_default = m_default
         if m_default is None:
             self.m_default = array([0.] * 10 + [0.7] * 3) #  Neutral position with phonation
