@@ -30,8 +30,8 @@ class DivaSynth:
 
 class DivaEnvironment(Environment):
 
-    def __init__(self, m_mins, m_maxs, s_mins, s_maxs, m_used = None, s_used = None, m_default = None):
-        Environment.__init__(self, m_mins, m_maxs, s_mins, s_maxs, audio = False)
+    def __init__(self, m_mins, m_maxs, s_mins, s_maxs, m_used = None, s_used = None, m_default = None, audio = False):
+        Environment.__init__(self, m_mins, m_maxs, s_mins, s_maxs)
         self.synth = DivaSynth()
         self.m_default = m_default
         if m_default is None:

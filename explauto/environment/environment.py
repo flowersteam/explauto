@@ -66,6 +66,7 @@ class Environment(Observable):
         return env_cls(**env_configs[config_name])
 
     def one_update(self, m_ag, log=True):
+
         m_env = self.compute_motor_command(m_ag)
         s = self.compute_sensori_effect(m_env)
 
