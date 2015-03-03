@@ -111,6 +111,7 @@ class Environment(Observable):
         raise NotImplementedError
 
     def random_motors(self, n=1):
+        print 'env bounds ', self.conf.m_dims, self.conf.bounds[:, self.conf.m_dims]
         return rand_bounds(self.conf.bounds[:, self.conf.m_dims], n)
 
     def dataset(self, orders):

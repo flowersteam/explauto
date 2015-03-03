@@ -19,7 +19,8 @@ class Evaluation(object):
             errors = []
             for s_g in self.testcases:
                 m = self.ag.infer(self.ag.conf.s_dims, self.ag.conf.m_dims, s_g).flatten()
-                s = self.env.update(m, log=False)
+                m_env = self.ag.motor_primitive(m)
+                s = self.env.update(m_env, log=False)
                 errors.append(linalg.norm(s_g - s))
         elif self.mode == 'forward':
             print 'forward prediction tests still in beta version, use with caution'
@@ -36,7 +37,8 @@ class Evaluation(object):
             errors = []
             for m in testcases:
                 s_p = self.ag.infer(self.ag.conf.m_dims, self.ag.conf.s_dims, m).flatten()
-                s = self.env.update(m, log=False)
+                m_env = self.ag.motor_primitive(m)
+                s = self.env.update(m_env, log=False)
                 errors.append(linalg.norm(s_p - s))
         else:
             raise ValueError('mode should be "inverse" or "forward"',
