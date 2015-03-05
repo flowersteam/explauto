@@ -73,6 +73,7 @@ class Agent(Observable):
         except ExplautoBootstrapError:
             logger.warning('Interest model not bootstrapped yet')
             x = rand_bounds(self.conf.bounds[:, self.expl_dims]).flatten()
+        #print "interest model choose y : ", x
         return x
 
 
@@ -91,6 +92,7 @@ class Agent(Observable):
         except ExplautoBootstrapError:
             logger.warning('Sensorimotor model not bootstrapped yet')
             y = rand_bounds(self.conf.bounds[:, inf_dims]).flatten()
+        #print "interest model infer x : ", y
         return y
 
 
