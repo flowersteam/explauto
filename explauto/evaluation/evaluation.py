@@ -20,8 +20,11 @@ class Evaluation(object):
             for s_g in self.testcases:
                 m = self.ag.infer(self.ag.conf.s_dims, self.ag.conf.m_dims, s_g).flatten()
                 m_env = self.ag.motor_primitive(m)
-                s = self.env.update(m_env, log=False)
-                errors.append(linalg.norm(s_g - s))
+                s_env = self.env.update(m_env, log=False)
+                s = self.ag.sensory_primitive(s_env)
+                e = linalg.norm(s_g - s)
+                print 's_g : ', s_g, 's : ', s, 'error : ', e
+                errors.append(e)
         elif self.mode == 'forward':
             print 'forward prediction tests still in beta version, use with caution'
             if n_tests_forward is not None:
