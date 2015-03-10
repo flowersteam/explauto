@@ -13,8 +13,10 @@ class Evaluation(object):
         self.testcases = testcases
 
     def evaluate(self, n_tests_forward=None, testcases_forward=None):
+        print "Evaluation mode : ", self.mode
         mode = self.ag.sensorimotor_model.mode
         self.ag.sensorimotor_model.mode = 'exploit'
+        s_reached = []
         if self.mode == 'inverse':
             errors = []
             for s_g in self.testcases:
@@ -23,8 +25,9 @@ class Evaluation(object):
                 s_env = self.env.update(m_env, log=False)
                 s = self.ag.sensory_primitive(s_env)
                 e = linalg.norm(s_g - s)
-                print 's_g : ', s_g, 's : ', s, 'error : ', e
+                s_reached.append(s)
                 errors.append(e)
+                print 'Evaluation', len(errors), ': s_goal = ', s_g, 's_reached = ', s, 'L2 error = ', e
         elif self.mode == 'forward':
             print 'forward prediction tests still in beta version, use with caution'
             if n_tests_forward is not None:
@@ -41,14 +44,17 @@ class Evaluation(object):
             for m in testcases:
                 s_p = self.ag.infer(self.ag.conf.m_dims, self.ag.conf.s_dims, m).flatten()
                 m_env = self.ag.motor_primitive(m)
-                s = self.env.update(m_env, log=False)
+                s_env = self.env.update(m_env, log=False)
+                s = self.ag.sensory_primitive(s_env)
                 errors.append(linalg.norm(s_p - s))
+                s_reached.append(s)
         else:
             raise ValueError('mode should be "inverse" or "forward"',
                               '"general" predictions coming soon)')
 
         self.ag.sensorimotor_model.mode = mode
-        return errors
+        print s_reached
+        return errors,s_reached
 
     def plot_testcases(self, ax, dims, **kwargs_plot):
         plot_specs = {'marker': 'o', 'linestyle': 'None'}

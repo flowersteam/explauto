@@ -8,9 +8,11 @@ class ExperimentLog(object):
         self._logs = defaultdict(list)
         self.counts = defaultdict(int)
         self.eval_errors = []
+        self.eval_reached = []
         self.conf = conf
         self.expl_dims = expl_dims
         self.inf_dims = inf_dims
+        self.log_dir = None
 
     @property
     def logs(self):
@@ -97,9 +99,10 @@ class ExperimentLog(object):
             errors = errors ** 2
         avg_err = mean(errors, axis=1)
         std_err = std(errors, axis=1)
-        ax.errorbar(self.eval_at, avg_err, yerr=std_err)
+        l = len(avg_err)
+        ax.errorbar(self.eval_at[:l], avg_err, yerr=std_err)
         axis = ax.axis()
-        ax.axis([self.eval_at[0] * 0.9, self.eval_at[-1] * 1.1, axis[2], axis[3]])
+        ax.axis([self.eval_at[0] * 0.9, self.eval_at[l-1] * 1.1, axis[2], axis[3]])
         ax.set_title('Test on ' + str(errors.shape[1]) + ' sensory goals')
         ax.set_xlabel('Number of sensorimotor experiments')
         ax.set_ylabel('Mean ' + ('squared' if squared_errors else '') + 'error')
