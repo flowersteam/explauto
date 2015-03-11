@@ -40,9 +40,11 @@ class Experiment(Observer):
 
         self.log = ExperimentLog(self.ag.conf, self.ag.expl_dims, self.ag.inf_dims)
 
-        self.ag.subscribe('choice', self)
-        self.ag.subscribe('inference', self)
-        self.ag.subscribe('perception', self)
+#         self.ag.subscribe('choice', self)
+#         self.ag.subscribe('inference', self)
+#         self.ag.subscribe('perception', self)
+        self.ag.subscribe(self)
+        
         self.env.subscribe('motor', self)
         self.env.subscribe('sensori', self)
 
