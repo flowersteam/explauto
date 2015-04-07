@@ -7,14 +7,16 @@ from ..utils.config import Space
 from .competences import competence_exp, competence_dist  # TODO try without exp (now that we update on goal AND effect). Could solve the "interest for precision" problem
 from ..utils import discrete_random_draw
 from .interest_model import InterestModel
-
+from math import ceil
 
 class DiscretizedProgress(InterestModel):
     def __init__(self, conf, expl_dims, x_card, win_size, measure):
         InterestModel.__init__(self, expl_dims)
         self.conf = conf
         self.measure = measure
-        card = [int(x_card ** (1./len(expl_dims)))] * len(expl_dims)
+        # Add ceil to avoid having only 1 bin per dim for high dimensions (>=9 with x_card=400), which causes comp_min=comp_max and then a division by 0
+        card = [int(ceil(x_card ** (1./len(expl_dims))))] * len(expl_dims)
+        #print "CARD", x_card, len(expl_dims), card
         self.space = Space(numpy.hstack((conf.m_mins, conf.s_mins))[expl_dims],
                            numpy.hstack((conf.m_maxs, conf.s_maxs))[expl_dims], card)
 
@@ -22,6 +24,7 @@ class DiscretizedProgress(InterestModel):
 
         self.comp_max = measure(numpy.array([0.]), numpy.array([0.]), dist_min=self.dist_min)
         self.comp_min = measure(numpy.array([0.]), numpy.array([numpy.linalg.norm(conf.s_mins - conf.s_maxs)]), dist_min=self.dist_min)
+
         self.discrete_progress = DiscreteProgress(0, self.space.card,
                                                   win_size, measure, self.comp_min)
 

@@ -74,10 +74,11 @@ class Agent(Observable):
             logger.warning('Interest model not bootstrapped yet')
             x = rand_bounds(self.conf.bounds[:, self.expl_dims]).flatten()
         #print "interest model choose y : ", x
+        self.emit('choice' + '_' + self.mid, x)
         return x
 
 
-    def infer(self, expl_dims, inf_dims, x):
+    def infer(self, expl_dims, inf_dims, x, pref = ''):
         """ Use the sensorimotor model to compute the expected value on inf_dims given that the value on expl_dims is x.
 
         .. note:: This corresponds to a prediction if expl_dims=self.conf.m_dims and inf_dims=self.conf.s_dims and to inverse prediction if expl_dims=self.conf.s_dims and inf_dims=self.conf.m_dims.
@@ -93,6 +94,10 @@ class Agent(Observable):
             logger.warning('Sensorimotor model not bootstrapped yet')
             y = rand_bounds(self.conf.bounds[:, inf_dims]).flatten()
         #print "interest model infer x : ", y
+        
+        
+        self.emit(pref + 'inference' + '_' + self.mid, y)
+        
         return y
 
 

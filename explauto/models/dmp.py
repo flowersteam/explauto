@@ -30,7 +30,7 @@ class DmpPrimitive(object):
         #self.dmp.cs.run_time *= run_time
         #self.dmp.timesteps *= run_time
     def trajectory(self, m, n_times=1):
-        print "trajectory. n_dmps :", self.n_dmps, 'n_bfs', self.n_bfs, 'run time', self.dmp.cs.run_time, 'time steps', self.dmp.timesteps
+        #print "trajectory. n_dmps :", self.n_dmps, 'n_bfs', self.n_bfs, 'run time', self.dmp.cs.run_time, 'time steps', self.dmp.timesteps
         self.dmp.cs.run_time *= n_times
         self.dmp.timesteps *= n_times
         self.motor[self.used] = m

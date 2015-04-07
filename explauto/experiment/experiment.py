@@ -43,7 +43,7 @@ class Experiment(Observer):
 #         self.ag.subscribe('choice', self)
 #         self.ag.subscribe('inference', self)
 #         self.ag.subscribe('perception', self)
-        self.ag.subscribe(self)
+        self.ag.subscribe_mod(self)
         
         self.env.subscribe('motor', self)
         self.env.subscribe('sensori', self)
@@ -90,7 +90,7 @@ class Experiment(Observer):
 
     def _run(self, range_iter):
         for t in range_iter:
-            print "Iteration :", t
+            print "\nIteration :", t
             if t in self.eval_at and self.evaluation is not None:
                 self.evaluate()
 

@@ -1,5 +1,5 @@
 from collections import defaultdict
-from numpy import array, mean, std
+from numpy import array, mean, std, median
 from ..utils.density_image import density_image
 
 
@@ -9,6 +9,7 @@ class ExperimentLog(object):
         self.counts = defaultdict(int)
         self.eval_errors = []
         self.eval_reached = []
+        self.explo = []
         self.conf = conf
         self.expl_dims = expl_dims
         self.inf_dims = inf_dims
@@ -97,12 +98,15 @@ class ExperimentLog(object):
         errors = array(self.eval_errors)
         if squared_errors:
             errors = errors ** 2
+        med_err = median(errors, axis=1)
         avg_err = mean(errors, axis=1)
         std_err = std(errors, axis=1)
         l = len(avg_err)
-        ax.errorbar(self.eval_at[:l], avg_err, yerr=std_err)
+        
+        #print l, avg_err, self.eval_at[:l]
+        ax.errorbar(self.eval_at[:l], med_err[-len(self.eval_at[:l]):], yerr=std_err[-len(self.eval_at[:l]):]) #MEDIAN
         axis = ax.axis()
-        ax.axis([self.eval_at[0] * 0.9, self.eval_at[l-1] * 1.1, axis[2], axis[3]])
+        ax.axis([self.eval_at[0] * 0.9, self.eval_at[-1] * 1.1, axis[2], axis[3]])
         ax.set_title('Test on ' + str(errors.shape[1]) + ' sensory goals')
         ax.set_xlabel('Number of sensorimotor experiments')
         ax.set_ylabel('Mean ' + ('squared' if squared_errors else '') + 'error')

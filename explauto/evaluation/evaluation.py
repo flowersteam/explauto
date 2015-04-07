@@ -1,4 +1,4 @@
-from numpy import linalg
+from numpy import linalg, array, zeros, sum, min, max
 
 
 class Evaluation(object):
@@ -14,20 +14,20 @@ class Evaluation(object):
 
     def evaluate(self, n_tests_forward=None, testcases_forward=None):
         print "Evaluation mode : ", self.mode
-        mode = self.ag.sensorimotor_model.mode
-        self.ag.sensorimotor_model.mode = 'exploit'
+        self.ag.eval_mode()
         s_reached = []
         if self.mode == 'inverse':
             errors = []
             for s_g in self.testcases:
-                m = self.ag.infer(self.ag.conf.s_dims, self.ag.conf.m_dims, s_g).flatten()
+                m = self.ag.infer(self.ag.config.eval_dims, self.ag.conf.m_dims, s_g, pref = 'eval_').flatten()
                 m_env = self.ag.motor_primitive(m)
                 s_env = self.env.update(m_env, log=False)
-                s = self.ag.sensory_primitive(s_env)
+                s_ = self.ag.sensory_primitive(s_env)
+                s = self.ag.get_eval_dims(s_)
                 e = linalg.norm(s_g - s)
                 s_reached.append(s)
                 errors.append(e)
-                print 'Evaluation', len(errors), ': s_goal = ', s_g, 's_reached = ', s, 'L2 error = ', e
+                print 'Evaluation', len(errors), ': s_goal = ', s_g, 's_reached = ', s_, 'L2 error = ', e, '\n'
         elif self.mode == 'forward':
             print 'forward prediction tests still in beta version, use with caution'
             if n_tests_forward is not None:
@@ -52,9 +52,33 @@ class Evaluation(object):
             raise ValueError('mode should be "inverse" or "forward"',
                               '"general" predictions coming soon)')
 
-        self.ag.sensorimotor_model.mode = mode
+        self.ag.learning_mode()
         print s_reached
         return errors,s_reached
+    
+
+    def evaluate_explo(self, log):
+        
+        
+        sx = array([a[0] for a in log.logs['perception_mod'+'{}'.format(len(log.config.mids))]])
+        sy = array([a[1] for a in log.logs['perception_mod'+'{}'.format(len(log.config.mids))]])
+        
+        n_eval_dims = len(log.config.eval_dims)
+        eval_range = array([[min(sx),min(sy)],
+                           [max(sx),max(sy)]])
+        
+        eps = 0.01#log.config.eval_explo_eps
+        grid_sizes = (eval_range[1,:] - eval_range[0,:]) / eps + 1
+        grid_sizes = array(grid_sizes, dtype = int)
+        grid = zeros(grid_sizes)
+        for i in range(len(sx)):
+            idx = int((sx[i] - eval_range[0,0]) / eps)
+            idy = int((sy[i] - eval_range[0,1]) / eps)
+            grid[idx, idy] = grid[idx, idy] + 1
+        grid[grid > 1] = 1
+        explo = sum(grid)
+        
+        return explo
 
     def plot_testcases(self, ax, dims, **kwargs_plot):
         plot_specs = {'marker': 'o', 'linestyle': 'None'}
