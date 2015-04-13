@@ -5,17 +5,17 @@ from scipy.spatial.KDTree import minkowski_distance_p
 
 
 class RiacInterest(InterestModel):
-    def __init__(self, conf, expl_dims, max_points_per_region, measure):
+    def __init__(self, conf, expl_dims, max_points_per_region, split_mode, measure):
         
         self.conf = conf
         self.max_points_per_region = max_points_per_region
         self.bounds = self.conf.bounds[:, expl_dims]
         # self.ndims = bounds.shape[1]
-        self.measure = measure
+        self.measure = measure #TODO check dist_min
         
         self.data_x = None
         self.data_c = None
-        self.tree = Tree(data_x, data_c, max_points_per_region)
+        self.tree = Tree(data_x, data_c, max_points_per_region, split_mode)
         
         InterestModel.__init__(self, expl_dims)
 
@@ -23,10 +23,12 @@ class RiacInterest(InterestModel):
         return rand_bounds(self.bounds).flatten()
 
     def update(self, xy, ms):
+        # Add data, compute competence
         pass
 
 
 interest_models = {'riac': (RiacInterest, {'default': {'max_points_per_region': 100,
+                                                       'split_mode': 'median',
                                                        'measure': competence_dist}})}
 
 
@@ -59,13 +61,14 @@ class Tree(object):
 
 
     """
-    def __init__(self, data_x, data_c, max_points_per_region, idxs = [], split_dim = 0):
+    def __init__(self, data_x, data_c, max_points_per_region, split_mode, idxs = [], split_dim = 0):
         #self.data = np.asarray(data)
         if data_x is not None:
             self.n, self.m = np.shape(self.data)
         self.data_x = data_x
         self.data_c = data_c
         self.max_points_per_region = max_points_per_region
+        self.split_mode = split_mode
 
         self.split_dim = split_dim
         self.split = None
@@ -82,8 +85,12 @@ class Tree(object):
             
     
     def add(self, idx):
+        """
+        Add an index to the tree
+        
+        """
         if self.leafnode:
-            if self.is_full():
+            if self.children >= self.max_points_per_region:
                 self.split()
             else:                    
                 self.idxs.append(idx)
@@ -95,21 +102,25 @@ class Tree(object):
                 self.less.add(idx)
         self.children = self.children + 1
     
-    def is_full(self):
-        return self.children >= self.max_points_per_region
     
     def split(self):
-        split_dim_data = self.data_x[self.idxs,self.split_dim] # data on split dim
-        split = median(split_dim_data)
-        less_idx = np.nonzero(split_dim_data <= split)[0]
-        greater_idx = np.nonzero(split_dim_data > split)[0]
+        """
+        Split the leaf node
         
-        self.leafnode = False
-        self.idxs = None
-        self.split = split
-        self.less = Tree(data, comp, max_points_per_region, less_idx)
-        self.greater = Tree(data, comp, max_points_per_region, greater_idx)
-        
+        """
+        if self.split_mode == 'median':
+            split_dim_data = self.data_x[self.idxs,self.split_dim] # data on split dim
+            split = median(split_dim_data)
+            less_idx = np.nonzero(split_dim_data <= split)[0]
+            greater_idx = np.nonzero(split_dim_data > split)[0]
+            
+            self.leafnode = False
+            self.idxs = None
+            self.split = split
+            self.less = Tree(data, comp, max_points_per_region, less_idx)
+            self.greater = Tree(data, comp, max_points_per_region, greater_idx)
+        else:
+            raise NotImplementedError
         
 
     def __query(self, x, k=1, eps=0, p=2, distance_upper_bound=np.inf):
@@ -148,13 +159,13 @@ class Tree(object):
             min_distance, side_distances, node = heappop(q)
             if node.leafnode:
                 # brute-force
-                data = self.data[node.idx]
+                data = self.data[node.idxs]
                 ds = minkowski_distance_p(data,x[np.newaxis,:],p)
                 for i in range(len(ds)):
                     if ds[i] < distance_upper_bound:
                         if len(neighbors) == k:
                             heappop(neighbors)
-                        heappush(neighbors, (-ds[i], node.idx[i]))
+                        heappush(neighbors, (-ds[i], node.idxs[i]))
                         if len(neighbors) == k:
                             distance_upper_bound = -neighbors[0][0]
             else:
@@ -194,9 +205,10 @@ class Tree(object):
         else:
             return sorted([((-d)**(1./p),i) for (d,i) in neighbors])
 
+
     def query(self, x, k=1, eps=0, p=2, distance_upper_bound=np.inf):
         """
-        Query the kd-tree for nearest neighbors
+        Query the tree for nearest neighbors
 
         Parameters
         ----------
@@ -233,48 +245,6 @@ class Tree(object):
         i : integer or array of integers
             The locations of the neighbors in self.data. i is the same
             shape as d.
-
-        Examples
-        --------
-        >>> from scipy import spatial
-        >>> x, y = np.mgrid[0:5, 2:8]
-        >>> tree = spatial.KDTree(zip(x.ravel(), y.ravel()))
-        >>> tree.data
-        array([[0, 2],
-               [0, 3],
-               [0, 4],
-               [0, 5],
-               [0, 6],
-               [0, 7],
-               [1, 2],
-               [1, 3],
-               [1, 4],
-               [1, 5],
-               [1, 6],
-               [1, 7],
-               [2, 2],
-               [2, 3],
-               [2, 4],
-               [2, 5],
-               [2, 6],
-               [2, 7],
-               [3, 2],
-               [3, 3],
-               [3, 4],
-               [3, 5],
-               [3, 6],
-               [3, 7],
-               [4, 2],
-               [4, 3],
-               [4, 4],
-               [4, 5],
-               [4, 6],
-               [4, 7]])
-        >>> pts = np.array([[0, 0], [2.1, 2.9]])
-        >>> tree.query(pts)
-        (array([ 2.        ,  0.14142136]), array([ 0, 13]))
-        >>> tree.query(pts[0])
-        (2.0, 0)
 
         """
         x = np.asarray(x)
