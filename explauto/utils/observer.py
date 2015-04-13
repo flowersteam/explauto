@@ -21,7 +21,7 @@ class Observable(object):
 
     def emit(self, topic, message):
         logger.info('Emits message %s on topic %s', message, topic)
-        print topic, message
+        #print topic, message
 
         for subscriber in self.subscribers[topic]:
             subscriber._wrapped_handle_notification(topic, message)

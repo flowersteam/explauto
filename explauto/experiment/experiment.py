@@ -90,7 +90,6 @@ class Experiment(Observer):
 
     def _run(self, range_iter):
         for t in range_iter:
-            print "\nIteration :", t
             if t in self.eval_at and self.evaluation is not None:
                 self.evaluate()
 

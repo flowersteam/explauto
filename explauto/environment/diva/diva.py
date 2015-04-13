@@ -1,9 +1,10 @@
 import os
 import pymatlab
-from numpy import array, hstack
+from numpy import array, hstack, float32
 
 from ..environment import Environment
 from ...utils import bounds_min_max
+import pyaudio
 
 class DivaSynth:
     def __init__(self, sample_rate=11025):
@@ -32,6 +33,14 @@ class DivaEnvironment(Environment):
 
     def __init__(self, m_mins, m_maxs, s_mins, s_maxs, m_used = None, s_used = None, m_default = None, audio = False):
         Environment.__init__(self, m_mins, m_maxs, s_mins, s_maxs)
+        self.audio = audio
+        if self.audio:            
+            self.pa = pyaudio.PyAudio()
+            self.stream = pa.open(format=pyaudio.paFloat32,
+                            channels=1,
+                            rate=11025,
+                            output=True)
+            
         self.synth = DivaSynth()
         self.m_default = m_default
         if m_default is None:
@@ -50,6 +59,11 @@ class DivaEnvironment(Environment):
     def compute_sensori_effect(self, m_env):
         self.art[self.m_used] = m_env
         res = self.synth.execute(self.art.reshape(-1,1))[0]
+        
+        if self.audio:         
+            sound = self.sound_wave(self.art)
+            self.stream.write(sound.astype(float32).tostring())
+            
         return res[self.s_used]
 
     def sound_wave(self, art_traj):

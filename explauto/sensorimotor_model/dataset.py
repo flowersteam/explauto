@@ -181,7 +181,7 @@ class Dataset(object):
         @see Databag.nn() for argument description
         @return  distance and indexes of found nearest neighbors.
         """
-        print "dataset nn_x", len(x),  self.dim_x
+        #print "dataset nn_x", len(x),  self.dim_x
         assert len(x) == self.dim_x
         k_x = min(k, self.size)
         # Because linear models requires x vector to be extended to [1.0]+x
