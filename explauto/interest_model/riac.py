@@ -6,6 +6,9 @@ from scipy.spatial.kdtree import minkowski_distance_p
 from ..utils.utils import rand_bounds
 from heapq import heappop, heappush
 
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+
 
 
 class RiacInterest(InterestModel):
@@ -22,7 +25,7 @@ class RiacInterest(InterestModel):
         self.data_x = None
         self.data_c = None
 
-        self.tree = Tree(self.get_data_x, self.bounds, self.get_data_c, max_points_per_region, split_mode, competence_measure, progress_win_size, progress_measure)
+        self.tree = Tree(self.get_data_x, np.array(self.bounds, dtype=np.float), self.get_data_c, max_points_per_region, split_mode, competence_measure, progress_win_size, progress_measure)
         
         InterestModel.__init__(self, expl_dims)
 
@@ -172,11 +175,10 @@ class Tree(object):
         Add an index to the tree (recursive)
         
         """
+        if self.leafnode and self.children >= self.max_points_per_region:
+            self.split() 
         if self.leafnode:
-            if self.children >= self.max_points_per_region:
-                self.split()
-            else:                    
-                self.idxs.append(idx)
+            self.idxs.append(idx)
         else:
             if self.get_data_x()[idx, self.split_dim] >= self.split_value:
                 self.greater.add(idx)
@@ -184,6 +186,7 @@ class Tree(object):
                 self.less.add(idx)
         self.compute_progress()
         self.children = self.children + 1
+        #print "Added idx ", idx
     
     
     def split(self):
@@ -205,7 +208,7 @@ class Tree(object):
     
         less_idx = list(np.array(self.idxs)[np.nonzero(split_dim_data <= split_value)[0]])
         greater_idx = list(np.array(self.idxs)[np.nonzero(split_dim_data > split_value)[0]])
-        
+        #print "Split idxs:", self.idxs, less_idx, greater_idx
         self.leafnode = False
         self.idxs = None
         self.split_value = split_value
@@ -218,6 +221,7 @@ class Tree(object):
         g_bounds_x = np.array(self.bounds_x)
         g_bounds_x[0, self.split_dim] = split_value
         
+        #print "Split value", split_value#, l_bounds_x, g_bounds_x
         self.less = Tree(self.get_data_x, l_bounds_x, self.get_data_c, self.max_points_per_region, self.split_mode, self.competence_measure, self.progress_win_size, self.progress_measure, idxs = less_idx, split_dim = split_dim)
         self.greater = Tree(self.get_data_x, g_bounds_x, self.get_data_c, self.max_points_per_region, self.split_mode, self.competence_measure, self.progress_win_size, self.progress_measure, idxs = greater_idx, split_dim = split_dim)
         
@@ -404,8 +408,53 @@ class Tree(object):
             else:
                 raise ValueError("Requested %s nearest neighbors; acceptable numbers are integers greater than or equal to one, or None")
             
-    def plot(self):
-        pass
+            
+    def map_inter_node(self, f):
+        if not self.leafnode:
+            f(self)
+            self.less.map_inter_node(f)
+            self.greater.map_inter_node(f)
+            
+            
+    def map_leaf_node(self, f):
+        if not self.leafnode:
+            self.less.map_leaf_node(f)
+            self.greater.map_leaf_node(f)
+        else:
+            f(self)
+            
+                
+        
+            
+    def plot(self, ax, scatter = True, grid = True, progress_colors = False):
+        
+        if scatter:
+            ax.scatter(self.get_data_x()[:,0], self.get_data_x()[:,1])
+        
+        
+        if grid:
+            mins = self.bounds_x[0]
+            maxs = self.bounds_x[1]
+            
+            if progress_colors:
+                cmhot = plt.cm.get_cmap("hot")
+                def col(prog):
+                    comp_min = self.competence_measure(mins, maxs)
+                    comp_max = 0.
+            else:
+                ax.add_patch(patches.Rectangle(mins, maxs[0]-mins[0], maxs[1]-mins[1], fill=False)) #add facecolor= wrt progress
+                
+            if not self.leafnode:
+                self.less.plot(ax)
+                self.greater.plot(ax)
+        
+        
+
+
+
+
+
+
 
 
 interest_models = {'riac': (RiacInterest, {'default': {'max_points_per_region': 100,
@@ -414,47 +463,58 @@ interest_models = {'riac': (RiacInterest, {'default': {'max_points_per_region': 
                                                        'progress_win_size': 10,
                                                        'progress_measure': 'abs_deriv'}})}
 
+
+
+
+
+
+
+
 if __name__ == '__main__': 
     
-    n = 100000
-    k = 2
-    
-    bounds = np.zeros((2,k))
-    bounds[1,:] = 1
-
-    data_x = rand_bounds(bounds, n)
-    data_c = np.random.rand(n,1)
-    
-    def get_data_x():
-        return data_x
-    
-    def get_data_c():
-        return data_c
-    
-    max_points_per_region = 10
-    split_mode = 'median'
-    progress_win_size = 10
-    
-    print get_data_x, get_data_c
-     
-    tree = Tree(get_data_x, bounds, get_data_c, max_points_per_region, split_mode, competence_dist, progress_win_size, 'abs_deriv', range(n))
-     
-    print tree.sample()
-    print tree.progress
-    tree.add(42)
-     
-     
-    ####### FIND Neighrest Neighbors (might be useful)
-    import time
-    t = time.time()
-    dist, idx = tree.nn([0.5,0.5], k=20)
-    print "Time to find neighrest neighbors:", time.time() - t
-    print data_x[idx]
-    
+#     n = 100000
+#     k = 2
+#     
+#     bounds = np.zeros((2,k))
+#     bounds[1,:] = 1
+# 
+#     data_x = rand_bounds(bounds, n)
+#     data_c = np.random.rand(n,1)
+#     
+#     def get_data_x():
+#         return data_x
+#     
+#     def get_data_c():
+#         return data_c
+#     
+#     max_points_per_region = 5
+#     split_mode = 'median'
+#     progress_win_size = 10
+#     
+#     print get_data_x, get_data_c
+#      
+#     tree = Tree(get_data_x, bounds, get_data_c, max_points_per_region, split_mode, competence_dist, progress_win_size, 'abs_deriv', range(n))
+#      
+#     print tree.sample()
+#     print tree.progress
+#     tree.add(42)
+#      
+#      
+#     ####### FIND Neighrest Neighbors (might be useful)
+#     import time
+#     t = time.time()
+#     dist, idx = tree.nn([0.5,0.5], k=20)
+#     print "Time to find neighrest neighbors:", time.time() - t
+#     print data_x[idx]
+#     
     ####### TEST RiacInterest
     from ..utils.config import make_configuration
     from ..utils.utils import rand_bounds
     
+    max_points_per_region = 10
+    split_mode = 'median'
+    progress_win_size = 10
+
     m_mins = [0,0]
     m_maxs = [1,1]
     s_mins = [3,3]
@@ -465,7 +525,7 @@ if __name__ == '__main__':
     
     riac = RiacInterest(conf, expl_dims, max_points_per_region, split_mode, competence_dist, progress_win_size, 'abs_deriv')
     
-    print riac.sample()
+    print "Sample: ", riac.sample()
     
     for i in range(100):
         xy = rand_bounds(conf.bounds, 1)[0]
@@ -473,7 +533,49 @@ if __name__ == '__main__':
         #print "i", i, xy, ms
         riac.update(xy, ms)
         
-    print riac.tree.progress
+    print "Max leaf progress: ", riac.tree.progress
+    
+    #Count leaves
+    leaves = 0
+    def count_leaves(_):
+        global leaves
+        leaves += 1
+    riac.tree.map_leaf_node(count_leaves)
+    print "Number of leaves", leaves
         
+    #Count points
+    points = 0
+    def count_points(leaf):
+        global points
+        points += len(leaf.idxs)
+    riac.tree.map_leaf_node(count_points)
+    print "Number of points", points
+    
+    #Get point idxs
+    idxs = []
+    def getidxs(leaf):
+        global idxs
+        idxs += leaf.idxs
+    riac.tree.map_leaf_node(getidxs)
+    #print "idxs", sorted(idxs)
     
     
+    # Check that all leaves have less points than max allowed
+#     fails = 0
+#     def f(leaf):
+#         global fails, data_x
+#         #print "leaf points: ", riac.data_x[leaf.idxs]
+#         if len(leaf.idxs) > leaf.max_points_per_region:
+#             fails += 1
+#     riac.tree.map_leaf_node(f)
+#     print "Number of failures : ", fails     
+#     
+         
+    fig1 = plt.figure()
+    ax1 = fig1.add_subplot(111, aspect='equal')
+    plt.xlim((riac.tree.bounds_x[0,0],riac.tree.bounds_x[1,0]))
+    plt.ylim((riac.tree.bounds_x[0,1],riac.tree.bounds_x[1,1]))
+    riac.tree.plot(ax1)
+     
+    plt.show()
+     
