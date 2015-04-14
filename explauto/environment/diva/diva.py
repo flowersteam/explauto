@@ -4,7 +4,10 @@ from numpy import array, hstack, float32
 
 from ..environment import Environment
 from ...utils import bounds_min_max
-import pyaudio
+
+
+if not (os.environ.has_key('AVAKAS') and os.environ['AVAKAS']):
+    import pyaudio
 
 class DivaSynth:
     def __init__(self, sample_rate=11025):
