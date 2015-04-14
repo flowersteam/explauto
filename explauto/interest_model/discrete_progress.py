@@ -37,7 +37,8 @@ class DiscretizedProgress(InterestModel):
         return self.space.rand_value(index).flatten()
 
     def update(self, xy, ms):
-        measure = self.measure(xy, ms, dist_min=self.dist_min)
+        #measure = self.measure(xy, ms, dist_min=self.dist_min)
+        measure = self.measure(xy[self.expl_dims], ms[self.expl_dims], dist_min=self.dist_min) # Added [self.expl_dims] to consider competence only on explorator dimensions
         x = xy[self.expl_dims]
         x_index = self.space.index(x)
         ms_expl = ms[self.expl_dims]

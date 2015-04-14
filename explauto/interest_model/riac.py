@@ -1,92 +1,175 @@
 from .interest_model import InterestModel
 from .competences import competence_exp, competence_dist
+import numpy as np
 from numpy import mean, median
-from scipy.spatial.KDTree import minkowski_distance_p
+from scipy.spatial.kdtree import minkowski_distance_p
+from ..utils.utils import rand_bounds
+from heapq import heappop, heappush
+
 
 
 class RiacInterest(InterestModel):
-    def __init__(self, conf, expl_dims, max_points_per_region, split_mode, measure):
+    def __init__(self, conf, expl_dims, max_points_per_region, split_mode, competence_measure, progress_win_size, progress_measure):
         
         self.conf = conf
         self.max_points_per_region = max_points_per_region
         self.bounds = self.conf.bounds[:, expl_dims]
         # self.ndims = bounds.shape[1]
-        self.measure = measure #TODO check dist_min
+        self.competence_measure = competence_measure #TODO check dist_min
+        self.progress_win_size = progress_win_size
+        self.progress_measure = progress_measure
         
         self.data_x = None
         self.data_c = None
-        self.tree = Tree(data_x, data_c, max_points_per_region, split_mode)
+
+        self.tree = Tree(self.get_data_x, self.bounds, self.get_data_c, max_points_per_region, split_mode, competence_measure, progress_win_size, progress_measure)
         
         InterestModel.__init__(self, expl_dims)
 
     def sample(self):
-        return rand_bounds(self.bounds).flatten()
-
+        return self.tree.sample()
+    
+    def progress(self):
+        return self.tree.progress
+    
+    def get_data_x(self):
+        return self.data_x
+    
+    def get_data_c(self):
+        return self.data_c
+    
     def update(self, xy, ms):
-        # Add data, compute competence
-        pass
+        #print np.shape(self.data_x), np.shape(np.array([xy[self.expl_dims]]))
+        if self.data_x is None:
+            self.data_x = np.array([xy[self.expl_dims]])
+        else:
+            self.data_x = np.append(self.data_x, np.array([xy[self.expl_dims]]), axis=0)
+        if self.data_c is None:
+            self.data_c = np.array([self.competence_measure(xy, ms, dist_min=0)])
+        else:
+            self.data_c = np.append(self.data_c, self.competence_measure(xy, ms, dist_min=0)) 
+        self.tree.add(np.shape(self.data_x)[0]-1)
 
 
-interest_models = {'riac': (RiacInterest, {'default': {'max_points_per_region': 100,
-                                                       'split_mode': 'median',
-                                                       'measure': competence_dist}})}
 
 
 
 # Based on scipy.spatial.KDTree
 class Tree(object):
     """
-    kd-tree for quick nearest-neighbor lookup
-
-    This class provides an index into a set of k-dimensional points which
-    can be used to rapidly look up the nearest neighbors of any point.
-
-    Parameters
-    ----------
-    data : (N,K) array_like
-        The data points to be indexed. This array is not copied, and
-        so modifying this data will result in bogus results.
-    max_points_per_region : int
-        Maximum number of points per region. A given region is splited when this number is exceeded.
-
-    Raises
-    ------
-    RuntimeError
-        The maximum recursion limit can be exceeded for large data
-        sets.  If this happens, either increase the value for the `leafsize`
-        parameter or increase the recursion limit by::
-
-            >>> import sys
-            >>> sys.setrecursionlimit(10000)
-
+        Competence Progress Tree (recursive)
+        
+        This class provides an index into a set of k-dimensional points which
+        can be used to rapidly look up the nearest neighbors of any point.
+    
+        Parameters
+        ----------
+        get_data_x : (N,K) array_like
+            Function that return the data points to be indexed.
+        bounds_x : 
+            bounds on tree x domain
+        get_data_c : (N,K) array_like
+            Function that return the data points' competences.
+        max_points_per_region : int
+            Maximum number of points per region. A given region is splited when this number is exceeded.
+        split_mode : string
+            Mode to split a region: random, median.
+        competence_measure : measure
+        progress_win_size : Number of last points taken into account for progress computation
+        progress_measure : how to compute progress: 'abs_deriv'
+        
+        Raises
+        ------
+        RuntimeError
+            The maximum recursion limit can be exceeded for large data
+            sets.  If this happens, either increase the value for the `max_points_per_region`
+            parameter or increase the recursion limit by::
+    
+                >>> import sys
+                >>> sys.setrecursionlimit(10000)
+    
 
     """
-    def __init__(self, data_x, data_c, max_points_per_region, split_mode, idxs = [], split_dim = 0):
+    def __init__(self, get_data_x, bounds_x, get_data_c, max_points_per_region, split_mode, competence_measure, progress_win_size, progress_measure, idxs = [], split_dim = 0):
         #self.data = np.asarray(data)
-        if data_x is not None:
-            self.n, self.m = np.shape(self.data)
-        self.data_x = data_x
-        self.data_c = data_c
+        self.get_data_x = get_data_x
+        self.bounds_x = bounds_x
+        self.get_data_c = get_data_c
         self.max_points_per_region = max_points_per_region
         self.split_mode = split_mode
+        self.competence_measure = competence_measure #TODO check dist_min
+        self.progress_win_size = progress_win_size
+        self.progress_measure = progress_measure
 
         self.split_dim = split_dim
-        self.split = None
+        self.split_value = None
         self.less = None
         self.greater = None
         self.idxs = idxs
         self.children = len(self.idxs)
         
         self.leafnode = True
-        if data_c is not None:
-            self.competence = mean(self.data_c[self.idxs])#TODO get COMP
-        else:
-            self.competence = None
+        self.progress = None
+        
+        #print self.idxs
+        
+        if self.children > self.max_points_per_region:
+            self.split()
+        self.compute_progress()
             
+            
+    def sample(self):
+        """
+        Sample a point in the leaf region with max competence progress (recursive)
+        
+        """
+        if self.leafnode:
+            return rand_bounds(self.bounds_x).flatten()
+        else:
+            lp = self.less.progress
+            gp = self.greater.progress
+            if gp > lp:
+                return self.greater.sample()
+            else:
+                return self.less.sample()
+                
+            
+    def progress_all(self):
+        """
+        Competence progress of the overall tree
+        
+        """
+        return self.progress_idxs(range(np.shape(self.get_data_x())[0] - self.progress_win_size, np.shape(self.get_data_x())[0]))
     
+            
+    def progress_idxs(self, idxs):
+        """
+        Competence progress on points of given indexes
+        
+        """
+        if self.progress_measure == 'abs_deriv':
+            if len(idxs) <= 1:
+                return 0
+            else:
+                idxs = sorted(idxs)[- self.progress_win_size:]
+                return abs(np.cov(zip(range(len(idxs)), self.get_data_c()[idxs]), rowvar=0)[0, 1])
+        else:
+            raise NotImplementedError
+    
+    def compute_progress(self):
+        """
+        Compute max competence progress of sub-trees (not recursive)
+        
+        """
+        if self.leafnode:
+            self.progress = self.progress_idxs(self.idxs)
+        else:
+            self.progress = max(self.less.progress, self.greater.progress)
+            
+        
     def add(self, idx):
         """
-        Add an index to the tree
+        Add an index to the tree (recursive)
         
         """
         if self.leafnode:
@@ -94,12 +177,12 @@ class Tree(object):
                 self.split()
             else:                    
                 self.idxs.append(idx)
-                self.competence = mean(self.data_c[idxs])#TODO get COMP
         else:
-            if data[idx] >= split:
+            if self.get_data_x()[idx, self.split_dim] >= self.split_value:
                 self.greater.add(idx)
             else:
                 self.less.add(idx)
+        self.compute_progress()
         self.children = self.children + 1
     
     
@@ -108,24 +191,40 @@ class Tree(object):
         Split the leaf node
         
         """
-        if self.split_mode == 'median':
-            split_dim_data = self.data_x[self.idxs,self.split_dim] # data on split dim
-            split = median(split_dim_data)
-            less_idx = np.nonzero(split_dim_data <= split)[0]
-            greater_idx = np.nonzero(split_dim_data > split)[0]
+        if self.split_mode == 'random':
+            split_dim_data = self.get_data_x()[self.idxs,self.split_dim] # data on split dim
+            split_min = min(split_dim_data)
+            split_max = max(split_dim_data)
+            split_value = split_min + np.random.rand() * (split_max - split_min)
             
-            self.leafnode = False
-            self.idxs = None
-            self.split = split
-            self.less = Tree(data, comp, max_points_per_region, less_idx)
-            self.greater = Tree(data, comp, max_points_per_region, greater_idx)
+        elif self.split_mode == 'median':
+            split_dim_data = self.get_data_x()[self.idxs,self.split_dim] # data on split dim
+            split_value = median(split_dim_data)
         else:
             raise NotImplementedError
+    
+        less_idx = list(np.array(self.idxs)[np.nonzero(split_dim_data <= split_value)[0]])
+        greater_idx = list(np.array(self.idxs)[np.nonzero(split_dim_data > split_value)[0]])
+        
+        self.leafnode = False
+        self.idxs = None
+        self.split_value = split_value
+        
+        split_dim = np.mod(self.split_dim + 1, np.shape(self.get_data_x())[1])
+        
+        l_bounds_x = np.array(self.bounds_x)
+        l_bounds_x[1, self.split_dim] = split_value
+        
+        g_bounds_x = np.array(self.bounds_x)
+        g_bounds_x[0, self.split_dim] = split_value
+        
+        self.less = Tree(self.get_data_x, l_bounds_x, self.get_data_c, self.max_points_per_region, self.split_mode, self.competence_measure, self.progress_win_size, self.progress_measure, idxs = less_idx, split_dim = split_dim)
+        self.greater = Tree(self.get_data_x, g_bounds_x, self.get_data_c, self.max_points_per_region, self.split_mode, self.competence_measure, self.progress_win_size, self.progress_measure, idxs = greater_idx, split_dim = split_dim)
         
 
     def __query(self, x, k=1, eps=0, p=2, distance_upper_bound=np.inf):
 
-        side_distances = np.maximum(0,np.maximum(x-self.maxes,self.mins-x))
+        side_distances = np.maximum(0,np.maximum(x-self.bounds_x[1],self.bounds_x[0]-x))
         if p != np.inf:
             side_distances **= p
             min_distance = np.sum(side_distances)
@@ -159,7 +258,7 @@ class Tree(object):
             min_distance, side_distances, node = heappop(q)
             if node.leafnode:
                 # brute-force
-                data = self.data[node.idxs]
+                data = self.get_data_x()[node.idxs]
                 ds = minkowski_distance_p(data,x[np.newaxis,:],p)
                 for i in range(len(ds)):
                     if ds[i] < distance_upper_bound:
@@ -176,7 +275,7 @@ class Tree(object):
                     # since this is the nearest cell, we're done, bail out
                     break
                 # compute minimum distances to the children and push them on
-                if x[node.split_dim] < node.split:
+                if x[node.split_dim] < node.split_value:
                     near, far = node.less, node.greater
                 else:
                     near, far = node.greater, node.less
@@ -188,12 +287,12 @@ class Tree(object):
                 # on the split value
                 sd = list(side_distances)
                 if p == np.inf:
-                    min_distance = max(min_distance, abs(node.split-x[node.split_dim]))
+                    min_distance = max(min_distance, abs(node.split_value-x[node.split_dim]))
                 elif p == 1:
-                    sd[node.split_dim] = np.abs(node.split-x[node.split_dim])
+                    sd[node.split_dim] = np.abs(node.split_value-x[node.split_dim])
                     min_distance = min_distance - side_distances[node.split_dim] + sd[node.split_dim]
                 else:
-                    sd[node.split_dim] = np.abs(node.split-x[node.split_dim])**p
+                    sd[node.split_dim] = np.abs(node.split_value-x[node.split_dim])**p
                     min_distance = min_distance - side_distances[node.split_dim] + sd[node.split_dim]
 
                 # far child might be too far, if so, don't bother pushing it
@@ -204,9 +303,9 @@ class Tree(object):
             return sorted([(-d,i) for (d,i) in neighbors])
         else:
             return sorted([((-d)**(1./p),i) for (d,i) in neighbors])
-
-
-    def query(self, x, k=1, eps=0, p=2, distance_upper_bound=np.inf):
+        
+    
+    def nn(self, x, k=1, eps=0, p=2, distance_upper_bound=np.inf):
         """
         Query the tree for nearest neighbors
 
@@ -247,6 +346,7 @@ class Tree(object):
             shape as d.
 
         """
+        self.n, self.m = np.shape(self.get_data_x())
         x = np.asarray(x)
         if np.shape(x)[-1] != self.m:
             raise ValueError("x must consist of vectors of length %d but has shape %s" % (self.m, np.shape(x)))
@@ -303,3 +403,77 @@ class Tree(object):
                 return dd, ii
             else:
                 raise ValueError("Requested %s nearest neighbors; acceptable numbers are integers greater than or equal to one, or None")
+            
+    def plot(self):
+        pass
+
+
+interest_models = {'riac': (RiacInterest, {'default': {'max_points_per_region': 100,
+                                                       'split_mode': 'median',
+                                                       'competence_measure': competence_dist,
+                                                       'progress_win_size': 10,
+                                                       'progress_measure': 'abs_deriv'}})}
+
+if __name__ == '__main__': 
+    
+    n = 100000
+    k = 2
+    
+    bounds = np.zeros((2,k))
+    bounds[1,:] = 1
+
+    data_x = rand_bounds(bounds, n)
+    data_c = np.random.rand(n,1)
+    
+    def get_data_x():
+        return data_x
+    
+    def get_data_c():
+        return data_c
+    
+    max_points_per_region = 10
+    split_mode = 'median'
+    progress_win_size = 10
+    
+    print get_data_x, get_data_c
+     
+    tree = Tree(get_data_x, bounds, get_data_c, max_points_per_region, split_mode, competence_dist, progress_win_size, 'abs_deriv', range(n))
+     
+    print tree.sample()
+    print tree.progress
+    tree.add(42)
+     
+     
+    ####### FIND Neighrest Neighbors (might be useful)
+    import time
+    t = time.time()
+    dist, idx = tree.nn([0.5,0.5], k=20)
+    print "Time to find neighrest neighbors:", time.time() - t
+    print data_x[idx]
+    
+    ####### TEST RiacInterest
+    from ..utils.config import make_configuration
+    from ..utils.utils import rand_bounds
+    
+    m_mins = [0,0]
+    m_maxs = [1,1]
+    s_mins = [3,3]
+    s_maxs = [4,4]
+    conf = make_configuration(m_mins, m_maxs, s_mins, s_maxs)
+    
+    expl_dims = [2,3]
+    
+    riac = RiacInterest(conf, expl_dims, max_points_per_region, split_mode, competence_dist, progress_win_size, 'abs_deriv')
+    
+    print riac.sample()
+    
+    for i in range(100):
+        xy = rand_bounds(conf.bounds, 1)[0]
+        ms = rand_bounds(conf.bounds, 1)[0]
+        #print "i", i, xy, ms
+        riac.update(xy, ms)
+        
+    print riac.tree.progress
+        
+    
+    
