@@ -583,12 +583,10 @@ if __name__ == '__main__':
     
     import matplotlib.colorbar as cbar
     cax, _ = cbar.make_axes(ax) 
-    cb2 = cbar.ColorbarBase(cax, cmap=plt.cm.jet) 
-    cb2.set_label('Normalized Competence Progress')
-#     cb2.set_ticks(linspace(0,riac.progress(), riac.progress()/5.))
-#     cb2.set_ticklabels(linspace(0,riac.progress(), riac.progress()/5.))
-    #PCM=ax.get_children()[2]
-    #plt.colorbar(PCM, ax=ax)
+    cb = cbar.ColorbarBase(cax, cmap=plt.cm.jet) 
+    cb.set_label('Normalized Competence Progress')
+#     cb2.set_ticks(linspace(0,riac.progress(), 5.))
+#     cb2.set_ticklabels(linspace(0,riac.progress(), 5.))
      
     plt.show()
      
