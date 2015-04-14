@@ -1,13 +1,12 @@
 from .interest_model import InterestModel
 from .competences import competence_exp, competence_dist
 import numpy as np
-from numpy import mean, median
+from numpy import mean, median, linspace
 from scipy.spatial.kdtree import minkowski_distance_p
 from ..utils.utils import rand_bounds
 from heapq import heappop, heappush
 
 import matplotlib.pyplot as plt
-import matplotlib.patches as patches
 
 
 
@@ -426,29 +425,31 @@ class Tree(object):
                 
         
             
-    def plot(self, ax, scatter = True, grid = True, progress_colors = False):
+    def plot(self, ax, scatter = True, grid = True, progress_colors = True, progress_max = 1.):
+        
+        if self.leafnode:
+            
+            if grid:
+                mins = self.bounds_x[0]
+                maxs = self.bounds_x[1]
+                
+                if progress_colors:
+                    prog_min = 0.
+                    c = plt.cm.jet((self.progress - prog_min) / (progress_max - prog_min))
+                    #print (self.progress - prog_min) / (progress_max - prog_min)
+                    
+                    ax.add_patch(plt.Rectangle(mins, maxs[0]-mins[0], maxs[1]-mins[1], color=c, alpha = 0.7))
+                    
+                else:
+                    ax.add_patch(plt.Rectangle(mins, maxs[0]-mins[0], maxs[1]-mins[1], fill=False))
+                    
+        else:
+            self.less.plot(ax, False, grid, progress_colors, progress_max)
+            self.greater.plot(ax, False, grid, progress_colors, progress_max)
+        
         
         if scatter:
-            ax.scatter(self.get_data_x()[:,0], self.get_data_x()[:,1])
-        
-        
-        if grid:
-            mins = self.bounds_x[0]
-            maxs = self.bounds_x[1]
-            
-            if progress_colors:
-                cmhot = plt.cm.get_cmap("hot")
-                def col(prog):
-                    comp_min = self.competence_measure(mins, maxs)
-                    comp_max = 0.
-            else:
-                ax.add_patch(patches.Rectangle(mins, maxs[0]-mins[0], maxs[1]-mins[1], fill=False)) #add facecolor= wrt progress
-                
-            if not self.leafnode:
-                self.less.plot(ax)
-                self.greater.plot(ax)
-        
-        
+            ax.scatter(self.get_data_x()[:,0], self.get_data_x()[:,1], color = 'black')
 
 
 
@@ -527,7 +528,7 @@ if __name__ == '__main__':
     
     print "Sample: ", riac.sample()
     
-    for i in range(100):
+    for i in range(1000):
         xy = rand_bounds(conf.bounds, 1)[0]
         ms = rand_bounds(conf.bounds, 1)[0]
         #print "i", i, xy, ms
@@ -572,10 +573,22 @@ if __name__ == '__main__':
 #     
          
     fig1 = plt.figure()
-    ax1 = fig1.add_subplot(111, aspect='equal')
+    ax = fig1.add_subplot(111, aspect='equal')
     plt.xlim((riac.tree.bounds_x[0,0],riac.tree.bounds_x[1,0]))
     plt.ylim((riac.tree.bounds_x[0,1],riac.tree.bounds_x[1,1]))
-    riac.tree.plot(ax1)
+    plt.xlabel('X')
+    plt.ylabel('Y')
+    plt.title('R-IAC tiling')
+    riac.tree.plot(ax, True, True, True, riac.progress())
+    
+    import matplotlib.colorbar as cbar
+    cax, _ = cbar.make_axes(ax) 
+    cb2 = cbar.ColorbarBase(cax, cmap=plt.cm.jet) 
+    cb2.set_label('Normalized Competence Progress')
+#     cb2.set_ticks(linspace(0,riac.progress(), riac.progress()/5.))
+#     cb2.set_ticklabels(linspace(0,riac.progress(), riac.progress()/5.))
+    #PCM=ax.get_children()[2]
+    #plt.colorbar(PCM, ax=ax)
      
     plt.show()
      
