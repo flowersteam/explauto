@@ -17,6 +17,9 @@ class RiacInterest(InterestModel):
         self.bounds = self.conf.bounds[:, expl_dims]
         self.competence_measure = competence_measure
         
+        if progress_win_size >= max_points_per_region:
+            print "WARNING: progress_win_size should be < max_points_per_region"
+        
         self.data_x = None
         self.data_c = None
 
@@ -88,10 +91,10 @@ class Tree(object):
     
 
     """
-    def __init__(self, get_data_x, bounds_x, get_data_c, max_points_per_region = 10, split_mode = 'median', progress_win_size = 5, progress_measure = 'abs_deriv', sampling_mode = 'best', idxs = [], split_dim = 0):
+    def __init__(self, get_data_x, bounds_x, get_data_c, max_points_per_region = 10, split_mode = 'median', progress_win_size = 5, progress_measure = 'abs_deriv', sampling_mode = ['softmax',0.1], idxs = [], split_dim = 0):
         
         self.get_data_x = get_data_x
-        self.bounds_x = bounds_x
+        self.bounds_x = np.array(bounds_x, dtype=np.float64)
         self.get_data_c = get_data_c
         self.max_points_per_region = max_points_per_region
         self.split_mode = split_mode
@@ -107,7 +110,7 @@ class Tree(object):
         self.children = len(self.idxs)
         
         self.leafnode = True
-        self.progress = None
+        self.progress = 0
         
         #print self.idxs
         
@@ -126,7 +129,6 @@ class Tree(object):
         return self.fold_up(lambda fl,fg:max(fl+1,fg+1), lambda leaf:0)
     
     def volume(self):
-        print "Volume", self.bounds_x, np.prod(self.bounds_x[1,:]-self.bounds_x[0,:])
         return np.prod(self.bounds_x[1,:]-self.bounds_x[0,:])
     
     def density(self):
@@ -152,7 +154,7 @@ class Tree(object):
             
         #print sampling_mode
         
-        if sampling_mode == 'random':
+        if sampling_mode[0] == 'random':
             rand_mode = 'by_area'
             if rand_mode == 'by_leaf':
                 return np.random.choice(self.get_leaves()).sample_bounds()
@@ -163,32 +165,49 @@ class Tree(object):
                 else:
                     split_ratio = (self.split_value-self.bounds_x[0,self.split_dim]) / (self.bounds_x[1,self.split_dim]-self.bounds_x[0,self.split_dim])
                     if split_ratio > np.random.random():
-                        return self.less.sample(sampling_mode='random')
+                        return self.less.sample(sampling_mode=['random'])
                     else:
-                        return self.greater.sample(sampling_mode='random')
+                        return self.greater.sample(sampling_mode=['random'])
                 
-        elif sampling_mode == 'best':
+        elif sampling_mode[0] == 'greedy':
             if self.leafnode:
                 return self.sample_bounds()
             else:
                 lp = self.less.progress
                 gp = self.greater.progress
                 if gp > lp:
-                    return self.greater.sample(sampling_mode='best')
+                    return self.greater.sample(sampling_mode=['greedy'])
                 else:
-                    return self.less.sample(sampling_mode='best')
+                    return self.less.sample(sampling_mode=['greedy'])
                 
-        elif sampling_mode == 'epsilon_gready':
-            eps = 0.2
+        elif sampling_mode[0] == 'epsilon_greedy':
+            eps = sampling_mode[1]
             if eps > np.random.random():
-                return self.sample(sampling_mode='random')
+                return self.sample(sampling_mode=['random'])
             else:
-                return self.sample(sampling_mode='best')
+                return self.sample(sampling_mode=['greedy'])
                 
-        elif sampling_mode == 'softmax':
-            pass
+        elif sampling_mode[0] == 'softmax':
+            if self.leafnode:
+                return self.sample_bounds()
+            else:
+                temperature = sampling_mode[1]
+                
+                leaves = self.get_leaves()
+                #print leaves[0].leafnode
+                #print map(lambda leaf:leaf.progress, leaves)
+                progresses = np.array(map(lambda leaf:leaf.progress*leaf.volume(), leaves)) #by area
+                progress_max = max(progresses)
+                probas = np.exp(progresses / (progress_max*temperature))
+                probas = probas / np.sum(probas)
+                
+                #print "Softmax", progresses, probas
+                leaf = leaves[np.where(np.random.multinomial(1, probas)==1)[0][0]]
+                return leaf.sample_bounds()
+            
+            
         else:
-            raise NotImplementedError
+            raise NotImplementedError(sampling_mode)
             
             
     def progress_all(self):
@@ -209,6 +228,7 @@ class Tree(object):
                 return 0
             else:
                 idxs = sorted(idxs)[- self.progress_win_size:]
+                #print "progress_idxs", idxs, self.get_data_c()[idxs], np.cov(zip(range(len(idxs)), self.get_data_c()[idxs]), rowvar=0)[0, 1]
                 return abs(np.cov(zip(range(len(idxs)), self.get_data_c()[idxs]), rowvar=0)[0, 1])
         else:
             raise NotImplementedError
@@ -221,6 +241,7 @@ class Tree(object):
         """
         if self.leafnode:
             self.progress = self.progress_idxs(self.idxs)
+            #print "leaf progress:", self.progress, self.idxs
         else:
             self.progress = max(self.less.progress, self.greater.progress)
             
@@ -533,6 +554,9 @@ class Tree(object):
             
     def plot(self, ax, scatter = True, grid = True, progress_colors = True, progress_max = 1., depth = 10):
         
+        if scatter and self.get_data_x() is not None and np.shape(self.get_data_x())[0] <= 5000:
+            ax.scatter(self.get_data_x()[:,0], self.get_data_x()[:,1], color = 'black')
+            
         if self.leafnode or depth == 0:
             
             if grid:
@@ -557,8 +581,6 @@ class Tree(object):
             self.greater.plot(ax, False, grid, progress_colors, progress_max, depth-1)
         
         
-        if scatter and self.get_data_x() is not None and np.shape(self.get_data_x())[0] <= 5000:
-            ax.scatter(self.get_data_x()[:,0], self.get_data_x()[:,1], color = 'black')
 
 
 
@@ -567,12 +589,12 @@ class Tree(object):
 
 
 
-interest_models = {'riac': (RiacInterest, {'default': {'max_points_per_region': 100,
+interest_models = {'riac': (RiacInterest, {'default': {'max_points_per_region': 50,
                                                        'split_mode': 'best_interest_diff',
                                                        'competence_measure': competence_dist,
-                                                       'progress_win_size': 10,
+                                                       'progress_win_size': 20,
                                                        'progress_measure': 'abs_deriv',                                                       
-                                                       'sampling_mode': 'best'}})}
+                                                       'sampling_mode': ['softmax',0.1]}})}
 
 
 
@@ -582,7 +604,13 @@ interest_models = {'riac': (RiacInterest, {'default': {'max_points_per_region': 
 
 
 if __name__ == '__main__': 
-    
+# Tested from explauto/ with python -m explauto.interest_model.riac
+
+
+######################################
+########## TEST TREE #################
+######################################
+
 #     n = 100000
 #     k = 2
 #     
@@ -618,17 +646,29 @@ if __name__ == '__main__':
 #     print "Time to find neighrest neighbors:", time.time() - t
 #     print data_x[idx]
 #     
-    ####### TEST RiacInterest
+
+######################################
+########## TEST RiacInterest #########
+######################################
+
     from ..utils.config import make_configuration
     from ..utils.utils import rand_bounds
     
     np.random.seed(1)
     
     max_points_per_region = 20
-    #split_mode = 'best_interest_diff'
-    split_mode = 'median'
-    progress_win_size = 20
-    sampling_mode = 'epsilon_gready'
+    split_mode = 'best_interest_diff'
+    #split_mode = 'median'
+    #split_mode = 'middle'
+    
+    # WARNING: progress_win_size has to be < than max_points_per_region. 
+    # If not, an improbably low competence will forever (in subtrees) 
+    # be taken into account in the computation of progress, leading to high progress 
+    # (if progress_measure='abs_deriv') and sampling forever in that region
+    progress_win_size = 10  
+    sampling_mode = ['softmax',0.1]
+    #sampling_mode = ['epsilon_greedy',0.2]
+    #sampling_mode = ['greedy']
 
     m_mins = [0,0]
     m_maxs = [1,1]
@@ -640,43 +680,21 @@ if __name__ == '__main__':
     
     riac = RiacInterest(conf, expl_dims, max_points_per_region, split_mode, competence_dist, progress_win_size, 'abs_deriv', sampling_mode)
     
-    print "Sample: ", riac.sample()
+    #print "Sample: ", riac.sample()
     
     
-    # TEST UNIFORM RANDOM POINTS
+    # TEST UNIFORM RANDOM POINTS BATCH
     
-#     n = 1000
-#     xys = []
-#     mss = []
-#     for i in range(n):
-#         xys.append(rand_bounds(conf.bounds, 1)[0])
-#         mss.append(rand_bounds(conf.bounds, 1)[0])
-#         
-#     for i in range(n): # updated after for random seed purpose
-#         riac.update(xys[i], mss[i])
+    n = 1000
+    xys = []
+    mss = []
+    for i in range(n):
+        xys.append(rand_bounds(conf.bounds, 1)[0])
+        mss.append(rand_bounds(conf.bounds, 1)[0])
+         
+    for i in range(n): # updated after for random seed purpose
+        riac.update(xys[i], mss[i])
 
-#     fig1 = plt.figure()
-#     ax = fig1.add_subplot(111, aspect='equal')
-#     plt.xlim((riac.tree.bounds_x[0,0],riac.tree.bounds_x[1,0]))
-#     plt.ylim((riac.tree.bounds_x[0,1],riac.tree.bounds_x[1,1]))
-#     plt.xlabel('X')
-#     plt.ylabel('Y')
-#     plt.title('R-IAC tiling')
-#     riac.tree.plot(ax, True, True, True, riac.progress())
-#     
-#          
-#     print "Max leaf progress: ", riac.tree.progress
-#     import matplotlib.colorbar as cbar
-#     cax, _ = cbar.make_axes(ax) 
-#     cb = cbar.ColorbarBase(cax, cmap=plt.cm.jet) 
-#     cb.set_label('Normalized Competence Progress')
-         
-         
-
-# TEST PROGRESSING SAMPLING
-         
-    n = 20000
-         
     fig1 = plt.figure()
     ax = fig1.add_subplot(111, aspect='equal')
     plt.xlim((riac.tree.bounds_x[0,0],riac.tree.bounds_x[1,0]))
@@ -685,9 +703,32 @@ if __name__ == '__main__':
     plt.ylabel('Y')
     plt.title('R-IAC tiling')
     riac.tree.plot(ax, True, True, True, riac.progress())
-    
-    print "Number of leaves:", len(riac.tree.get_leaves())
+     
+          
     print "Max leaf progress: ", riac.tree.progress
+    import matplotlib.colorbar as cbar
+    cax, _ = cbar.make_axes(ax) 
+    cb = cbar.ColorbarBase(cax, cmap=plt.cm.jet) 
+    cb.set_label('Normalized Competence Progress')
+         
+         
+
+# TEST PROGRESSING SAMPLING
+         
+    n = 3000
+         
+    fig1 = plt.figure()
+    ax = fig1.add_subplot(111, aspect='equal')
+    ax.set_xlim((riac.tree.bounds_x[0,0],riac.tree.bounds_x[1,0]))
+    ax.set_ylim((riac.tree.bounds_x[0,1],riac.tree.bounds_x[1,1]))
+    riac.tree.plot(ax, True, True, True, riac.progress())
+    
+    plt.xlabel('X')
+    plt.ylabel('Y')
+    plt.title('R-IAC tiling')
+    
+    #print "Number of leaves:", len(riac.tree.get_leaves())
+    #print "Max leaf progress: ", riac.tree.progress
     import matplotlib.colorbar as cbar
     cax, _ = cbar.make_axes(ax) 
     cb = cbar.ColorbarBase(cax, cmap=plt.cm.jet) 
@@ -695,40 +736,67 @@ if __name__ == '__main__':
 #     cb2.set_ticks(linspace(0,riac.progress(), 5.))
 #     cb2.set_ticklabels(linspace(0,riac.progress(), 5.))
     plt.ion()
-    
+    plt.show()
+    mng = plt.get_current_fig_manager()
+    mng.resize(*mng.window.maxsize())
+
     
     for i in range(n):
+        # SAMPLE A POINT, COMPUTE A SIMULATED REACHED POINT, ADD IT TO THE INTEREST MODEL
         xy = rand_bounds(conf.bounds, 1)[0]
         ms = rand_bounds(conf.bounds, 1)[0]
         sample = riac.tree.sample()
-        print "Sampled point: ", sample
+        #print "Sampled point: ", sample
         #print np.random.choice(riac.tree.get_leaves()).sample_bounds()
         xy[expl_dims] = sample
         
+        
+        # HERE we try to simulate a competence based on the quantity of exploration in the region, with more progress in the middle of the map
+        # Not sure how it can be interpreted
+        # Need robotic setup for ecological testing
+        
         leaf = riac.tree.pt2leaf(sample)
         density = leaf.density()
-        print "Density:", density
+#         if i > 0:
+#             print "comps", leaf.get_data_c()[leaf.idxs]
+        #print "Density:", density
         
         center = [3.5, 3.5]
         dist = np.linalg.norm(xy[expl_dims]- center)
-        dist_reached = 0.1*100./(density*dist) + 0.001
+        #print "dist", dist
+        if density < 5000:
+            dist_reached = 1.*5000./((density+1)*(dist+0.1))
+        else:
+            dist_reached = 1./(dist+0.1)
+            
         #ms[expl_dims] = np.random.normal(sample, eps)
+        #print "dist_reached", dist_reached
+        dist_reached = dist_reached + np.random.random()*0.001
         ms[expl_dims] = [sample[0]+dist_reached, sample[1]]
-
         #print "Number of leaves:", len(riac.tree.get_leaves())
         #print sample
         
         
-        
+        # ADD SAMPLE
         riac.update(xy, ms)
+        
+        # UPDATE PLOT
         if np.mod(i+1,100)==0:
-            print i+1
-            print "Tree depth:", riac.tree.depth()
-            print "Progress", riac.progress()
+            print "Iteration:", i+1, " Tree depth:", riac.tree.depth(), " Progress:", riac.progress()
             ax.clear()
-            riac.tree.plot(ax, False, True, True, 1., 12)#riac.progress())
+            riac.tree.plot(ax, False, True, True, 10., 12)#riac.progress())
             plt.draw()
             plt.show()
+    
+    ax.clear()
+    riac.tree.plot(ax, True, True, True, riac.progress(), 12)
+    ax.set_xlim((riac.tree.bounds_x[0,0],riac.tree.bounds_x[1,0]))
+    ax.set_ylim((riac.tree.bounds_x[0,1],riac.tree.bounds_x[1,1]))
+    plt.draw()
+
+    print "Sampling in max progress region: ", riac.tree.sample(['greedy'])
+    dists, idxs = riac.tree.nn(center, 10)
+    print "Nearest Neighbors:", riac.get_data_x()[idxs]
     
     plt.ioff()
     plt.show()
