@@ -65,19 +65,26 @@ class Tree(object):
     
         Parameters
         ----------
-        get_data_x : (N,K) array_like
+        get_data_x : (N,K) array
             Function that return the data points to be indexed.
-        bounds_x : 
-            bounds on tree x domain
+        bounds_x : (2,K) array
+            Bounds on tree's domain ([mins,maxs])
         get_data_c : (N,K) array_like
             Function that return the data points' competences.
         max_points_per_region : int
             Maximum number of points per region. A given region is splited when this number is exceeded.
         split_mode : string
             Mode to split a region: random, median.
-        competence_measure : measure
-        progress_win_size : Number of last points taken into account for progress computation
-        progress_measure : how to compute progress: 'abs_deriv'
+        progress_win_size : int
+            Number of last points taken into account for progress computation (should be < max_points_per_region)
+        progress_measure : string
+            How to compute progress: 'abs_deriv'
+        sampling_mode : list 
+            How to sample a point in the tree: ['greedy'], ['random'], ['epsilon_greedy', eps], ['softmax', temperature] 
+        idxs : list 
+            List of indices to begin with
+        split_dim : int
+            Dimension on which the next split will take place
         
         Raises
         ------
@@ -118,23 +125,44 @@ class Tree(object):
             self.split()
         self.compute_progress()
             
-    def sample_bounds(self):
-        s = rand_bounds(self.bounds_x).flatten()
-        return s
         
     def get_leaves(self):
+        """
+        Get the list of all leaves
+        
+        """
         return self.fold_up(lambda fl,fg:fl + fg, lambda leaf:[leaf])
     
+    
     def depth(self):
+        """
+        Compute the depth of the tree (depth of a leaf=0)
+        
+        """
         return self.fold_up(lambda fl,fg:max(fl+1,fg+1), lambda leaf:0)
     
+    
     def volume(self):
+        """
+        Compute the volume of the node
+        
+        """
         return np.prod(self.bounds_x[1,:]-self.bounds_x[0,:])
     
+    
     def density(self):
+        """
+        Compute the density of the node
+        
+        """
         return self.children / self.volume()
     
+    
     def pt2leaf(self, x):
+        """
+        Get the leaf which domain contains x
+        
+        """
         if self.leafnode:
             return self
         else:
@@ -143,6 +171,15 @@ class Tree(object):
             else:
                 return self.greater.pt2leaf(x)
         
+        
+    def sample_bounds(self):
+        """
+        Sample a point in the region of this node
+        
+        """
+        s = rand_bounds(self.bounds_x).flatten()
+        return s
+    
         
     def sample(self, sampling_mode = None):
         """
@@ -155,11 +192,13 @@ class Tree(object):
         #print sampling_mode
         
         if sampling_mode[0] == 'random':
-            rand_mode = 'by_area'
-            if rand_mode == 'by_leaf':
+            rand_mode = 'by_volume'
+            if rand_mode == 'by_leaf': 
+                # Choose a leaf randomly
                 return np.random.choice(self.get_leaves()).sample_bounds()
                 
-            elif rand_mode == 'by_area':
+            elif rand_mode == 'by_volume': 
+                # Choose a leaf weighted by volume, randomly
                 if self.leafnode:
                     return self.sample_bounds()
                 else:
@@ -170,6 +209,7 @@ class Tree(object):
                         return self.greater.sample(sampling_mode=['random'])
                 
         elif sampling_mode[0] == 'greedy':
+            # Choose the leaf with the max progress
             if self.leafnode:
                 return self.sample_bounds()
             else:
@@ -181,6 +221,7 @@ class Tree(object):
                     return self.less.sample(sampling_mode=['greedy'])
                 
         elif sampling_mode[0] == 'epsilon_greedy':
+            # Choose the leaf with the max progress with probability (1-eps) and a random leaf with probability (eps).
             eps = sampling_mode[1]
             if eps > np.random.random():
                 return self.sample(sampling_mode=['random'])
@@ -188,6 +229,7 @@ class Tree(object):
                 return self.sample(sampling_mode=['greedy'])
                 
         elif sampling_mode[0] == 'softmax':
+            # Sample leaves with probabilities progress*volume and a softmax exploration (with a temperature parameter)
             if self.leafnode:
                 return self.sample_bounds()
             else:
@@ -196,7 +238,7 @@ class Tree(object):
                 leaves = self.get_leaves()
                 #print leaves[0].leafnode
                 #print map(lambda leaf:leaf.progress, leaves)
-                progresses = np.array(map(lambda leaf:leaf.progress*leaf.volume(), leaves)) #by area
+                progresses = np.array(map(lambda leaf:leaf.progress*leaf.volume(), leaves)) #by volume
                 progress_max = max(progresses)
                 probas = np.exp(progresses / (progress_max*temperature))
                 probas = probas / np.sum(probas)
@@ -204,7 +246,6 @@ class Tree(object):
                 #print "Softmax", progresses, probas
                 leaf = leaves[np.where(np.random.multinomial(1, probas)==1)[0][0]]
                 return leaf.sample_bounds()
-            
             
         else:
             raise NotImplementedError(sampling_mode)
@@ -272,27 +313,31 @@ class Tree(object):
         
         """
         if self.split_mode == 'random':
+            # Split randomly between min and max of node's points on split dimension
             split_dim_data = self.get_data_x()[self.idxs,self.split_dim] # data on split dim
             split_min = min(split_dim_data)
             split_max = max(split_dim_data)
             split_value = split_min + np.random.rand() * (split_max - split_min)
             
         elif self.split_mode == 'median':
+            # Split on median (which fall on the middle of two points for even max_points_per_region) of node's points on split dimension
             split_dim_data = self.get_data_x()[self.idxs,self.split_dim] # data on split dim
             split_value = median(split_dim_data)
             #print "median split", split_dim_data, split_value
             
         elif self.split_mode == 'middle':
+            # Split on the middle of the region: might cause empty leaf
             split_dim_data = self.get_data_x()[self.idxs,self.split_dim] # data on split dim
             split_value = (self.bounds_x[0, self.split_dim] + self.bounds_x[1, self.split_dim])/2
             
-        # See Baranes2012: Active Learning of Inverse Models with Intrinsically Motivated Goal Exploration in Robots
         elif self.split_mode == 'best_interest_diff': 
+            # See Baranes2012: Active Learning of Inverse Models with Intrinsically Motivated Goal Exploration in Robots
+            # choose between random split values the one that maximizes card(less)*card(greater)* progress difference between the two
             split_dim_data = self.get_data_x()[self.idxs,self.split_dim] # data on split dim
             split_min = min(split_dim_data)
             split_max = max(split_dim_data)
                         
-            m = self.max_points_per_region
+            m = self.max_points_per_region # Constant that might be tuned: number of random split values to choose between
             rand_splits = split_min + np.random.rand(m) * (split_max - split_min)
             splits_fitness = np.zeros(m)
             for i in range(m):
@@ -506,23 +551,13 @@ class Tree(object):
                 return dd, ii
             else:
                 raise ValueError("Requested %s nearest neighbors; acceptable numbers are integers greater than or equal to one, or None")
-            
-            
-    def map_node(self, f, mode='before'):
-        if self.leafnode:
-            f(self)
-        else:
-            if mode == 'before':
-                f(self)
-            self.less.map_node(f)
-            if mode == 'middle':
-                f(self)
-            self.greater.map_node(f)
-            if mode == 'after':
-                f(self)
-                
+         
                 
     def fold_up(self, f_inter, f_leaf):
+        """
+        Apply recursively the function f_inter from leaves to root, begining with function f_leaf on leaves.
+        
+        """
         if self.leafnode:
             return f_leaf(self)
         else:
@@ -530,29 +565,26 @@ class Tree(object):
                            self.greater.fold_up(f_inter, f_leaf))
                         
                 
-    def map_inter_node(self, f, mode='before'):
-        if not self.leafnode:
-            if mode == 'before':
-                f(self)
-            self.less.map_inter_node(f)
-            if mode == 'middle':
-                f(self)
-            self.greater.map_inter_node(f)
-            if mode == 'after':
-                f(self)
-            
-            
-    def map_leaf_node(self, f):
-        if not self.leafnode:
-            self.less.map_leaf_node(f)
-            self.greater.map_leaf_node(f)
-        else:
-            f(self)
-            
-                
-        
             
     def plot(self, ax, scatter = True, grid = True, progress_colors = True, progress_max = 1., depth = 10):
+        """
+        Plot the 2D Tree in different ways.
+        
+        Parameters
+        ----------
+        ax : plt axis
+        scatter : bool
+            If the points are ploted
+        grid : bool
+            If the leaves' bounds are ploted
+        progress_colors : bool
+            If rectangles are filled with colors based on progress 
+        progress_max : float
+            Max progress on color scale (will be ploted as 1.)
+        depth : int
+            Max depth of the ploted nodes
+        
+        """
         
         if scatter and self.get_data_x() is not None and np.shape(self.get_data_x())[0] <= 5000:
             ax.scatter(self.get_data_x()[:,0], self.get_data_x()[:,1], color = 'black')
