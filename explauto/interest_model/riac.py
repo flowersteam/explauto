@@ -1,17 +1,26 @@
+import time
+import numpy as np
+import matplotlib.pyplot as plt
+from heapq import heappop, heappush
+from scipy.spatial.kdtree import minkowski_distance_p
+
 from .interest_model import InterestModel
 from .competences import competence_exp, competence_dist
-import numpy as np
-from numpy import mean, median, linspace
-from scipy.spatial.kdtree import minkowski_distance_p
 from ..utils.utils import rand_bounds
-from heapq import heappop, heappush
-
-import matplotlib.pyplot as plt
+from ..utils.config import make_configuration
 
 
 
 class RiacInterest(InterestModel):
-    def __init__(self, conf, expl_dims, max_points_per_region, split_mode, competence_measure, progress_win_size, progress_measure, sampling_mode):
+    def __init__(self, 
+                 conf, 
+                 expl_dims, 
+                 max_points_per_region, 
+                 split_mode, 
+                 competence_measure, 
+                 progress_win_size, 
+                 progress_measure, 
+                 sampling_mode):
         
         self.conf = conf
         self.bounds = self.conf.bounds[:, expl_dims]
@@ -23,7 +32,15 @@ class RiacInterest(InterestModel):
         self.data_x = None
         self.data_c = None
 
-        self.tree = Tree(self.get_data_x, np.array(self.bounds, dtype=np.float), self.get_data_c, max_points_per_region, split_mode, progress_win_size, progress_measure, sampling_mode)
+        self.tree = Tree(self.get_data_x, 
+                         np.array(self.bounds, dtype=np.float), 
+                         self.get_data_c, 
+                         max_points_per_region=max_points_per_region, 
+                         split_mode=split_mode, 
+                         progress_win_size=progress_win_size, 
+                         progress_measure=progress_measure, 
+                         sampling_mode=sampling_mode,
+                         idxs=[])
         
         InterestModel.__init__(self, expl_dims)
 
@@ -82,7 +99,7 @@ class Tree(object):
         sampling_mode : list 
             How to sample a point in the tree: ['greedy'], ['random'], ['epsilon_greedy', eps], ['softmax', temperature] 
         idxs : list 
-            List of indices to begin with
+            List of indices to start with
         split_dim : int
             Dimension on which the next split will take place
         
@@ -98,7 +115,17 @@ class Tree(object):
     
 
     """
-    def __init__(self, get_data_x, bounds_x, get_data_c, max_points_per_region = 10, split_mode = 'median', progress_win_size = 5, progress_measure = 'abs_deriv', sampling_mode = ['softmax',0.1], idxs = [], split_dim = 0):
+    def __init__(self, 
+                 get_data_x, 
+                 bounds_x, 
+                 get_data_c, 
+                 max_points_per_region = 10, 
+                 split_mode = 'median', 
+                 progress_win_size = 5, 
+                 progress_measure = 'abs_deriv', 
+                 sampling_mode = ['softmax',0.1], 
+                 idxs = [], 
+                 split_dim = 0):
         
         self.get_data_x = get_data_x
         self.bounds_x = np.array(bounds_x, dtype=np.float64)
@@ -119,7 +146,6 @@ class Tree(object):
         self.leafnode = True
         self.progress = 0
         
-        #print self.idxs
         
         if self.children > self.max_points_per_region:
             self.split()
@@ -269,7 +295,7 @@ class Tree(object):
                 return 0
             else:
                 idxs = sorted(idxs)[- self.progress_win_size:]
-                #print "progress_idxs", idxs, self.get_data_c()[idxs], np.cov(zip(range(len(idxs)), self.get_data_c()[idxs]), rowvar=0)[0, 1]
+                #print "progress_idxs", idxs, self.get_data_c()[idxs]
                 return abs(np.cov(zip(range(len(idxs)), self.get_data_c()[idxs]), rowvar=0)[0, 1])
         else:
             raise NotImplementedError
@@ -322,7 +348,7 @@ class Tree(object):
         elif self.split_mode == 'median':
             # Split on median (which fall on the middle of two points for even max_points_per_region) of node's points on split dimension
             split_dim_data = self.get_data_x()[self.idxs,self.split_dim] # data on split dim
-            split_value = median(split_dim_data)
+            split_value = np.median(split_dim_data)
             #print "median split", split_dim_data, split_value
             
         elif self.split_mode == 'middle':
@@ -366,8 +392,27 @@ class Tree(object):
         g_bounds_x[0, self.split_dim] = split_value
         
         #print "Split value", split_value#, l_bounds_x, g_bounds_x
-        self.less = Tree(self.get_data_x, l_bounds_x, self.get_data_c, self.max_points_per_region, self.split_mode, self.progress_win_size, self.progress_measure, self.sampling_mode, idxs = less_idx, split_dim = split_dim)
-        self.greater = Tree(self.get_data_x, g_bounds_x, self.get_data_c, self.max_points_per_region, self.split_mode, self.progress_win_size, self.progress_measure, self.sampling_mode, idxs = greater_idx, split_dim = split_dim)
+        self.less = Tree(self.get_data_x, 
+                         l_bounds_x, 
+                         self.get_data_c, 
+                         self.max_points_per_region, 
+                         self.split_mode, 
+                         self.progress_win_size, 
+                         self.progress_measure, 
+                         self.sampling_mode, 
+                         idxs = less_idx, 
+                         split_dim = split_dim)
+        
+        self.greater = Tree(self.get_data_x, 
+                            g_bounds_x, 
+                            self.get_data_c, 
+                            self.max_points_per_region, 
+                            self.split_mode, 
+                            self.progress_win_size, 
+                            self.progress_measure, 
+                            self.sampling_mode, 
+                            idxs = greater_idx, 
+                            split_dim = split_dim)
         
 
     def __query(self, x, k=1, eps=0, p=2, distance_upper_bound=np.inf):
@@ -584,7 +629,7 @@ class Tree(object):
         depth : int
             Max depth of the ploted nodes
         plot_dims : list
-            List of the 2 dimensions to project tree
+            List of the 2 dimensions to project tree on
         
         """
         
@@ -669,7 +714,15 @@ if __name__ == '__main__':
          
         #print get_data_x, get_data_c
           
-        tree = Tree(get_data_x, bounds, get_data_c, max_points_per_region, split_mode, progress_win_size, 'abs_deriv', sampling_mode, range(n))
+        tree = Tree(get_data_x, 
+                    bounds, 
+                    get_data_c, 
+                    max_points_per_region, 
+                    split_mode, 
+                    progress_win_size, 
+                    'abs_deriv', 
+                    sampling_mode, 
+                    range(n))
           
         print "Sampling", tree.sample()
         print "Progress", tree.progress
@@ -677,7 +730,6 @@ if __name__ == '__main__':
           
           
         ####### FIND Neighrest Neighbors (might be useful)
-        import time
         t = time.time()
         dist, idx = tree.nn([0.5,0.5], k=20)
         print "Time to find neighrest neighbors:", time.time() - t
@@ -690,8 +742,6 @@ if __name__ == '__main__':
 
     if True:
         print "\n########## TEST RiacInterest #########"
-        from ..utils.config import make_configuration
-        from ..utils.utils import rand_bounds
         
         np.random.seed(1)
         
@@ -717,7 +767,14 @@ if __name__ == '__main__':
         
         expl_dims = [2,3]
         
-        riac = RiacInterest(conf, expl_dims, max_points_per_region, split_mode, competence_dist, progress_win_size, 'abs_deriv', sampling_mode)
+        riac = RiacInterest(conf, 
+                            expl_dims, 
+                            max_points_per_region, 
+                            split_mode, 
+                            competence_dist, 
+                            progress_win_size, 
+                            'abs_deriv', 
+                            sampling_mode)
         
         #print "Sample: ", riac.sample()
         
@@ -730,10 +787,10 @@ if __name__ == '__main__':
         for i in range(n):
             xys.append(rand_bounds(conf.bounds, 1)[0])
             mss.append(rand_bounds(conf.bounds, 1)[0])
-             
+              
         for i in range(n): # updated after for random seed purpose
             riac.update(xys[i], mss[i])
-    
+     
         fig1 = plt.figure()
         ax = fig1.add_subplot(111, aspect='equal')
         plt.xlim((riac.tree.bounds_x[0,0],riac.tree.bounds_x[1,0]))
@@ -742,16 +799,16 @@ if __name__ == '__main__':
         plt.ylabel('Y')
         plt.title('R-IAC tiling')
         riac.tree.plot(ax, True, True, True, riac.progress())
-         
-              
+          
+               
         print "Max leaf progress: ", riac.tree.progress
         import matplotlib.colorbar as cbar
         cax, _ = cbar.make_axes(ax) 
         cb = cbar.ColorbarBase(cax, cmap=plt.cm.jet) 
         cb.set_label('Normalized Competence Progress')
-             
+              
         plt.show(block=False)
-    
+     
 
 ######################################
 ###### TEST PROGRESSING SAMPLING #####
@@ -760,8 +817,6 @@ if __name__ == '__main__':
          
     if True:
         print "\n###### TEST PROGRESSING SAMPLING #####"
-        from ..utils.config import make_configuration
-        from ..utils.utils import rand_bounds
         
         np.random.seed(1)
         
@@ -787,7 +842,14 @@ if __name__ == '__main__':
         
         expl_dims = [2,3]
         
-        riac = RiacInterest(conf, expl_dims, max_points_per_region, split_mode, competence_dist, progress_win_size, 'abs_deriv', sampling_mode)
+        riac = RiacInterest(conf, 
+                            expl_dims, 
+                            max_points_per_region, 
+                            split_mode, 
+                            competence_dist, 
+                            progress_win_size, 
+                            'abs_deriv', 
+                            sampling_mode)
         
         n = 3000
              
@@ -807,8 +869,8 @@ if __name__ == '__main__':
         cax, _ = cbar.make_axes(ax) 
         cb = cbar.ColorbarBase(cax, cmap=plt.cm.jet) 
         cb.set_label('Normalized Competence Progress')
-    #     cb2.set_ticks(linspace(0,riac.progress(), 5.))
-    #     cb2.set_ticklabels(linspace(0,riac.progress(), 5.))
+    #     cb2.set_ticks(np.linspace(0,riac.progress(), 5.))
+    #     cb2.set_ticklabels(np.linspace(0,riac.progress(), 5.))
         plt.ion()
         plt.show()
         mng = plt.get_current_fig_manager()
@@ -825,7 +887,8 @@ if __name__ == '__main__':
             xy[expl_dims] = sample
             
             
-            # HERE we try to simulate a competence based on the quantity of exploration in the region, with more progress in the middle of the map
+            # HERE we try to simulate a competence based on the quantity of exploration in the region, 
+            # with more progress in the middle of the map
             # Not sure how it can be interpreted
             # Need robotic setup for ecological testing
             
