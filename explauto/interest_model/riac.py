@@ -303,8 +303,7 @@ class Tree(object):
                 return 0
             else:
                 idxs = sorted(idxs)[- self.progress_win_size:]
-                #print "progress_idxs", idxs, self.get_data_c()[idxs]
-                return np.abs(np.mean(np.diff(self.get_data_c()[idxs])))
+                return np.abs(np.mean(np.diff(self.get_data_c()[idxs], axis=0)))
         else:
             raise NotImplementedError
         
@@ -786,7 +785,6 @@ if __name__ == '__main__':
         
         #print "Sample: ", riac.sample()
         
-        
         # TEST UNIFORM RANDOM POINTS BATCH
         
         n = 1000
@@ -808,6 +806,7 @@ if __name__ == '__main__':
         plt.title('R-IAC tiling')
         riac.tree.plot(ax, True, True, True, riac.progress())
           
+        print "Max nb of children:", riac.tree.fold_up(lambda fl,fg:max(fl,fg), lambda leaf:leaf.children)
                
         print "Max leaf progress: ", riac.tree.progress
         import matplotlib.colorbar as cbar
