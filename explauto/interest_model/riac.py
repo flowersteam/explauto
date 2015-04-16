@@ -63,9 +63,9 @@ class RiacInterest(InterestModel):
         else:
             self.data_x = np.append(self.data_x, np.array([xy[self.expl_dims]]), axis=0)
         if self.data_c is None:
-            self.data_c = np.array([self.competence_measure(xy, ms, dist_min=0)])
+            self.data_c = np.array([self.competence_measure(xy, ms)])
         else:
-            self.data_c = np.append(self.data_c, self.competence_measure(xy, ms, dist_min=0)) 
+            self.data_c = np.append(self.data_c, self.competence_measure(xy, ms)) 
         self.tree.add(np.shape(self.data_x)[0]-1)
 
 
@@ -290,13 +290,21 @@ class Tree(object):
         Competence progress on points of given indexes
         
         """
-        if self.progress_measure == 'abs_deriv':
+        if self.progress_measure == 'abs_deriv_cov':
             if len(idxs) <= 1:
                 return 0
             else:
                 idxs = sorted(idxs)[- self.progress_win_size:]
                 #print "progress_idxs", idxs, self.get_data_c()[idxs]
                 return abs(np.cov(zip(range(len(idxs)), self.get_data_c()[idxs]), rowvar=0)[0, 1])
+            
+        elif self.progress_measure == 'abs_deriv':
+            if len(idxs) <= 1:
+                return 0
+            else:
+                idxs = sorted(idxs)[- self.progress_win_size:]
+                #print "progress_idxs", idxs, self.get_data_c()[idxs]
+                return np.abs(np.mean(np.diff(self.get_data_c()[idxs])))
         else:
             raise NotImplementedError
         
@@ -668,12 +676,12 @@ class Tree(object):
 
 
 
-interest_models = {'riac': (RiacInterest, {'default': {'max_points_per_region': 50,
-                                                       'split_mode': 'best_interest_diff',
-                                                       'competence_measure': competence_dist,
-                                                       'progress_win_size': 20,
+interest_models = {'riac': (RiacInterest, {'default': {'max_points_per_region': 100,
+                                                       'split_mode': 'middle',
+                                                       'competence_measure': lambda target,reached : competence_exp(target, reached, 0., 10.),
+                                                       'progress_win_size': 50,
                                                        'progress_measure': 'abs_deriv',                                                       
-                                                       'sampling_mode': ['softmax',0.1]}})}
+                                                       'sampling_mode': ['softmax',1.]}})}
 
 
 
