@@ -671,32 +671,36 @@ class Tree(object):
         
         """
         
-        if scatter and self.get_data_x() is not None and np.shape(self.get_data_x())[0] <= 5000:
+        if scatter and self.get_data_x() is not None:
+            self.plot_scatter(ax, plot_dims)
+            
+        if grid:
+            self.plot_grid(ax, progress_colors, progress_max, depth, plot_dims)
+            
+    
+    def plot_scatter(self, ax, plot_dims=[0,1]):
+        if np.shape(self.get_data_x())[0] <= 5000:
             ax.scatter(self.get_data_x()[:,plot_dims[0]], self.get_data_x()[:,plot_dims[1]], color = 'black')
-            
+        
+        
+    def plot_grid(self, ax, progress_colors=True, progress_max=1., depth=10, plot_dims=[0,1]):
         if self.leafnode or depth == 0:
+        
+            mins = self.bounds_x[0,plot_dims]
+            maxs = self.bounds_x[1,plot_dims]
             
-            if grid:
-                mins = self.bounds_x[0,plot_dims]
-                maxs = self.bounds_x[1,plot_dims]
-                
-                if progress_colors:
-                    prog_min = 0.
-                    c = plt.cm.jet((self.progress - prog_min) / (progress_max - prog_min)) if progress_max > prog_min else plt.cm.jet(0)
-                    ax.add_patch(plt.Rectangle(mins, maxs[0] - mins[0], maxs[1] - mins[1], color=c, alpha=0.7))
-                    
-                else:
-                    ax.add_patch(plt.Rectangle(mins, maxs[0] - mins[0], maxs[1] - mins[1], fill=False))
+            if progress_colors:
+                prog_min = 0.
+                c = plt.cm.jet((self.progress - prog_min) / (progress_max - prog_min)) if progress_max > prog_min else plt.cm.jet(0)
+                ax.add_patch(plt.Rectangle(mins, maxs[0] - mins[0], maxs[1] - mins[1], color=c, alpha=0.7))
+            else:
+                ax.add_patch(plt.Rectangle(mins, maxs[0] - mins[0], maxs[1] - mins[1], fill=False))
                     
         else:
-            self.less.plot(ax, False, grid, progress_colors, progress_max, depth - 1)
-            self.greater.plot(ax, False, grid, progress_colors, progress_max, depth - 1)
-        
-        
+            self.less.plot_grid(ax, progress_colors, progress_max, depth - 1, plot_dims)
+            self.greater.plot_grid(ax, progress_colors, progress_max, depth - 1, plot_dims)
 
-
-
-
+    
 
 
 
@@ -707,8 +711,6 @@ interest_models = {'riac': (RiacInterest, {'default': {'max_points_per_region': 
                                                        'progress_win_size': 50,
                                                        'progress_measure': 'abs_deriv',                                                       
                                                        'sampling_mode': ['softmax', 1.]}})}
-
-
 
 
 
