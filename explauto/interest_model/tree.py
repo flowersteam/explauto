@@ -13,7 +13,11 @@ from .competences import competence_exp, competence_dist
 
 
 
-class RiacInterest(InterestModel):
+class InterestTree(InterestModel):
+    """
+    class InterestTree implements either R-IAC or SAGG-RIAC
+    
+    """
     def __init__(self, 
                  conf, 
                  expl_dims, 
@@ -59,7 +63,7 @@ class RiacInterest(InterestModel):
         else:
             self.data_x = np.append(self.data_x, np.array([xy[self.expl_dims]]), axis=0)
         if self.data_c is None:
-            self.data_c = np.array([self.competence_measure(xy, ms)])
+            self.data_c = np.array([self.competence_measure(xy, ms)]) # Either prediction error or competence error
         else:
             self.data_c = np.append(self.data_c, self.competence_measure(xy, ms)) 
         self.tree.add(np.shape(self.data_x)[0] - 1)
@@ -705,7 +709,7 @@ class Tree(object):
 
 
 
-interest_models = {'riac': (RiacInterest, {'default': {'max_points_per_region': 100,
+interest_models = {'tree': (InterestTree, {'default': {'max_points_per_region': 100,
                                                        'split_mode': 'middle',
                                                        'competence_measure': lambda target,reached : competence_exp(target, reached, 0., 1.),
                                                        'progress_win_size': 50,
@@ -766,11 +770,11 @@ if __name__ == '__main__':
          
 
 ######################################
-########## TEST RiacInterest #########
+########## TEST InterestTree #########
 ######################################
 
     if True:
-        print "\n########## TEST RiacInterest #########"
+        print "\n########## TEST InterestTree #########"
         
         np.random.seed(1)
         
@@ -796,7 +800,7 @@ if __name__ == '__main__':
         
         expl_dims = [2, 3]
         
-        riac = RiacInterest(conf, 
+        riac = InterestTree(conf, 
                             expl_dims, 
                             max_points_per_region, 
                             split_mode, 
@@ -871,7 +875,7 @@ if __name__ == '__main__':
         
         expl_dims = [2, 3]
         
-        riac = RiacInterest(conf, 
+        riac = InterestTree(conf, 
                             expl_dims, 
                             max_points_per_region, 
                             split_mode, 
