@@ -67,7 +67,7 @@ class Evaluation(object):
         eval_range = array([[min(sx),min(sy)],
                            [max(sx),max(sy)]])
         
-        eps = 0.01#log.config.eval_explo_eps
+        log.config.eval_explo_eps
         grid_sizes = (eval_range[1,:] - eval_range[0,:]) / eps + 1
         grid_sizes = array(grid_sizes, dtype = int)
         grid = zeros(grid_sizes)
