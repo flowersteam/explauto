@@ -402,20 +402,35 @@ class Tree(object):
             
         elif self.split_mode == 'best_interest_diff': 
             # See Baranes2012: Active Learning of Inverse Models with Intrinsically Motivated Goal Exploration in Robots
-            # choose between random split values the one that maximizes card(less)*card(greater)* progress difference between the two
+            # if strictly more than self.max_points_per_region points: chooses between self.max_points_per_region points random split values
+            # the one that maximizes card(less)*card(greater)* progress difference between the two
+            # if equal or less than self.max_points_per_region points: chooses between splits at the middle of each pair of consecutive points, 
+            # the one that maximizes card(less)*card(greater)* progress difference between the two
             split_dim_data = self.get_data_x()[self.idxs, self.split_dim] # data on split dim
             split_min = min(split_dim_data)
             split_max = max(split_dim_data)
                         
-            m = self.max_points_per_region # Constant that might be tuned: number of random split values to choose between
-            rand_splits = split_min + np.random.rand(m) * (split_max - split_min)
-            splits_fitness = np.zeros(m)
-            for i in range(m):
-                less_idx = list(np.array(self.idxs)[np.nonzero(split_dim_data <= rand_splits[i])[0]])
-                greater_idx = list(np.array(self.idxs)[np.nonzero(split_dim_data > rand_splits[i])[0]])
-                splits_fitness[i] = len(less_idx) * len(greater_idx) * abs(self.progress_idxs(less_idx) - 
-                                                                           self.progress_idxs(greater_idx))
-            split_value = rand_splits[np.argmax(splits_fitness)]
+            if len(self.idxs) > self.max_points_per_region:
+                m = self.max_points_per_region # Constant that might be tuned: number of random split values to choose between
+                rand_splits = split_min + np.random.rand(m) * (split_max - split_min)
+                splits_fitness = np.zeros(m)
+                for i in range(m):
+                    less_idx = list(np.array(self.idxs)[np.nonzero(split_dim_data <= rand_splits[i])[0]])
+                    greater_idx = list(np.array(self.idxs)[np.nonzero(split_dim_data > rand_splits[i])[0]])
+                    splits_fitness[i] = len(less_idx) * len(greater_idx) * abs(self.progress_idxs(less_idx) - 
+                                                                               self.progress_idxs(greater_idx))
+                split_value = rand_splits[np.argmax(splits_fitness)]
+                
+            else:
+                m = self.max_points_per_region - 1
+                splits = (np.sort(split_dim_data)[0:-1] + np.sort(split_dim_data)[1:]) / 2
+                splits_fitness = np.zeros(m)
+                for i in range(m):
+                    less_idx = list(np.array(self.idxs)[np.nonzero(split_dim_data <= splits[i])[0]])
+                    greater_idx = list(np.array(self.idxs)[np.nonzero(split_dim_data > splits[i])[0]])
+                    splits_fitness[i] = len(less_idx) * len(greater_idx) * abs(self.progress_idxs(less_idx) - 
+                                                                               self.progress_idxs(greater_idx))
+                split_value = splits[np.argmax(splits_fitness)]
             
         else:
             raise NotImplementedError
@@ -710,8 +725,8 @@ class Tree(object):
 
 
 interest_models = {'tree': (InterestTree, {'default': {'max_points_per_region': 100,
-                                                       'split_mode': 'middle',
-                                                       'competence_measure': lambda target,reached : competence_exp(target, reached, 0., 1.),
+                                                       'split_mode': 'best_interest_diff',
+                                                       'competence_measure': lambda target,reached : competence_exp(target, reached, 0., 10.),
                                                        'progress_win_size': 50,
                                                        'progress_measure': 'abs_deriv',                                                       
                                                        'sampling_mode': ['softmax', 1.]}})}
