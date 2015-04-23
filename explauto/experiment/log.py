@@ -10,6 +10,7 @@ class ExperimentLog(object):
         self.eval_errors = []
         self.eval_reached = []
         self.explo = []
+        self.explo_comp = []
         self.conf = conf
         self.expl_dims = expl_dims
         self.inf_dims = inf_dims

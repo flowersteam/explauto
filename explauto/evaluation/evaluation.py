@@ -1,84 +1,112 @@
+import random
 from numpy import linalg, array, zeros, sum, min, max
 
 
+
 class Evaluation(object):
-    def __init__(self, ag, env, testcases, mode='inverse'):
+    def __init__(self, log, ag, env, testcases):
+        self.log = log
         self.ag = ag
         self.env = env
-        self.mode = mode
-
-        if mode not in ('inverse', 'forward'):
-            raise ValueError('mode should be "inverse" or "forward"',
-                             '"general" predictions coming soon)')
         self.testcases = testcases
+        self.modes = self.log.config.eval_modes
 
-    def evaluate(self, n_tests_forward=None, testcases_forward=None):
-        print "Evaluation mode : ", self.mode
+        
+    def evaluate(self):
+        if 'inverse' in self.modes:
+            self.evaluate_comp()
+        if 'explo' in self.modes:
+            self.evaluate_explo()
+        if 'explo_comp' in self.modes:
+            self.evaluate_explo_comp()
+
+    def test_inverse(self, s_g):
+        m = self.ag.infer(self.ag.config.eval_dims, self.ag.conf.m_dims, s_g, pref = 'eval_').flatten()
+        m_env = self.ag.motor_primitive(m)
+        s_env = self.env.update(m_env, log=False)
+        s_ = self.ag.sensory_primitive(s_env)
+        s = self.ag.get_eval_dims(s_)
+        return linalg.norm(s_g - s), s_
+
+    def evaluate_comp(self):
+        
         self.ag.eval_mode()
         s_reached = []
-        if self.mode == 'inverse':
-            errors = []
-            for s_g in self.testcases:
-                m = self.ag.infer(self.ag.config.eval_dims, self.ag.conf.m_dims, s_g, pref = 'eval_').flatten()
-                m_env = self.ag.motor_primitive(m)
-                s_env = self.env.update(m_env, log=False)
-                s_ = self.ag.sensory_primitive(s_env)
-                s = self.ag.get_eval_dims(s_)
-                e = linalg.norm(s_g - s)
-                s_reached.append(s)
-                errors.append(e)
-                print 'Evaluation', len(errors), ': s_goal = ', s_g, 's_reached = ', s_, 'L2 error = ', e, '\n'
-        elif self.mode == 'forward':
-            print 'forward prediction tests still in beta version, use with caution'
-            if n_tests_forward is not None:
-                print "Generating ", n_tests_forward, " uniform random motor tests ..."
-                testcases = self.env.random_motors(n=n_tests_forward)
-            elif testcases_forward is not None:
-                testcases = testcases_forward
-            else:
-                raise ValueError('For forward prediction evaluation',
-                                  ', call either using n_tests_forward',
-                                  '(# of uniform random motor tests) or',
-                                  'testcases_forward (motor testcases). Not both.')
-            errors = []
-            for m in testcases:
-                s_p = self.ag.infer(self.ag.conf.m_dims, self.ag.conf.s_dims, m).flatten()
-                m_env = self.ag.motor_primitive(m)
-                s_env = self.env.update(m_env, log=False)
-                s = self.ag.sensory_primitive(s_env)
-                errors.append(linalg.norm(s_p - s))
-                s_reached.append(s)
-        else:
-            raise ValueError('mode should be "inverse" or "forward"',
-                              '"general" predictions coming soon)')
-
+        errors = []
+        for s_g in self.testcases:
+            e, s_ = self.test_inverse(s_g)
+            s_reached.append(s)
+            errors.append(e)
+            print 'Evaluation', len(errors), ': s_goal = ', s_g, 's_reached = ', s_, 'L2 error = ', e, '\n'
         self.ag.learning_mode()
-        print s_reached
-        return errors,s_reached
+        #print s_reached
+        self.log.eval_errors.append(errors)
+        self.log.eval_reached.append(s_reached)
     
 
-    def evaluate_explo(self, log):
+    def evaluate_explo(self):
         
+        data_s = array([a for a in self.log.logs['perception_mod'+'{}'.format(len(self.log.config.mids))]])
         
-        sx = array([a[0] for a in log.logs['perception_mod'+'{}'.format(len(log.config.mids))]])
-        sy = array([a[1] for a in log.logs['perception_mod'+'{}'.format(len(log.config.mids))]])
+        eval_range = array([min(data_s, axis=0),
+                           max(data_s, axis=0)])
         
-        n_eval_dims = len(log.config.eval_dims)
-        eval_range = array([[min(sx),min(sy)],
-                           [max(sx),max(sy)]])
-        
-        eps = log.config.eval_explo_eps
+        eps = self.log.config.eval_explo_eps
         grid_sizes = (eval_range[1,:] - eval_range[0,:]) / eps + 1
         grid_sizes = array(grid_sizes, dtype = int)
         grid = zeros(grid_sizes)
-        for i in range(len(sx)):
-            idx = int((sx[i] - eval_range[0,0]) / eps)
-            idy = int((sy[i] - eval_range[0,1]) / eps)
-            grid[idx, idy] = grid[idx, idy] + 1
+        
+        for i in range(len(data_s)):
+            idxs = array((data_s[i] - eval_range[0,:]) / eps, dtype=int)
+            grid[tuple(idxs)] = grid[tuple(idxs)] + 1
+            
         grid[grid > 1] = 1
         explo = sum(grid)
         
-        return explo
+        self.log.explo.append(explo)
+        print '[' + self.config.tag + '] ' + 'Exploration evaluation =' + str(explo)
+    
+    
+    def evaluate_explo_comp(self):
+        
+        data_s = array([a for a in self.log.logs['perception_mod'+'{}'.format(len(self.log.config.mids))]])
+        print "data_s", data_s
+        eval_range = array([min(data_s, axis=0),
+                           max(data_s, axis=0)])
+        
+        eps = self.log.config.eval_explo_eps
+        grid_sizes = (eval_range[1,:] - eval_range[0,:]) / eps + 1
+        grid_sizes = array(grid_sizes, dtype = int)
+        grid = zeros(grid_sizes)
+        
+        for i in range(len(data_s)):
+            idxs = array((data_s[i] - eval_range[0,:]) / eps, dtype=int)
+            grid[tuple(idxs)] = grid[tuple(idxs)] + 1
+            
+        grid[grid > 1] = 1
+        explo = sum(grid)
+        self.log.explo.append(explo)
+        print '[' + self.log.config.tag + '] ' + 'Exploration evaluation =' + str(explo)
+        
+        print "grid", grid
+        to_test = []
+        for i in range(grid_sizes[0]):
+            for j in range(grid_sizes[1]):
+                if grid[i,j]:
+                    to_test.append([i,j])
+        random.shuffle(to_test)
+        to_test = to_test
+        
+        errors = []
+        for idxs in to_test:
+            s_g = (array(idxs) + 0.5) * eps + eval_range[0,:]
+            print idxs, s_g
+            e, s_reached = self.test_inverse(s_g)
+            errors.append(e)
+        max_dist = eps
+        nb_comp = sum(array(errors)<max_dist)
+        self.log.explo_comp.append(nb_comp)
+        print "Evaluate explo comp", to_test, errors, max_dist, nb_comp
 
     def plot_testcases(self, ax, dims, **kwargs_plot):
         plot_specs = {'marker': 'o', 'linestyle': 'None'}
