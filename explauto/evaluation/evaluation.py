@@ -35,7 +35,7 @@ class Evaluation(object):
         errors = []
         for s_g in self.testcases:
             e, s_ = self.test_inverse(s_g)
-            s_reached.append(s)
+            s_reached.append(s_)
             errors.append(e)
             print 'Evaluation', len(errors), ': s_goal = ', s_g, 's_reached = ', s_, 'L2 error = ', e, '\n'
         self.ag.learning_mode()
@@ -64,7 +64,7 @@ class Evaluation(object):
         explo = sum(grid)
         
         self.log.explo.append(explo)
-        print '[' + self.config.tag + '] ' + 'Exploration evaluation =' + str(explo)
+        print '[' + self.log.config.tag + '] ' + 'Exploration evaluation =' + str(explo)
     
     
     def evaluate_explo_comp(self):
@@ -86,7 +86,7 @@ class Evaluation(object):
         grid[grid > 1] = 1
         explo = sum(grid)
         self.log.explo.append(explo)
-        print '[' + self.log.config.tag + '] ' + 'Exploration evaluation =' + str(explo)
+        print '[' + self.log.config.tag + '] ' + 'ExploComp evaluation =' + str(explo)
         
         print "grid", grid
         to_test = []
