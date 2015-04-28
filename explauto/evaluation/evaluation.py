@@ -13,6 +13,7 @@ class Evaluation(object):
 
         
     def evaluate(self):
+        self.ag.eval_mode()
         if 'inverse' in self.modes:
             self.evaluate_comp()
         if 'explo' in self.modes:
@@ -30,7 +31,6 @@ class Evaluation(object):
 
     def evaluate_comp(self):
         
-        self.ag.eval_mode()
         s_reached = []
         errors = []
         for s_g in self.testcases:
