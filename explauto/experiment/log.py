@@ -21,6 +21,7 @@ class ExperimentLog(object):
         return {key: array(val) for key, val in self._logs.iteritems()}
 
     def add(self, topic, message):
+        #print topic, message
         self._logs[topic].append(message)
         self.counts[topic] += 1
 
