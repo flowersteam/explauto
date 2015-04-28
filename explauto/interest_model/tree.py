@@ -282,8 +282,11 @@ class Tree(object):
             probas = np.exp(progresses / (progress_max*temperature))
             probas = probas / np.sum(probas)
             
-            leaf = leaves[np.where(np.random.multinomial(1, probas) == 1)[0][0]]
-            return leaf.sample_bounds()
+            if np.isnan(np.sum(probas)): # if progress_max = 0 or nan value in dataset, eps-greedy sample
+                return self.sample_epsilon_greedy()
+            else:
+                leaf = leaves[np.where(np.random.multinomial(1, probas) == 1)[0][0]]
+                return leaf.sample_bounds()
         
             
     def sample(self, sampling_mode=None):
