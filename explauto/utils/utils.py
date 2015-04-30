@@ -37,7 +37,6 @@ def geomed(data):
     for i in range(n):
         for j in range(n):
             dists[i] += np.linalg.norm(data[i, :] - data[j, :])
-            print i, j, np.linalg.norm(data[i, :] - data[j, :])
     return data[np.argmin(dists), :]
 
 
