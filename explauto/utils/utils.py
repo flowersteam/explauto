@@ -24,6 +24,22 @@ def discrete_random_draw(data, nb=1):
     custm = stats.rv_discrete(name='custm', values=(xk, data))
     return custm.rvs(size=nb)
 
+def geomed(data):
+    '''
+        Geometric Median - the point of a dataset the closest to the others
+        
+        :param array data: shape (n,d), n is the number of points, d the dimension
+    
+    '''
+    data = np.array(data)
+    n,d = np.shape(data)
+    dists = np.zeros((n,))
+    for i in range(n):
+        for j in range(n):
+            dists[i] += np.linalg.norm(data[i, :] - data[j, :])
+            print i, j, np.linalg.norm(data[i, :] - data[j, :])
+    return data[np.argmin(dists), :]
+
 
 def rk4(x, h, y, f):
     """
@@ -39,3 +55,5 @@ def rk4(x, h, y, f):
     k3 = h * f(x + 0.5*h, y + 0.5*k2)
     k4 = h * f(x + h, y + k3)
     return x + h, y + (k1 + 2*(k2 + k3) + k4)/6.0
+
+    
