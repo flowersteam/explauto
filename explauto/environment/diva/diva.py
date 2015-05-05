@@ -16,7 +16,7 @@ class DivaSynth:
     def __init__(self, sample_rate=11025):
         # sample rate setting not working yet
         diva_path = os.path.join(os.getenv("HOME"), 'software/DIVAsimulink/')
-        print diva_path
+        assert os.path.exists(diva_path)
         octave.addpath(diva_path)
 
     def execute(self, art):
