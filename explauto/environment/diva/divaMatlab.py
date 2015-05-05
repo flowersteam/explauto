@@ -1,7 +1,7 @@
 import os
+import pymatlab
 from numpy import array, hstack, float32, zeros, linspace, shape, mean
 
-from oct2py import octave
 from ..environment import Environment
 from ...utils import bounds_min_max
 from ...models.dmp import DmpPrimitive
@@ -10,34 +10,37 @@ from ...models.dmp import DmpPrimitive
 if not (os.environ.has_key('AVAKAS') and os.environ['AVAKAS']):
     import pyaudio
 
-                       
-                       
 class DivaSynth:
     def __init__(self, sample_rate=11025):
+        self.session = pymatlab.session_factory()
         # sample rate setting not working yet
-        diva_path = os.path.join(os.getenv("HOME"), 'software/DIVAsimulink/')
-        print diva_path
-        octave.addpath(diva_path)
+        self.session.putvalue('sr', array([sample_rate]))
 
     def execute(self, art):
-        self.aud, self.som, self.vt = octave.diva_synth(art, 'audsom')
+        self.session.putvalue('art', art)
+        self.session.run('[aud, som, outline] = diva_synth(art, \'audsom\')')
+        self.aud = self.session.getvalue('aud')
+        self.som = self.session.getvalue('som')
+        self.vt = self.session.getvalue('outline')
         return self.aud, self.som, self.vt
 
     def sound_wave(self, art):
-        wave = octave.diva_synth(art, 'sound')
-        return wave
+        self.session.putvalue('art', art)
+        self.session.run('wave = diva_synth(art, \'sound\')')
+        return self.session.getvalue('wave')
 
     def stop(self):
         del self.session
 
 
-
 class DivaEnvironment(Environment):
+
     def __init__(self, config, **kwargs):
         for key, value in kwargs.iteritems():
             setattr(self, key, value)
         
         self.config = config
+
         
         if self.audio:            
             self.pa = pyaudio.PyAudio()
@@ -48,6 +51,7 @@ class DivaEnvironment(Environment):
             
         self.synth = DivaSynth()
         self.art = array([0.] * 10 + [0.7] * 3)   # 13 articulators is a constant from diva_synth.m in the diva source code
+        
         
         default = zeros(self.config.n_dmps_diva*(self.config.n_bfs_diva+2))
         if not self.config.diva_use_initial:
@@ -63,7 +67,6 @@ class DivaEnvironment(Environment):
     def compute_motor_command(self, m_ag):
         return bounds_min_max(m_ag, self.m_mins, self.m_maxs)
 
-
     def compute_sensori_effect(self, m_env):
         #print "compute_se", m_env
         self.art[self.m_used] = m_env
@@ -71,8 +74,8 @@ class DivaEnvironment(Environment):
         res = self.synth.execute(self.art.reshape(-1,1))[0]
         
             
-        #print "compute_se result", res[self.s_used].flatten()
-        return res[self.s_used].flatten()
+        #print "compute_se result", res[self.s_used]
+        return res[self.s_used]
 
 
     def rest_params(self):
@@ -87,7 +90,6 @@ class DivaEnvironment(Environment):
         if self.config.diva_use_goal:
             rest[-self.config.n_dmps_diva:] = self.rest_position_diva
         return rest
-    
     
     def trajectory(self, m):
         y = self.dmp.trajectory(m)
@@ -105,7 +107,6 @@ class DivaEnvironment(Environment):
         #print "diva traj", m, y
         return y
         
-        
     def update(self, mov, log):
         s = Environment.update(self, mov, log)
         
@@ -114,6 +115,7 @@ class DivaEnvironment(Environment):
             self.stream.write(sound.astype(float32).tostring())
             
         return list(mean(array(s), axis=0))
+        
         
         
     def sound_wave(self, art_traj):
