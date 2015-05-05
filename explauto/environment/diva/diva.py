@@ -38,6 +38,8 @@ class DivaEnvironment(Environment):
             setattr(self, key, value)
         
         self.config = config
+        if (os.environ.has_key('AVAKAS') and os.environ['AVAKAS']):
+            self.audio = False
         
         if self.audio:            
             self.pa = pyaudio.PyAudio()
