@@ -88,20 +88,21 @@ class Evaluation(object):
         self.log.explo_comp_explo.append(explo)
         print '[' + self.log.config.tag + '] ' + 'ExploComp evaluation =' + str(explo)
         
-        #print "grid", grid
-        to_test = list(transpose(array(where(grid))))
-        random.shuffle(to_test)
-        
-        errors = []
-        for idxs in to_test:
-            s_g = (idxs + 0.5) * eps + eval_range[0,:]
-            #print idxs, s_g
-            e, s_reached = self.test_inverse(s_g)
-            errors.append(e)
-        max_dist = eps
-        nb_comp = sum(array(errors)<max_dist)
-        self.log.explo_comp.append(nb_comp)
-        print "Evaluate explo comp", to_test, errors, max_dist, nb_comp
+        if explo < len(self.testcases):
+            #print "grid", grid
+            to_test = list(transpose(array(where(grid))))
+            random.shuffle(to_test)
+            
+            errors = []
+            for idxs in to_test:
+                s_g = (idxs + 0.5) * eps + eval_range[0,:]
+                #print idxs, s_g
+                e, s_reached = self.test_inverse(s_g)
+                errors.append(e)
+            max_dist = eps
+            nb_comp = sum(array(errors)<max_dist)
+            self.log.explo_comp.append(nb_comp)
+            print "Evaluate explo comp", to_test, errors, max_dist, nb_comp
         
 
     def plot_testcases(self, ax, dims, **kwargs_plot):
