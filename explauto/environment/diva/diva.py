@@ -1,5 +1,5 @@
 import os
-from numpy import array, hstack, float32, zeros, linspace, shape, mean
+from numpy import array, hstack, float32, zeros, linspace, shape, mean, log2, transpose
 
 from oct2py import octave
 from ..environment import Environment
@@ -15,20 +15,35 @@ if not (os.environ.has_key('AVAKAS') and os.environ['AVAKAS']):
 class DivaSynth:
     def __init__(self, sample_rate=11025):
         # sample rate setting not working yet
-        diva_path = os.path.join(os.getenv("HOME"), 'software/DIVAsimulink/')
-        assert os.path.exists(diva_path)
-        octave.addpath(diva_path)
+        self.diva_path = os.path.join(os.getenv("HOME"), 'software/DIVAsimulink/')
+        assert os.path.exists(self.diva_path)
+        octave.addpath(self.diva_path)
+        self.restart_iter = 500
+        self.iter = 0
 
     def execute(self, art):
         self.aud, self.som, self.vt = octave.diva_synth(art, 'audsom')
+        self.add_iter()
         return self.aud, self.som, self.vt
 
     def sound_wave(self, art):
         wave = octave.diva_synth(art, 'sound')
+        self.add_iter()
         return wave
-
+    
+    def add_iter(self):
+        if self.iter >= self.restart_iter:
+            self.restart()
+        else:
+            self.iter += 1
+            
+    def restart(self):
+        octave.restart()
+        octave.addpath(self.diva_path)
+        self.iter = 0
+        
     def stop(self):
-        del self.session
+        octave.exit()
 
 
 
@@ -49,7 +64,7 @@ class DivaEnvironment(Environment):
                                         output=True)
             
         self.synth = DivaSynth()
-        self.art = array([0.] * 10 + [0.7] * 3)   # 13 articulators is a constant from diva_synth.m in the diva source code
+        self.art = array([0.]*10 + [1]*3)   # 13 articulators is a constant from diva_synth.m in the diva source code
         
         default = zeros(self.config.n_dmps_diva*(self.config.n_bfs_diva+2))
         if not self.config.diva_use_initial:
@@ -68,14 +83,18 @@ class DivaEnvironment(Environment):
 
     def compute_sensori_effect(self, m_env):
         #print "compute_se", m_env
-        self.art[self.m_used] = m_env
-        #print self.art
-        res = self.synth.execute(self.art.reshape(-1,1))[0]
-        
-            
-        #print "compute_se result", res[self.s_used].flatten()
-        return res[self.s_used].flatten()
-
+        if len(array(m_env).shape) == 1:
+            self.art[self.m_used] = m_env
+            #print self.art
+            res = self.synth.execute(self.art.reshape(-1,1))[0]
+            #print "compute_se result", res[self.s_used].flatten()
+            return log2(res[self.s_used].flatten())
+        else:
+            self.art_traj = zeros((13, array(m_env).shape[0]))
+            self.art_traj[11:13, :] = 1
+            self.art_traj[self.m_used,:] = transpose(m_env)
+            res = self.synth.execute(self.art_traj)[0]
+            return log2(transpose(res[self.s_used,:]))
 
     def rest_params(self):
         dims = self.config.n_dmps_diva*self.config.n_bfs_diva
@@ -109,18 +128,19 @@ class DivaEnvironment(Environment):
         
         
     def update(self, mov, log):
-        s = Environment.update(self, mov, log)
+        s = Environment.update(self, mov, log, True)
         
         if self.audio:         
             sound = self.sound_wave(s)
             self.stream.write(sound.astype(float32).tostring())
+            print "Sound sent"
             
         return list(mean(array(s), axis=0))
         
         
-    def sound_wave(self, art_traj):
+    def sound_wave(self, art_traj, power = 4.):
         synth_art = self.art.reshape(1, -1).repeat(len(art_traj), axis=0)
         #print shape(synth_art), self.m_used, art_traj
         #synth_art[:, self.m_used] = art_traj
         #print "sound wave", self.synth.sound_wave(synth_art.T)
-        return 10.*self.synth.sound_wave(synth_art.T)
+        return power * self.synth.sound_wave(synth_art.T)
