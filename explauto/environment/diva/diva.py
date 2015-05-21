@@ -48,11 +48,10 @@ class DivaSynth:
 
 
 class DivaEnvironment(Environment):
-    def __init__(self, config, **kwargs):
+    def __init__(self, **kwargs):
         for key, value in kwargs.iteritems():
             setattr(self, key, value)
         
-        self.config = config
         if (os.environ.has_key('AVAKAS') and os.environ['AVAKAS']):
             self.audio = False
         
@@ -66,19 +65,20 @@ class DivaEnvironment(Environment):
         self.synth = DivaSynth()
         self.art = array([0.]*10 + [1]*3)   # 13 articulators is a constant from diva_synth.m in the diva source code
         
-        default = zeros(self.config.n_dmps_diva*(self.config.n_bfs_diva+2))
-        if not self.config.diva_use_initial:
+        default = zeros(self.n_dmps_diva*(self.n_bfs_diva+2))
+        if not self.diva_use_initial:
             init_position = self.rest_position_diva
-            default[:self.config.n_dmps_diva] = init_position
-        if not self.config.diva_use_goal:
+            default[:self.n_dmps_diva] = init_position
+        if not self.diva_use_goal:
             end_position = self.rest_position_diva
-            default[-self.config.n_dmps_diva:] = end_position
+            default[-self.n_dmps_diva:] = end_position
         
-        self.dmp = DmpPrimitive(self.config.n_dmps_diva, self.config.n_bfs_diva, self.config.used_diva, default, type='discrete')
-
+        self.dmp = DmpPrimitive(self.n_dmps_diva, self.n_bfs_diva, self.used_diva, default, type='discrete')
+        
+        Environment.__init__(self, self.m_mins, self.m_maxs, self.s_mins, self.s_maxs)
 
     def compute_motor_command(self, m_ag):
-        return bounds_min_max(m_ag, self.m_mins, self.m_maxs)
+        return bounds_min_max(self.trajectory(m_ag), self.m_mins, self.m_maxs)
 
 
     def compute_sensori_effect(self, m_env):
@@ -97,45 +97,43 @@ class DivaEnvironment(Environment):
             return log2(transpose(res[self.s_used,:]))
 
     def rest_params(self):
-        dims = self.config.n_dmps_diva*self.config.n_bfs_diva
-        if self.config.diva_use_initial:
-            dims += self.config.n_dmps_diva
-        if self.config.diva_use_goal:
-            dims += self.config.n_dmps_diva
+        dims = self.n_dmps_diva*self.n_bfs_diva
+        if self.diva_use_initial:
+            dims += self.n_dmps_diva
+        if self.diva_use_goal:
+            dims += self.n_dmps_diva
         rest = zeros(dims)
-        if self.config.diva_use_initial:
-            rest[:self.config.n_dmps_diva] = self.rest_position_diva
-        if self.config.diva_use_goal:
-            rest[-self.config.n_dmps_diva:] = self.rest_position_diva
+        if self.diva_use_initial:
+            rest[:self.n_dmps_diva] = self.rest_position_diva
+        if self.diva_use_goal:
+            rest[-self.n_dmps_diva:] = self.rest_position_diva
         return rest
     
     
     def trajectory(self, m):
         y = self.dmp.trajectory(m)
-        if len(y) > self.config.move_steps: 
-            ls = linspace(0,len(y)-1,self.config.move_steps)
+        if len(y) > self.move_steps: 
+            ls = linspace(0,len(y)-1,self.move_steps)
             ls = array(ls, dtype='int')
             y = y[ls]
 
-        #print "DMP agent. size : ", len(y), y
-        #print "goal of dmp : ", self.m[-self.config.n_dmps:]
-        
-        #print "diva traj", m, y
-        y = self.compute_motor_command(y) # check motor bounds
-        
-        #print "diva traj", m, y
         return y
         
         
-    def update(self, mov, log):
-        s = Environment.update(self, mov, log, True)
+    def update(self, mov):
+        s = Environment.update(self, mov, batch=True)
         
         if self.audio:         
             sound = self.sound_wave(s)
             self.stream.write(sound.astype(float32).tostring())
             print "Sound sent"
             
-        return list(mean(array(s), axis=0))
+        if len(shape(array(s))) == 1:
+            return s
+        else:
+            s = list(mean(array(s), axis=0))
+            print "Diva s=", s
+            return s
         
         
     def sound_wave(self, art_traj, power = 4.):
