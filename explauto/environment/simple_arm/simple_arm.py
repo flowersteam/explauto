@@ -4,7 +4,7 @@ from ..environment import Environment
 from ...utils import bounds_min_max
 
 
-def forward(angles, lengths):
+def forward(angles, lengths, unit='rad'):
     """ Link object as defined by the standard DH representation.
 
     :param list angles: angles of each joint
@@ -15,11 +15,11 @@ def forward(angles, lengths):
 
     .. warning:: angles and lengths should be the same size.
     """
-    x, y = joint_positions(angles, lengths)
+    x, y = joint_positions(angles, lengths, unit)
     return x[-1], y[-1]
 
 
-def joint_positions(angles, lengths):
+def joint_positions(angles, lengths, unit='rad'):
     """ Link object as defined by the standard DH representation.
 
     :param list angles: angles of each joint
@@ -33,7 +33,13 @@ def joint_positions(angles, lengths):
     if len(angles) != len(lengths):
         raise ValueError('angles and lengths must be the same size!')
 
-    a = np.array(angles)
+    if unit == 'rad':
+        a = np.array(angles)
+    elif unit == 'deg':
+        a = np.pi * np.array(angles)
+    else:
+        raise NotImplementedError
+     
     a = np.cumsum(a)
     return np.cumsum(np.cos(a)*lengths), np.cumsum(np.sin(a)*lengths)
 
@@ -49,11 +55,12 @@ class SimpleArmEnvironment(Environment):
     use_process = True
 
     def __init__(self, m_mins, m_maxs, s_mins, s_maxs,
-                 length_ratio, noise):
+                 length_ratio, noise, unit='rad'):
         Environment.__init__(self, m_mins, m_maxs, s_mins, s_maxs)
 
         self.length_ratio = length_ratio
         self.noise = noise
+        self.unit = unit
 
         self.lengths = lengths(self.conf.m_ndims, self.length_ratio)
 
@@ -61,10 +68,10 @@ class SimpleArmEnvironment(Environment):
         return bounds_min_max(joint_pos_ag, self.conf.m_mins, self.conf.m_maxs)
 
     def compute_sensori_effect(self, joint_pos_env):
-        hand_pos = np.array(forward(joint_pos_env, self.lengths))
+        hand_pos = np.array(forward(joint_pos_env, self.lengths, self.unit))
         hand_pos += self.noise * np.random.randn(*hand_pos.shape)
         return hand_pos
-
+    
     def plot_arm(self, ax, m_, **kwargs_plot):
         m = self.compute_motor_command(m_)
         x, y = joint_positions(m, self.lengths)
