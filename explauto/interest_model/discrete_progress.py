@@ -84,7 +84,13 @@ class DiscreteProgress(InterestModel):
 interest_models = {'discretized_progress': (DiscretizedProgress,
                                             {'default': {'x_card': 400,
                                                          'win_size': 10,
-                                                         'measure': competence_dist}})}
+                                                         'measure': competence_dist}}),
+                   'discretized_progress_small': (DiscretizedProgress,
+                                            {'default': {'x_card': 20,
+                                                         'win_size': 10,
+                                                         'measure': competence_dist}})
+                   
+                   }
                                              # 'comp_dist': {'x_card': 400,
                                                            # 'win_size': 10,
                                                            # 'measure': competence_dist}})}
