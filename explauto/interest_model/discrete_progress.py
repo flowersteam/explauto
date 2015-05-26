@@ -32,6 +32,9 @@ class DiscretizedProgress(InterestModel):
     def normalize_measure(self, measure):
         return (measure - self.comp_min)/(self.comp_max - self.comp_min)
 
+    def progress(self):
+        return numpy.max(abs(self.discrete_progress.progress()))
+    
     def sample(self):
         index = self.discrete_progress.sample(temp=self.space.card)[0]
         return self.space.rand_value(index).flatten()
@@ -64,6 +67,10 @@ class DiscreteProgress(InterestModel):
     def progress(self):
         return numpy.array([numpy.cov(zip(range(self.win_size), q), rowvar=0)[0, 1]
                             for q in self.queues])
+#         print [q for q in self.queues], numpy.array([numpy.mean(numpy.diff(q, axis=0))
+#                             for q in self.queues])
+#         return numpy.array([numpy.mean(numpy.diff(q, axis=0))
+#                             for q in self.queues])
 
     def sample(self, temp=3.):
         self.w = abs(self.progress())
@@ -87,7 +94,7 @@ interest_models = {'discretized_progress': (DiscretizedProgress,
                                                          'measure': competence_dist}}),
                    'discretized_progress_small': (DiscretizedProgress,
                                             {'default': {'x_card': 20,
-                                                         'win_size': 10,
+                                                         'win_size': 100,
                                                          'measure': competence_dist}})
                    
                    }

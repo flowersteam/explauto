@@ -22,6 +22,7 @@ class InterestTree(InterestModel):
                  conf, 
                  expl_dims, 
                  max_points_per_region, 
+                 max_depth,
                  split_mode, 
                  competence_measure, 
                  progress_win_size, 
@@ -42,6 +43,7 @@ class InterestTree(InterestModel):
                          np.array(self.bounds, dtype=np.float), 
                          lambda:self.data_c, 
                          max_points_per_region=max_points_per_region, 
+                         max_depth=max_depth,
                          split_mode=split_mode, 
                          progress_win_size=progress_win_size, 
                          progress_measure=progress_measure, 
@@ -119,6 +121,7 @@ class Tree(object):
                  bounds_x, 
                  get_data_c, 
                  max_points_per_region=10, 
+                 max_depth=10,
                  split_mode='median', 
                  progress_win_size=5, 
                  progress_measure='abs_deriv', 
@@ -130,6 +133,7 @@ class Tree(object):
         self.bounds_x = np.array(bounds_x, dtype=np.float64)
         self.get_data_c = get_data_c
         self.max_points_per_region = max_points_per_region
+        self.max_depth = max_depth
         self.split_mode = split_mode
         self.progress_win_size = progress_win_size
         self.progress_measure = progress_measure
@@ -239,6 +243,7 @@ class Tree(object):
         
         """    
         if self.leafnode:
+            #print "Tree SAmple bounds", self.bounds_x
             return self.sample_bounds()
         else:
             lp = self.less.progress
@@ -345,8 +350,19 @@ class Tree(object):
             else:
                 idxs = sorted(idxs)[- self.progress_win_size:]
                 return np.abs(np.mean(np.diff(self.get_data_c()[idxs], axis=0)))
+            
+        elif self.progress_measure == 'abs_deriv_smooth':
+            if len(idxs) <= 1:
+                return 0
+            else:
+                idxs = sorted(idxs)[- self.progress_win_size:]
+                v = self.get_data_c()[idxs]
+                n = len(v)
+                comp_beg = np.mean(v[:int(float(n)/2.)])
+                comp_end = np.mean(v[int(float(n)/2.):])
+                return np.abs(comp_end - comp_beg)
         else:
-            raise NotImplementedError
+            raise NotImplementedError(self.progress_measure)
         
     
     def compute_progress(self):
@@ -365,7 +381,7 @@ class Tree(object):
         Add an index to the tree (recursive).
         
         """
-        if self.leafnode and self.children >= self.max_points_per_region:
+        if self.leafnode and self.children >= self.max_points_per_region and self.max_depth > 0:
             self.split() 
         if self.leafnode:
             self.idxs.append(idx)
@@ -442,6 +458,7 @@ class Tree(object):
                          l_bounds_x, 
                          self.get_data_c, 
                          self.max_points_per_region, 
+                         self.max_depth - 1,
                          self.split_mode, 
                          self.progress_win_size, 
                          self.progress_measure, 
@@ -453,6 +470,7 @@ class Tree(object):
                             g_bounds_x, 
                             self.get_data_c, 
                             self.max_points_per_region, 
+                            self.max_depth - 1,
                             self.split_mode, 
                             self.progress_win_size, 
                             self.progress_measure, 
@@ -713,11 +731,12 @@ class Tree(object):
 
 
 interest_models = {'tree': (InterestTree, {'default': {'max_points_per_region': 100,
+                                                       'max_depth':6,
                                                        'split_mode': 'middle',
                                                        'competence_measure': lambda target,reached : competence_exp(target, reached, 0., 1.),
                                                        'progress_win_size': 50,
-                                                       'progress_measure': 'abs_deriv',                                                       
-                                                       'sampling_mode': ['softmax', 1.]}})}
+                                                       'progress_measure': 'abs_deriv_smooth',                                                       
+                                                       'sampling_mode': ['epsilon_greedy', 0.1]}})}
 
 
 

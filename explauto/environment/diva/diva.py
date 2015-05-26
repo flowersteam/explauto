@@ -1,10 +1,11 @@
 import os
-from numpy import array, hstack, float32, zeros, linspace, shape, mean, log2, transpose
+from numpy import array, hstack, float32, zeros, linspace, shape, mean, log2, transpose, sum, isnan
 
-from oct2py import octave
+from oct2py import Oct2Py, Oct2PyError
 from ..environment import Environment
 from ...utils import bounds_min_max
 from ...models.dmp import DmpPrimitive
+from invest import ART_DATA_DIR
 
 
 if not (os.environ.has_key('AVAKAS') and os.environ['AVAKAS']):
@@ -17,17 +18,26 @@ class DivaSynth:
         # sample rate setting not working yet
         self.diva_path = os.path.join(os.getenv("HOME"), 'software/DIVAsimulink/')
         assert os.path.exists(self.diva_path)
-        octave.addpath(self.diva_path)
+        self.octave = Oct2Py()
         self.restart_iter = 500
-        self.iter = 0
+        self.init_oct()
 
+    def init_oct(self):
+        self.octave.addpath(self.diva_path)
+        self.iter = 0
+        
     def execute(self, art):
-        self.aud, self.som, self.vt = octave.diva_synth(art, 'audsom')
+        try:
+            self.aud, self.som, self.vt = self.octave.diva_synth(art, 'audsom')
+        except Oct2PyError:
+            self.reboot()
+            print "Warning: Oct2Py crashed, Oct2Py restarted"
+            self.aud, self.som, self.vt = self.octave.diva_synth(art, 'audsom')
         self.add_iter()
         return self.aud, self.som, self.vt
 
     def sound_wave(self, art):
-        wave = octave.diva_synth(art, 'sound')
+        wave = self.octave.diva_synth(art, 'sound')
         self.add_iter()
         return wave
     
@@ -37,13 +47,16 @@ class DivaSynth:
         else:
             self.iter += 1
             
+    def reboot(self):
+        self.octave = Oct2Py()
+        self.init_oct()
+        
     def restart(self):
-        octave.restart()
-        octave.addpath(self.diva_path)
-        self.iter = 0
+        self.octave.restart()
+        self.init_oct()
         
     def stop(self):
-        octave.exit()
+        self.octave.exit()
 
 
 
@@ -65,15 +78,21 @@ class DivaEnvironment(Environment):
         self.synth = DivaSynth()
         self.art = array([0.]*10 + [1]*3)   # 13 articulators is a constant from diva_synth.m in the diva source code
         
-        default = zeros(self.n_dmps_diva*(self.n_bfs_diva+2))
+        dmp_default = zeros(self.n_dmps_diva*(self.n_bfs_diva+2))
         if not self.diva_use_initial:
             init_position = self.rest_position_diva
-            default[:self.n_dmps_diva] = init_position
+            dmp_default[:self.n_dmps_diva] = init_position
         if not self.diva_use_goal:
             end_position = self.rest_position_diva
-            default[-self.n_dmps_diva:] = end_position
+            dmp_default[-self.n_dmps_diva:] = end_position
         
-        self.dmp = DmpPrimitive(self.n_dmps_diva, self.n_bfs_diva, self.used_diva, default, type='discrete')
+        self.dmp = DmpPrimitive(self.n_dmps_diva, self.n_bfs_diva, self.used_diva, dmp_default, type='discrete')
+        
+        self.default_m = zeros(self.n_dmps_diva * self.n_bfs_diva + self.n_dmps_diva * self.diva_use_initial + self.n_dmps_diva * self.diva_use_goal)
+        self.default_m_traj = self.compute_motor_command(self.default_m)
+        self.default_sound = self.synth.execute(self.art.reshape(-1,1))[0]
+        self.default_formants = None
+        self.default_formants = self.compute_sensori_effect(self.default_m_traj)
         
         Environment.__init__(self, self.m_mins, self.m_maxs, self.s_mins, self.s_maxs)
 
@@ -86,15 +105,33 @@ class DivaEnvironment(Environment):
         if len(array(m_env).shape) == 1:
             self.art[self.m_used] = m_env
             #print self.art
-            res = self.synth.execute(self.art.reshape(-1,1))[0]
+            
+            if m_env == self.default_m:
+                res = self.default_sound
+            else:
+                res = self.synth.execute(self.art.reshape(-1,1))[0]
             #print "compute_se result", res[self.s_used].flatten()
-            return log2(res[self.s_used].flatten())
+            formants = log2(transpose(res[self.s_used]))
+            formants[isnan(formants)] = 0.
+            return formants
         else:
-            self.art_traj = zeros((13, array(m_env).shape[0]))
-            self.art_traj[11:13, :] = 1
-            self.art_traj[self.m_used,:] = transpose(m_env)
-            res = self.synth.execute(self.art_traj)[0]
-            return log2(transpose(res[self.s_used,:]))
+            
+            if self.default_formants is not None and (m_env == self.default_m_traj).all():
+                return self.default_formants
+            else:
+                self.art_traj = zeros((13, array(m_env).shape[0]))
+                self.art_traj[11:13, :] = 1
+                self.art_traj[self.m_used,:] = transpose(m_env)
+                res = self.synth.execute(self.art_traj)[0]
+                if isnan(sum(log2(transpose(res[self.s_used,:])))):
+                    print "diva NaN:"
+    #                 print "m_env", m_env
+    #                 print "self.art_traj", self.art_traj, 
+    #                 print "res", res, 
+    #                 print "formants", log2(transpose(res[self.s_used,:]))
+                formants = log2(transpose(res[self.s_used,:]))
+                formants[isnan(formants)] = 0.
+                return formants
 
     def rest_params(self):
         dims = self.n_dmps_diva*self.n_bfs_diva
@@ -132,7 +169,7 @@ class DivaEnvironment(Environment):
             return s
         else:
             s = list(mean(array(s), axis=0))
-            print "Diva s=", s
+            #print "Diva s=", s
             return s
         
         

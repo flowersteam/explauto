@@ -75,6 +75,8 @@ class Agent(Observable):
             x = rand_bounds(self.conf.bounds[:, self.expl_dims]).flatten()
         #print "interest model choose y : ", x
         self.emit('choice' + '_' + self.mid, x)
+        if hasattr(self.interest_model, 'progress'):
+            self.emit('progress' + '_' + self.mid, self.interest_model.progress())
         return x
 
 

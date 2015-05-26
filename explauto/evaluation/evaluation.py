@@ -37,7 +37,7 @@ class Evaluation(object):
             e, s_ = self.test_inverse(s_g)
             s_reached.append(s_)
             errors.append(e)
-            print 'Evaluation', len(errors), ': s_goal = ', s_g, 's_reached = ', s_, 'L2 error = ', e, '\n'
+            #print 'Evaluation', len(errors), ': s_goal = ', s_g, 's_reached = ', s_, 'L2 error = ', e, '\n'
         self.ag.learning_mode()
         #print s_reached
         self.log.eval_errors.append(errors)
@@ -45,26 +45,32 @@ class Evaluation(object):
     
 
     def evaluate_explo(self):
-        
-        data_s = array([a[self.log.config.eval_explo_dims] for a in self.log.logs['agentMS']])
-        
-        eval_range = array([min(data_s, axis=0),
-                           max(data_s, axis=0)])
-        
-        eps = self.log.config.eval_explo_eps
-        grid_sizes = (eval_range[1,:] - eval_range[0,:]) / eps + 1
-        grid_sizes = array(grid_sizes, dtype = int)
-        grid = zeros(grid_sizes)
-        
-        for i in range(len(data_s)):
-            idxs = array((data_s[i] - eval_range[0,:]) / eps, dtype=int)
-            grid[tuple(idxs)] = grid[tuple(idxs)] + 1
+        if self.log.logs.has_key('agentMS'):
+                
+            data_s = array([a[self.log.config.eval_explo_dims] for a in self.log.logs['agentMS']])
+    #         print "explo eval data_s"
+    #         for s in data_s:
+    #             if s != [0.]:
+    #                 print s
+            eval_range = array([min(data_s, axis=0),
+                               max(data_s, axis=0)])
             
-        grid[grid > 1] = 1
-        explo = sum(grid)
-        
+            eps = self.log.config.eval_explo_eps
+            grid_sizes = (eval_range[1,:] - eval_range[0,:]) / eps + 1
+            grid_sizes = array(grid_sizes, dtype = int)
+            grid = zeros(grid_sizes)
+            
+            for i in range(len(data_s)):
+                idxs = array((data_s[i] - eval_range[0,:]) / eps, dtype=int)
+                grid[tuple(idxs)] = grid[tuple(idxs)] + 1
+                
+            grid[grid > 1] = 1
+            explo = sum(grid)
+        else:
+            explo = 0
+        #print eval_range, eps, grid_sizes, grid
         self.log.explo.append(explo)
-        print '[' + self.log.config.tag + '] ' + 'Exploration evaluation =' + str(explo)
+        print '[' + self.log.config.tag + '] ' + 'Exploration evaluation = ' + str(explo)
     
     
     def evaluate_explo_comp(self):
