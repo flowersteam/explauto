@@ -74,7 +74,7 @@ class SimpleArmEnvironment(Environment):
     
     def plot_arm(self, ax, m_, **kwargs_plot):
         m = self.compute_motor_command(m_)
-        x, y = joint_positions(m, self.lengths)
+        x, y = joint_positions(m, self.lengths, self.unit)
         x, y = [np.hstack((0., a)) for a in x, y]
         ax.plot(x, y, 'grey', lw=2, **kwargs_plot)
         ax.plot(x[0], y[0], 'ok', ms=6)

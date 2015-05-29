@@ -70,7 +70,7 @@ class Evaluation(object):
             explo = 0
         #print eval_range, eps, grid_sizes, grid
         self.log.explo.append(explo)
-        print '[' + self.log.config.tag + '] ' + 'Exploration evaluation = ' + str(explo)
+        print '[' + self.log.config.tag + '] ' + 'Exploration evaluation = ' + str(int(explo))
     
     
     def evaluate_explo_comp(self):

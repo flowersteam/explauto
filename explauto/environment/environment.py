@@ -93,9 +93,12 @@ class Environment(Observable):
             s = self.one_update(m_ag, log)
         else:
             s = []
-            for m in m_ag:
-                s.append(self.one_update(m, log))
-            s = array(s)
+            if m_ag is not None:
+                for m in m_ag:
+                    s.append(self.one_update(m, log))
+                s = array(s)
+            else:
+                s = zeros(self.conf.s_ndims)
         return s
 
     def reset(self):
