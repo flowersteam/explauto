@@ -75,40 +75,45 @@ class Evaluation(object):
     
     def evaluate_explo_comp(self):
         
-        data_s = array([a for a in self.log.logs['perception_mod'+'{}'.format(len(self.log.config.mids))]])
-        print "data_s", data_s
-        eval_range = array([min(data_s, axis=0),
-                           max(data_s, axis=0)])
-        
-        eps = self.log.config.eval_explo_comp_eps
-        grid_sizes = (eval_range[1,:] - eval_range[0,:]) / eps + 1
-        grid_sizes = array(grid_sizes, dtype = int)
-        grid = zeros(grid_sizes)
-        
-        for i in range(len(data_s)):
-            idxs = array((data_s[i] - eval_range[0,:]) / eps, dtype=int)
-            grid[tuple(idxs)] = grid[tuple(idxs)] + 1
+        if self.log.logs.has_key('perception_mod'+'{}'.format(len(self.log.config.mids))):
+            data_s = array([a for a in self.log.logs['perception_mod'+'{}'.format(len(self.log.config.mids))]])
+            print "data_s", data_s
+            eval_range = array([min(data_s, axis=0),
+                               max(data_s, axis=0)])
             
-        grid[grid > 1] = 1
-        explo = sum(grid)
-        self.log.explo_comp_explo.append(explo)
-        print '[' + self.log.config.tag + '] ' + 'ExploComp evaluation =' + str(explo)
-        
-        if explo < len(self.testcases):
-            #print "grid", grid
-            to_test = list(transpose(array(where(grid))))
-            random.shuffle(to_test)
+            eps = self.log.config.eval_explo_comp_eps
+            grid_sizes = (eval_range[1,:] - eval_range[0,:]) / eps + 1
+            grid_sizes = array(grid_sizes, dtype = int)
+            grid = zeros(grid_sizes)
             
-            errors = []
-            for idxs in to_test:
-                s_g = (idxs + 0.5) * eps + eval_range[0,:]
-                #print idxs, s_g
-                e, s_reached = self.test_inverse(s_g)
-                errors.append(e)
-            max_dist = eps
-            nb_comp = sum(array(errors)<max_dist)
-            self.log.explo_comp.append(nb_comp)
-            print "Evaluate explo comp", to_test, errors, max_dist, nb_comp
+            for i in range(len(data_s)):
+                idxs = array((data_s[i] - eval_range[0,:]) / eps, dtype=int)
+                grid[tuple(idxs)] = grid[tuple(idxs)] + 1
+                
+            grid[grid > 1] = 1
+            explo = sum(grid)
+            self.log.explo_comp_explo.append(explo)
+            print '[' + self.log.config.tag + '] ' + 'ExploComp evaluation =' + str(explo)
+            
+            if explo < len(self.testcases):
+                #print "grid", grid
+                to_test = list(transpose(array(where(grid))))
+                random.shuffle(to_test)
+                
+                errors = []
+                for idxs in to_test:
+                    s_g = (idxs + 0.5) * eps + eval_range[0,:]
+                    #print idxs, s_g
+                    e, s_reached = self.test_inverse(s_g)
+                    errors.append(e)
+                max_dist = eps
+                nb_comp = sum(array(errors)<max_dist)
+                self.log.explo_comp.append(nb_comp)
+                print "Evaluate explo comp", to_test, errors, max_dist, nb_comp
+            else:
+                explo = 0
+                #print eval_range, eps, grid_sizes, grid
+                self.log.explo_comp_explo.append(explo)
         
 
     def plot_testcases(self, ax, dims, **kwargs_plot):
