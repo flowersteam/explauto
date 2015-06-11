@@ -5,7 +5,6 @@ from oct2py import Oct2Py, Oct2PyError
 from ..environment import Environment
 from ...utils import bounds_min_max
 from ...models.dmp import DmpPrimitive
-from invest import ART_DATA_DIR
 
 
 if not (os.environ.has_key('AVAKAS') and os.environ['AVAKAS']):
