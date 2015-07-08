@@ -94,14 +94,37 @@ class Tree(object):
             Function that return the data points' competences.
         max_points_per_region : int
             Maximum number of points per region. A given region is splited when this number is exceeded.
+        max_depth : int
+            Maximum depth of the tree
         split_mode : string
-            Mode to split a region: random, median.
+            Mode to split a region: 
+                'random': random value between first and last points, 
+                'median': median of the points in the region on the split dimension, 
+                'middle': middle of the region on the split dimension, 
+                'best_interest_diff': 
+                    value that maximize the difference of progress in the 2 sub-regions
+                    (described in Baranes2012: Active Learning of Inverse Models 
+                    with Intrinsically Motivated Goal Exploration in Robots)
         progress_win_size : int
             Number of last points taken into account for progress computation (should be < max_points_per_region)
         progress_measure : string
-            How to compute progress: 'abs_deriv'
+            How to compute progress: 
+                'abs_deriv_cov': approach from explauto's discrete progress interest model
+                'abs_deriv': absolute difference between first and last points in the window, 
+                'abs_deriv_smooth', absolute difference between first and last half of the window 
         sampling_mode : list 
-            How to sample a point in the tree: ['greedy'], ['random'], ['epsilon_greedy', eps], ['softmax', temperature] 
+            How to sample a point in the tree: 
+                dict(multiscale=bool, 
+                    volume=bool, 
+                    mode=greedy'|'random'|'epsilon_greedy'|'softmax', 
+                    param=float)                    
+                multiscale: if we choose between all the nodes of the tree to sample a goal, leading to a multi-scale resolution
+                            (described in Baranes2012: Active Learning of Inverse Models 
+                            with Intrinsically Motivated Goal Exploration in Robots)
+                volume: if we weight the progress of nodes with their volume to choose between them
+                        (new approach)
+                mode: sampling mode
+                param: a parameter of the sampling mode: eps for eps_greedy, temperature for softmax.                                                 
         idxs : list 
             List of indices to start with
         split_dim : int
