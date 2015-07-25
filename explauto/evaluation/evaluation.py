@@ -111,10 +111,10 @@ class Evaluation(object):
                 nb_comp = sum(array(errors)<max_dist)
                 self.log.explo_comp.append(nb_comp)
                 print "Evaluate explo comp", to_test, errors, max_dist, nb_comp
-            else:
-                explo = 0
-                #print eval_range, eps, grid_sizes, grid
-                self.log.explo_comp_explo.append(explo)
+        else:
+            explo = 0
+            #print eval_range, eps, grid_sizes, grid
+            self.log.explo_comp_explo.append(explo)
         
 
     def plot_testcases(self, ax, dims, **kwargs_plot):
