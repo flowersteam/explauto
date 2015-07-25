@@ -106,6 +106,7 @@ class Evaluation(object):
                     #print idxs, s_g
                     e, s_reached = self.test_inverse(s_g)
                     errors.append(e)
+                    self.log.explo_comp_results.append([s_g, s_reached])
                 max_dist = eps
                 nb_comp = sum(array(errors)<max_dist)
                 self.log.explo_comp.append(nb_comp)

@@ -12,6 +12,7 @@ class ExperimentLog(object):
         self.explo = []
         self.explo_comp = []
         self.explo_comp_explo = []
+        self.explo_comp_results = []
         self.conf = conf
         self.expl_dims = expl_dims
         self.inf_dims = inf_dims
