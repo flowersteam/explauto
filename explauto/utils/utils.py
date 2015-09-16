@@ -19,7 +19,7 @@ def softmax_choice(v, temperature=1.):
     else:
         v = np.array(v)
         vmax = max(v)
-        probas = np.exp(v / (vmax*temperature))
+        probas = np.exp((v-vmax) / temperature)
         probas = probas / np.sum(probas)
         return np.where(np.random.multinomial(1, probas) == 1)[0][0]
 
