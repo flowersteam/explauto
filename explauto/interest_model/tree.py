@@ -79,15 +79,24 @@ class InterestTree(InterestModel):
         return self.tree.sample()
     
     
-    def progress(self):
-        return self.tree.progress_all()
+    def competence(self):
+        return self.tree.competence()
     
+    
+    def progress(self, mode="all"):
+        if mode == "all":
+            return self.tree.progress_all()
+        elif mode == "max":
+            return self.tree.progress
+        else:
+            raise NotImplementedError
+            
     
     def update(self, xy, ms):
         # print np.shape(self.data_x), np.shape(np.array([xy[self.expl_dims]]))
         self.add_x(xy[self.expl_dims])
         c = self.competence_measure(xy, ms)
-        print "xy:", xy, "ms:", ms, "competence:", c
+        #print "xy:", xy, "ms:", ms, "competence:", c
         self.add_c(c)
         self.tree.add(np.shape(self.data_x)[0] - 1)
 
@@ -181,7 +190,7 @@ class Tree(object):
         
         if self.children > self.max_points_per_region:
             self.split()
-        self.compute_progress()
+        self.compute_max_progress()
             
         
     def get_leaves(self):
@@ -395,8 +404,32 @@ class Tree(object):
         else:
             raise NotImplementedError(self.progress_measure)
         
+        
+    def competence_idxs(self, idxs):
+        """
+        Mean competence on points of given indexes.
+        
+        """
+        comps = self.get_data_c()
+        if comps is not None:
+            return np.mean(self.get_data_c()[idxs])
+        else:
+            return 0.
+        
     
-    def compute_progress(self):
+    def competence(self): 
+        """
+        Compute mean competence on tree (recursive).
+        """
+        if self.leafnode:
+            return self.competence_idxs(self.idxs)
+        else:
+            split_ratio = ((self.split_value - self.bounds_x[0,self.split_dim]) / 
+                           (self.bounds_x[1,self.split_dim] - self.bounds_x[0,self.split_dim]))
+            return self.lower.competence() * split_ratio + self.greater.competence() * (1 - split_ratio)
+        
+    
+    def compute_max_progress(self):
         """
         Compute max competence progress of sub-trees (not recursive).
         
@@ -428,7 +461,7 @@ class Tree(object):
                 leaf_add = self.greater.add(idx)            
             else:
                 leaf_add = self.lower.add(idx)
-        self.compute_progress()
+        self.compute_max_progress()
         self.children = self.children + 1
         return leaf_add # return leaf on which the point has been added
     
