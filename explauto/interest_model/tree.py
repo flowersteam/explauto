@@ -61,27 +61,33 @@ class InterestTree(InterestModel):
         if self.data_x is None:
             self.data_x = np.array([x])
         else:
-            self.data_x = np.append(self.data_x, np.array([x]), axis=0)
-    
+            self.data_x = np.append(self.data_x, np.array([x]), axis=0)    
         
     def add_c(self, c):
         if self.data_c is None:
             self.data_c = np.array([c]) # Either prediction error or competence error
         else:
-            self.data_c = np.append(self.data_c, c) 
-            
+            self.data_c = np.append(self.data_c, c)             
             
     def set_data_c(self, idx, c):
-        self.data_c[idx] = c
-        
+        self.data_c[idx] = c        
 
     def sample(self):
         return self.tree.sample()
-    
-    
-    def competence(self):
-        return self.tree.competence()
-    
+        
+    def competence_pt(self, x):
+        return self.tree.competence_leaf(self.tree.pt2leaf(x))
+        
+    def competence(self, mode="sw"):
+        if self.data_x is None:
+            return 0
+        else:
+            if mode == "sw":
+                return self.tree.competence_idxs(range(self.n_points())[-self.tree.progress_win_size:])
+            elif mode == "cum":
+                return self.tree.competence_cum()
+            else:
+                raise NotImplementedError    
     
     def progress(self, mode="all"):
         if mode == "all":
@@ -90,18 +96,20 @@ class InterestTree(InterestModel):
             return self.tree.progress
         else:
             raise NotImplementedError
-            
-    
+                
+    def n_points(self):
+        if self.data_x is None:
+            return 0
+        else:
+            return np.shape(self.data_x)[0]
+        
     def update(self, xy, ms):
         # print np.shape(self.data_x), np.shape(np.array([xy[self.expl_dims]]))
         self.add_x(xy[self.expl_dims])
         c = self.competence_measure(xy, ms)
         #print "xy:", xy, "ms:", ms, "competence:", c
         self.add_c(c)
-        self.tree.add(np.shape(self.data_x)[0] - 1)
-
-
-
+        self.tree.add(self.n_points() - 1)
 
 
 class Tree(object):
@@ -192,38 +200,34 @@ class Tree(object):
             self.split()
         self.compute_max_progress()
             
-        
+                    
     def get_leaves(self):
         """
         Get the list of all leaves.
         
         """
         return self.fold_up(lambda fl, fg: fl + fg, lambda leaf: [leaf])
-    
-    
+        
     def depth(self):
         """
         Compute the depth of the tree (depth of a leaf=0).
         
         """
         return self.fold_up(lambda fl, fg: max(fl + 1, fg + 1), lambda leaf: 0)
-    
-    
+        
     def volume(self):
         """
         Compute the volume of the node.
         
         """
         return np.prod(self.bounds_x[1,:] - self.bounds_x[0,:])
-    
-    
+        
     def density(self):
         """
         Compute the density of the node.
         
         """
-        return self.children / self.volume()
-    
+        return self.children / self.volume()    
     
     def pt2leaf(self, x):
         """
@@ -237,8 +241,7 @@ class Tree(object):
                 return self.lower.pt2leaf(x)
             else:
                 return self.greater.pt2leaf(x)
-        
-        
+                
     def sample_bounds(self):
         """
         Sample a point in the region of this node.
@@ -246,8 +249,7 @@ class Tree(object):
         """
         s = rand_bounds(self.bounds_x).flatten()
         return s
-    
-    
+        
     def sample_random(self, rand_mode='by_volume'):
         """
         Sample Randomly .
@@ -272,8 +274,7 @@ class Tree(object):
                 if split_ratio > np.random.random():
                     return self.lower.sample(sampling_mode=['random'])
                 else:
-                    return self.greater.sample(sampling_mode=['random'])
-        
+                    return self.greater.sample(sampling_mode=['random'])        
         
     def sample_greedy(self):
         """        
@@ -289,8 +290,7 @@ class Tree(object):
             if gp > lp:
                 return self.greater.sample(sampling_mode=['greedy'])
             else:
-                return self.lower.sample(sampling_mode=['greedy'])
-        
+                return self.lower.sample(sampling_mode=['greedy'])        
         
     def sample_epsilon_greedy(self, epsilon=0.1):
         """
@@ -304,8 +304,7 @@ class Tree(object):
         if epsilon > np.random.random():
             return self.sample(sampling_mode=['random'])
         else:
-            return self.sample(sampling_mode=['greedy'])
-        
+            return self.sample(sampling_mode=['greedy'])        
         
     def sample_softmax(self, temperature=1.):
         """
@@ -326,8 +325,7 @@ class Tree(object):
                 return self.sample_epsilon_greedy()
             else:
                 leaf = leaves[softmax_choice(progresses, temperature)]
-                return leaf.sample_bounds()
-        
+                return leaf.sample_bounds()        
             
     def sample(self, sampling_mode=None):
         """
@@ -355,8 +353,7 @@ class Tree(object):
             return self.sample_softmax(sampling_mode[1])
             
         else:
-            raise NotImplementedError(sampling_mode)
-            
+            raise NotImplementedError(sampling_mode)            
             
     def progress_all(self):
         """
@@ -364,13 +361,10 @@ class Tree(object):
         
         """
         if self.children > 4:
-            time_scale = 1
-            return self.progress_idxs(range(self.children - time_scale * self.progress_win_size, 
-                                            self.children))
+            return self.progress_idxs(range(self.children))
         else:
             return 1
-            
-            
+                        
     def progress_idxs(self, idxs):
         """
         Competence progress on points of given indexes.
@@ -402,9 +396,14 @@ class Tree(object):
                 #print "Tree progress", idxs, v, n
                 return np.abs(comp_end - comp_beg)
         else:
-            raise NotImplementedError(self.progress_measure)
+            raise NotImplementedError(self.progress_measure)        
         
-        
+    def competence_leaf(self, leaf):
+        """
+        Mean competence on points in given leaf
+        """
+        return self.competence_idxs(leaf.idxs)
+    
     def competence_idxs(self, idxs):
         """
         Mean competence on points of given indexes.
@@ -414,20 +413,19 @@ class Tree(object):
         if comps is not None:
             return np.mean(self.get_data_c()[idxs])
         else:
-            return 0.
-        
-    
-    def competence(self): 
+            return 0.        
+                
+    def competence_cum(self): 
         """
-        Compute mean competence on tree (recursive).
+        Compute mean competence from beginning on tree (recursive).
+        
         """
         if self.leafnode:
             return self.competence_idxs(self.idxs)
         else:
             split_ratio = ((self.split_value - self.bounds_x[0,self.split_dim]) / 
                            (self.bounds_x[1,self.split_dim] - self.bounds_x[0,self.split_dim]))
-            return self.lower.competence() * split_ratio + self.greater.competence() * (1 - split_ratio)
-        
+            return self.lower.competence() * split_ratio + self.greater.competence() * (1 - split_ratio)        
     
     def compute_max_progress(self):
         """
@@ -437,8 +435,7 @@ class Tree(object):
         if self.leafnode:
             self.progress = self.progress_idxs(self.idxs)
         else:
-            self.progress = max(self.lower.progress, self.greater.progress)
-            
+            self.progress = max(self.lower.progress, self.greater.progress)            
         
     def add(self, idx):
         """
@@ -463,8 +460,7 @@ class Tree(object):
                 leaf_add = self.lower.add(idx)
         self.compute_max_progress()
         self.children = self.children + 1
-        return leaf_add # return leaf on which the point has been added
-    
+        return leaf_add # return leaf on which the point has been added    
     
     def split(self):
         """
@@ -552,8 +548,7 @@ class Tree(object):
                             self.sampling_mode, 
                             self.comp_min_cut,
                             idxs = greater_idx, 
-                            split_dim = split_dim)
-        
+                            split_dim = split_dim)        
         
     def print_tree(self, depth=0):
         """ Print tree (recursive)
@@ -578,8 +573,7 @@ class Tree(object):
         else:
             self.lower.print_tree(depth+1)
             self.greater.print_tree(depth+1)
-        
-        
+                
     # Adapted from scipy.spatial.kdtree 
     def __query(self, x, k=1, eps=0, p=2, distance_upper_bound=np.inf):
 
@@ -662,8 +656,7 @@ class Tree(object):
             return sorted([(-d,i) for (d,i) in neighbors])
         else:
             return sorted([((-d)**(1./p),i) for (d,i) in neighbors])
-        
-        
+                
     # Adapted from scipy.spatial.kdtree 
     def nn(self, x, k=1, eps=0, p=2, distance_upper_bound=np.inf):
         """
@@ -763,17 +756,14 @@ class Tree(object):
                 return dd, ii
             else:
                 raise ValueError("Requested %s nearest neighbors; acceptable numbers are integers greater than or equal to one, or None")
-         
-                
+                     
     def fold_up(self, f_inter, f_leaf):
         """
         Apply recursively the function f_inter from leaves to root, begining with function f_leaf on leaves.
         
         """
         return f_leaf(self) if self.leafnode else f_inter(self.lower.fold_up(f_inter, f_leaf), 
-                                                          self.greater.fold_up(f_inter, f_leaf))
-                        
-                
+                                                          self.greater.fold_up(f_inter, f_leaf))                            
             
     def plot(self, ax, scatter=True, grid=True, progress_colors=True, progress_max=1., depth=10, plot_dims=[0,1]):
         """
@@ -802,12 +792,10 @@ class Tree(object):
             
         if grid:
             self.plot_grid(ax, progress_colors, progress_max, depth, plot_dims)
-            
-    
+                
     def plot_scatter(self, ax, plot_dims=[0,1]):
         if np.shape(self.get_data_x())[0] <= 5000:
-            ax.scatter(self.get_data_x()[:,plot_dims[0]], self.get_data_x()[:,plot_dims[1]], color = 'black')
-        
+            ax.scatter(self.get_data_x()[:,plot_dims[0]], self.get_data_x()[:,plot_dims[1]], color = 'black')        
         
     def plot_grid(self, ax, progress_colors=True, progress_max=1., depth=10, plot_dims=[0,1]):
         if self.leafnode or depth == 0:
@@ -829,8 +817,6 @@ class Tree(object):
     
 
 
-
-
 interest_models = {'tree': (InterestTree, {'default': {'max_points_per_region': 20,
                                                        'max_depth':15,
                                                        'split_mode': 'middle',
@@ -839,9 +825,6 @@ interest_models = {'tree': (InterestTree, {'default': {'max_points_per_region': 
                                                        'progress_measure': 'abs_deriv_smooth',                                                       
                                                        'sampling_mode': ['softmax', 1.],
                                                        'comp_min_cut':True}})}
-
-
-
 
 
 
