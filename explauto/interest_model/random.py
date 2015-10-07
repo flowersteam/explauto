@@ -1,5 +1,4 @@
 import numpy as np
-import math
 
 from ..utils import rand_bounds
 from .interest_model import InterestModel
@@ -21,7 +20,6 @@ class RandomInterest(InterestModel):
         pass
 
 
-
 class MiscRandomInterest(RandomInterest):
     def __init__(self, 
                  conf, 
@@ -29,14 +27,16 @@ class MiscRandomInterest(RandomInterest):
                  competence_measure,
                  win_size,
                  competence_mode,
-                 competence_k):
+                 competence_k,
+                 competence_min):
         
-        InterestModel.__init__(self, expl_dims)
+        RandomInterest.__init__(self, conf, expl_dims)
         
         self.competence_measure = competence_measure
         self.win_size = win_size
         self.competence_mode = competence_mode
         self.competence_k = competence_k
+        self.competence_min = competence_min
         
         self.data_x = None
         self.data_c = None
@@ -49,6 +49,8 @@ class MiscRandomInterest(RandomInterest):
             self.data_x = np.append(self.data_x, np.array([x]), axis=0)    
         
     def add_c(self, c):
+        if self.competence_min > c:
+            c = self.competence_min
         if self.data_c is None:
             self.data_c = np.array([c])
         else:
@@ -65,34 +67,49 @@ class MiscRandomInterest(RandomInterest):
         else:
             return np.shape(self.data_x)[0]
     
+    def competence(self, mode='sw'):
+        if self.n_points() > 0:
+            if mode == 'all':
+                return np.mean(self.data_c)
+            elif mode == 'sw':
+                idxs = range(self.n_points())[- self.win_size:]
+                return np.mean(self.data_c[idxs])
+            else:
+                raise NotImplementedError
+        else:
+            return 0
+        
     def competence_pt(self, x, mode=None):
         mode = mode or self.competence_mode
-        if mode == 'all':
-            return np.mean(self.data_c)
-        elif mode == 'sw':
-            idxs = range(self.n_points())[- self.win_size:]
-            return np.mean(self.data_c[idxs])
-        elif mode == 'nn':
+        if mode == 'nn':
             if self.n_points() > self.competence_k:
                 weights = 'uniform'
                 knr = KNeighborsRegressor(n_neighbors=self.competence_k, weights=weights)
                 knr.fit(self.data_x, self.data_c)
+                # If the rebuild of the tree takes too long, 
+                # one might prefer to rebuild it every x iterations
                 return knr.predict(x) 
             else:
-                return self.competence_pt(x, mode='all')
+                return self.competence()
+        else:
+            return self.competence(mode=mode)
                 
     def progress(self):
-        idxs = range(self.n_points())[- self.win_size:]
-        v = self.data_c[idxs]
-        n = len(v)
-        comp_beg = np.mean(v[:int(float(n)/2.)])
-        comp_end = np.mean(v[int(float(n)/2.):])
-        return np.abs(comp_end - comp_beg)
+        if self.n_points() < 2:
+            return 0
+        else:
+            idxs = range(self.n_points())[- self.win_size:]
+            v = self.data_c[idxs]
+            n = len(v)
+            comp_beg = np.mean(v[:int(float(n)/2.)])
+            comp_end = np.mean(v[int(float(n)/2.):])
+            return np.abs(comp_end - comp_beg)
         
         
         
 interest_models = {'random': (RandomInterest, {'default': {}}),
                    'miscRandom': (MiscRandomInterest, {'default': {'competence_measure': lambda target,reached : competence_exp(target, reached, 0.01, 1.),
-                                                                   'win_size': 10,
+                                                                   'win_size': 20,
                                                                    'competence_mode': 'nn',
-                                                                   'competence_k': 10}})}
+                                                                   'competence_k': 20,
+                                                                   'competence_min': np.exp(-0.1)}})}
