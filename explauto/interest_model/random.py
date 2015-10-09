@@ -27,8 +27,7 @@ class MiscRandomInterest(RandomInterest):
                  competence_measure,
                  win_size,
                  competence_mode,
-                 competence_k,
-                 competence_min):
+                 competence_k):
         
         RandomInterest.__init__(self, conf, expl_dims)
         
@@ -36,7 +35,6 @@ class MiscRandomInterest(RandomInterest):
         self.win_size = win_size
         self.competence_mode = competence_mode
         self.competence_k = competence_k
-        self.competence_min = competence_min
         
         self.data_x = None
         self.data_c = None
@@ -49,8 +47,6 @@ class MiscRandomInterest(RandomInterest):
             self.data_x = np.append(self.data_x, np.array([x]), axis=0)    
         
     def add_c(self, c):
-        if self.competence_min > c:
-            c = self.competence_min
         if self.data_c is None:
             self.data_c = np.array([c])
         else:
@@ -108,8 +104,7 @@ class MiscRandomInterest(RandomInterest):
         
         
 interest_models = {'random': (RandomInterest, {'default': {}}),
-                   'miscRandom': (MiscRandomInterest, {'default': {'competence_measure': lambda target,reached : competence_exp(target, reached, 0.01, 1.),
+                   'miscRandom': (MiscRandomInterest, {'default': {'competence_measure': lambda target,reached : competence_exp(target, reached, 0.01, 0.1, 1.),
                                                                    'win_size': 20,
                                                                    'competence_mode': 'nn',
-                                                                   'competence_k': 20,
-                                                                   'competence_min': np.exp(-0.1)}})}
+                                                                   'competence_k': 20}})}
