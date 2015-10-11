@@ -32,7 +32,14 @@ class InterestTree(InterestModel):
         
         self.conf = conf
         self.bounds = self.conf.bounds[:, expl_dims]
+        self.max_points_per_region = max_points_per_region
+        self.max_depth = max_depth
+        self.split_mode = split_mode
         self.competence_measure = competence_measure
+        self.progress_win_size = progress_win_size
+        self.progress_measure = progress_measure
+        self.sampling_mode = sampling_mode
+        self.comp_min_cut = comp_min_cut
         
         if progress_win_size >= max_points_per_region:
             raise ValueError("WARNING: progress_win_size should be < max_points_per_region")
@@ -40,22 +47,24 @@ class InterestTree(InterestModel):
         self.data_x = None
         self.data_c = None
 
+        self.create_tree()
+        
+        InterestModel.__init__(self, expl_dims)
+        
+    def create_tree(self):
         self.tree = Tree(lambda:self.data_x, 
                          np.array(self.bounds, dtype=np.float), 
                          lambda:self.data_c,
                          lambda idx, c: self.set_data_c(idx, c), 
-                         max_points_per_region=max_points_per_region, 
-                         max_depth=max_depth,
-                         split_mode=split_mode, 
-                         competence_measure=competence_measure,
-                         progress_win_size=progress_win_size, 
-                         progress_measure=progress_measure, 
-                         sampling_mode=sampling_mode,
-                         comp_min_cut = comp_min_cut,
+                         max_points_per_region=self.max_points_per_region, 
+                         max_depth=self.max_depth,
+                         split_mode=self.split_mode, 
+                         competence_measure=self.competence_measure,
+                         progress_win_size=self.progress_win_size, 
+                         progress_measure=self.progress_measure, 
+                         sampling_mode=self.sampling_mode,
+                         comp_min_cut=self.comp_min_cut,
                          idxs=[])
-        
-        InterestModel.__init__(self, expl_dims)
-    
         
     def add_x(self, x):
         if self.data_x is None:
@@ -462,49 +471,76 @@ class Tree(object):
         self.children = self.children + 1
         return leaf_add # return leaf on which the point has been added    
     
+    def split_random(self):
+        """        
+        Split randomly between min and max of node's points on split dimension.
+        
+        """
+        split_dim_data = self.get_data_x()[self.idxs, self.split_dim] # data on split dim
+        split_min = min(split_dim_data)
+        split_max = max(split_dim_data)
+        return split_min + np.random.rand() * (split_max - split_min)
+    
+    def split_median(self):
+        """
+        Split on median (which fall on the middle of two points for even max_points_per_region) 
+        of node's points on split dimension.
+        
+        """
+        split_dim_data = self.get_data_x()[self.idxs, self.split_dim] # data on split dim
+        return np.median(split_dim_data)
+        
+    def split_middle(self):
+        """
+        Split on the middle of the region: might cause empty leaf.
+        
+        """
+        split_dim_data = self.get_data_x()[self.idxs, self.split_dim] # data on split dim
+        return (self.bounds_x[0, self.split_dim] + self.bounds_x[1, self.split_dim]) / 2
+        
+    def split_best_interest_diff(self):
+        """
+        See Baranes2012: Active Learning of Inverse Models with Intrinsically Motivated Goal Exploration in Robots
+        choose between random split values the one that maximizes card(lower)*card(greater)* progress difference between the two.
+        
+        """
+        split_dim_data = self.get_data_x()[self.idxs, self.split_dim] # data on split dim
+        split_min = min(split_dim_data)
+        split_max = max(split_dim_data)
+                    
+        m = self.max_points_per_region # Constant that might be tuned: number of random split values to choose between
+        rand_splits = split_min + np.random.rand(m) * (split_max - split_min)
+        splits_fitness = np.zeros(m)
+        for i in range(m):
+            lower_idx = list(np.array(self.idxs)[np.nonzero(split_dim_data <= rand_splits[i])[0]])
+            greater_idx = list(np.array(self.idxs)[np.nonzero(split_dim_data > rand_splits[i])[0]])
+            splits_fitness[i] = len(lower_idx) * len(greater_idx) * abs(self.progress_idxs(lower_idx) - 
+                                                                       self.progress_idxs(greater_idx))
+        return rand_splits[np.argmax(splits_fitness)]
+        
+    def choose_split_value(self):
+        """
+        Choose the split value depending on split mode.
+        
+        """
+        if self.split_mode == 'random':
+            return self.split_random()            
+        elif self.split_mode == 'median':
+            return self.split_median()            
+        elif self.split_mode == 'middle':
+            return self.split_middle()            
+        elif self.split_mode == 'best_interest_diff':
+            return self.split_best_interest_diff() 
+        else:
+            raise NotImplementedError
+        
     def split(self):
         """
         Split the leaf node.
         
         """
-        if self.split_mode == 'random':
-            # Split randomly between min and max of node's points on split dimension
-            split_dim_data = self.get_data_x()[self.idxs, self.split_dim] # data on split dim
-            split_min = min(split_dim_data)
-            split_max = max(split_dim_data)
-            split_value = split_min + np.random.rand() * (split_max - split_min)
-            
-        elif self.split_mode == 'median':
-            # Split on median (which fall on the middle of two points for even max_points_per_region) 
-            # of node's points on split dimension
-            split_dim_data = self.get_data_x()[self.idxs, self.split_dim] # data on split dim
-            split_value = np.median(split_dim_data)
-            
-        elif self.split_mode == 'middle':
-            # Split on the middle of the region: might cause empty leaf
-            split_dim_data = self.get_data_x()[self.idxs, self.split_dim] # data on split dim
-            split_value = (self.bounds_x[0, self.split_dim] + self.bounds_x[1, self.split_dim]) / 2
-            
-        elif self.split_mode == 'best_interest_diff': 
-            # See Baranes2012: Active Learning of Inverse Models with Intrinsically Motivated Goal Exploration in Robots
-            # choose between random split values the one that maximizes card(lower)*card(greater)* progress difference between the two
-            split_dim_data = self.get_data_x()[self.idxs, self.split_dim] # data on split dim
-            split_min = min(split_dim_data)
-            split_max = max(split_dim_data)
-                        
-            m = self.max_points_per_region # Constant that might be tuned: number of random split values to choose between
-            rand_splits = split_min + np.random.rand(m) * (split_max - split_min)
-            splits_fitness = np.zeros(m)
-            for i in range(m):
-                lower_idx = list(np.array(self.idxs)[np.nonzero(split_dim_data <= rand_splits[i])[0]])
-                greater_idx = list(np.array(self.idxs)[np.nonzero(split_dim_data > rand_splits[i])[0]])
-                splits_fitness[i] = len(lower_idx) * len(greater_idx) * abs(self.progress_idxs(lower_idx) - 
-                                                                           self.progress_idxs(greater_idx))
-            split_value = rand_splits[np.argmax(splits_fitness)]
-            
-        else:
-            raise NotImplementedError
-    
+        split_value = self.choose_split_value() 
+        split_dim_data = self.get_data_x()[self.idxs, self.split_dim] # data on split dim
         lower_idx = list(np.array(self.idxs)[np.nonzero(split_dim_data <= split_value)[0]])
         greater_idx = list(np.array(self.idxs)[np.nonzero(split_dim_data > split_value)[0]])
 
@@ -520,6 +556,13 @@ class Tree(object):
         g_bounds_x = np.array(self.bounds_x)
         g_bounds_x[0, self.split_dim] = split_value
         
+        self.create_subtrees(l_bounds_x, g_bounds_x, lower_idx, greater_idx, split_dim)
+        
+    def create_subtrees(self, l_bounds_x, g_bounds_x, lower_idx, greater_idx, split_dim):
+        """
+        Create lower and greater subtrees.
+        
+        """ 
         self.lower = Tree(self.get_data_x, 
                           l_bounds_x, 
                           self.get_data_c, 
@@ -551,7 +594,9 @@ class Tree(object):
                             split_dim = split_dim)        
         
     def print_tree(self, depth=0):
-        """ Print tree (recursive)
+        """ 
+        Print human-readable tree (recursive).
+        
         """
         print
         for _ in range(depth):
