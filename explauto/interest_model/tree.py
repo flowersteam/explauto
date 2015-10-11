@@ -315,6 +315,11 @@ class Tree(object):
         else:
             return self.sample(sampling_mode=['greedy'])        
         
+    def sample_leaves_weights(self):
+        leaves = self.get_leaves()
+        progresses = np.array(map(lambda leaf:leaf.progress*leaf.volume(), leaves)) #by volume 
+        return leaves, progresses
+    
     def sample_softmax(self, temperature=1.):
         """
         Sample leaves with probabilities progress*volume and a softmax exploration (with a temperature parameter).
@@ -327,8 +332,7 @@ class Tree(object):
         if self.leafnode:
             return self.sample_bounds()
         else:
-            leaves = self.get_leaves()
-            progresses = np.array(map(lambda leaf:leaf.progress*leaf.volume(), leaves)) #by volume
+            leaves, progresses = self.sample_leaves_weights()
             
             if np.isnan(np.sum(progresses)): # if progress_max = 0 or nan value in dataset, eps-greedy sample
                 return self.sample_epsilon_greedy()

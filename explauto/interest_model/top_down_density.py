@@ -17,8 +17,7 @@ class TDDensityInterest(InterestModel):
         self.bandwith = bandwith
         self.data_s = []
         self.td_density = None
-        self.up_to_date = False
-    
+        self.up_to_date = False    
     
     def check_bounds(self, s):
         return bounds_min_max(s, self.bounds[0], self.bounds[1])
@@ -55,6 +54,7 @@ class TDDensityTree(Tree):
                  get_data_x, 
                  bounds_x, 
                  get_data_c, 
+                 get_data_s,
                  set_data_c, 
                  max_points_per_region, 
                  max_depth,
@@ -83,39 +83,43 @@ class TDDensityTree(Tree):
                      idxs=[], 
                      split_dim=0)
         
-        self.data_s = None
+        self.get_data_s = get_data_s
+        self.td_idxs = []
         
+    def create_subtrees(self, l_bounds_x, g_bounds_x, lower_idx, greater_idx, split_dim):
+        Tree.create_subtrees(self, l_bounds_x, g_bounds_x, lower_idx, greater_idx, split_dim)
+        for td_idx in self.td_idxs:
+            if self.get_data_s()[td_idx, self.split_dim] > self.split_value:
+                self.greater.td_idx.append(td_idx)
+            else:
+                self.lower.td_idx.append(td_idx)
     
-    def sample_softmax(self, temperature=1.):
-        pass
+    def sample_leaves_weights(self):
+        leaves = self.self.get_leaves()
+        weights = np.array(map(lambda leaf:leaf.progress * len(leaf.td_idxs), leaves)) # (progress * volume) * (n_td_points / volume)
+        return leaves, weights
     
-    def split(self):
-        Tree.split(self)
-        self.split_value
+    def add_td_goal(self, td_idx):
+        self.pt2leaf(self.get_data_s()[td_idx, :]).td_idxs.append(td_idx)
         
     
 class TDDensityTreeInterest(InterestTree):
     def __init__(self, 
                  conf, 
-                 expl_dims, 
-                 kernel, 
-                 bandwith):
+                 expl_dims):
         
         InterestTree.__init__(self, 
                               conf, 
                               expl_dims,
                               **tree_interest_models['tree'][1]['default']
                               )
-
-        self.bounds = conf.bounds[:, expl_dims]
-        self.kernel = kernel
-        self.bandwith = bandwith
-        self.data_s = []  
+        self.data_s = None
         
     def create_tree(self):
         self.tree = TDDensityTree(lambda:self.data_x, 
                                  np.array(self.bounds, dtype=np.float), 
-                                 lambda:self.data_c,
+                                 lambda:self.data_c, 
+                                 lambda:self.data_s,
                                  lambda idx, c: self.set_data_c(idx, c), 
                                  max_points_per_region=self.max_points_per_region, 
                                  max_depth=self.max_depth,
@@ -128,19 +132,27 @@ class TDDensityTreeInterest(InterestTree):
                                  idxs=[])
         
     def sample(self):
-        if self.n_td_points() == 0:
-            return InterestTree.sample(self)        
+        if self.data_s is not None:
+            return Tree.sample(self.tree)        
         else:
-            return self.check_bounds(self.td_density.sample(n_samples=1))
-    
-    def n_td_points(self):
-        return len(self.data_s)
-    
-    def add_top_down_goal(self, s):
-        self.data_s.append(s)        
+            return InterestTree.sample(self)
         
+    def n_td_points(self):
+        if self.data_s is None:
+            return 0
+        else:
+            return np.shape(self.data_s)[0]
+    
+    def add_td_goal(self, s):
+        if self.data_s is None:
+            self.data_s = np.array([s])
+        else:
+            self.data_s = np.append(self.data_s, np.array([s]), axis=0)      
+        self.tree.add_td_goal(self.n_td_points() - 1)
         
         
         
 interest_models = {'TDDensity': (TDDensityInterest, {'default': {'kernel': 'tophat',
-                                                                 'bandwith': 0.1}})}
+                                                                 'bandwith': 0.1}}),
+                   'TDDensityTree': (TDDensityTreeInterest, {'default': {}})
+                   }
