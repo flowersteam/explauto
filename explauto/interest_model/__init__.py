@@ -3,7 +3,7 @@ import importlib
 
 interest_models = {}
 
-for mod_name in ['random', 'gmm_progress', 'discrete_progress', 'tree']:
+for mod_name in ['random', 'gmm_progress', 'discrete_progress', 'tree', 'top_down_density']:
     module = importlib.import_module('explauto.interest_model.{}'.format(mod_name))
 
     models = getattr(module, 'interest_models')

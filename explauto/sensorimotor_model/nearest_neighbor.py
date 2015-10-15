@@ -13,13 +13,19 @@ n_neighbors = 1
 class NearestNeighbor(SensorimotorModel):
 
     def __init__(self, conf, sigma_ratio):
-        """ This class implements a simple sensorimotor model based on nearest neighbor look-up. Used as a forward model, it simply returns the image in S of nearest neighbor in M. Used as an inverse model, it looks at the nearest neighbor in S, then explore during the n_explore following calls to self.infer around that neighborhood. It is inspired by the experiment in the section 4.4.1 and 4.4.2 of `Baranes and Oudeyer (2013) <http://www.pyoudeyer.com/ActiveGoalExploration-RAS-2013.pdf>`_.
+        """ This class implements a simple sensorimotor model based on nearest neighbor look-up. 
+        Used as a forward model, it simply returns the image in S of nearest neighbor in M. 
+        Used as an inverse model, it looks at the nearest neighbor in S, 
+        then explore during the n_explore following calls to self.infer around that neighborhood. 
+        It is inspired by the experiment in the section 4.4.1 and 4.4.2 of 
+        `Baranes and Oudeyer (2013) <http://www.pyoudeyer.com/ActiveGoalExploration-RAS-2013.pdf>`_.
 
         :param conf: a Configuration instance
         :type conf: :class:`~explauto.utils.config.Configuration`
 
         :param int n_explore: the number of exploration trials for each goal
-        :param float sigma_ratio: the standard deviation of the exploration will be (conf.m_maxs - conf.m_mins) * sigma_ratio. Hence, high values of this parameters means larger exploration
+        :param float sigma_ratio: the standard deviation of the exploration will be (conf.m_maxs - conf.m_mins) * sigma_ratio. 
+                Hence, high values of this parameters means larger exploration
         """
 
         SensorimotorModel.__init__(self, conf)

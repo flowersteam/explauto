@@ -4,6 +4,7 @@ from ..exceptions import ExplautoBootstrapError
 from .sensorimotor_model import SensorimotorModel
 from models.learner import Learner
 
+
 class NonParametric(SensorimotorModel):
     """This class wraps the non-parametric forward and inverse models implemented by Fabien Benureau, in order to fit into the Explauto framework. Original code available here: https://github.com/humm/models
 

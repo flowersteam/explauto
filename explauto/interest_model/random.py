@@ -1,9 +1,10 @@
 import numpy as np
 
+from sklearn.neighbors import KNeighborsRegressor
+
 from ..utils import rand_bounds
 from .interest_model import InterestModel
 from .competences import competence_exp, competence_dist
-from sklearn.neighbors import KNeighborsRegressor
 
 
 class RandomInterest(InterestModel):
@@ -11,7 +12,6 @@ class RandomInterest(InterestModel):
         InterestModel.__init__(self, expl_dims)
 
         self.bounds = conf.bounds[:, expl_dims]
-        # self.ndims = bounds.shape[1]
 
     def sample(self):
         return rand_bounds(self.bounds).flatten()
@@ -21,6 +21,14 @@ class RandomInterest(InterestModel):
 
 
 class MiscRandomInterest(RandomInterest):
+    """
+    Add some features to the RandomInterest random babbling class.
+    
+    Allows to query the recent interest in the whole space,
+    the recent competence on the babbled points in the whole space, 
+    the competence around a given point based on a mean of the knns.   
+    
+    """
     def __init__(self, 
                  conf, 
                  expl_dims,
@@ -35,7 +43,6 @@ class MiscRandomInterest(RandomInterest):
         self.win_size = win_size
         self.competence_mode = competence_mode
         self.competence_k = competence_k
-        
         self.data_x = None
         self.data_c = None
         
@@ -77,20 +84,19 @@ class MiscRandomInterest(RandomInterest):
         
     def competence_pt(self, x, mode=None):
         mode = mode or self.competence_mode
-        if mode == 'nn':
+        if mode == 'knn':
             if self.n_points() > self.competence_k:
                 weights = 'uniform'
-                knr = KNeighborsRegressor(n_neighbors=self.competence_k, weights=weights)
+                knr = KNeighborsRegressor(n_neighbors=self.competence_k, 
+                                          weights=weights)
                 knr.fit(self.data_x, self.data_c)
-                # If the rebuild of the tree takes too long, 
-                # one might prefer to rebuild it every x iterations
                 return knr.predict(x) 
             else:
                 return self.competence()
         else:
             return self.competence(mode=mode)
                 
-    def progress(self):
+    def interest(self):
         if self.n_points() < 2:
             return 0
         else:
@@ -104,7 +110,8 @@ class MiscRandomInterest(RandomInterest):
         
         
 interest_models = {'random': (RandomInterest, {'default': {}}),
-                   'miscRandom': (MiscRandomInterest, {'default': {'competence_measure': lambda target,reached : competence_exp(target, reached, 0.01, 0.1, 1.),
-                                                                   'win_size': 20,
-                                                                   'competence_mode': 'nn',
-                                                                   'competence_k': 20}})}
+                   'miscRandom': (MiscRandomInterest, {'default': 
+                       {'competence_measure': lambda target,reached : competence_exp(target, reached, 0.01, 0.1, 1.),
+                                   'win_size': 20,
+                                   'competence_mode': 'knn',
+                                   'competence_k': 20}})}

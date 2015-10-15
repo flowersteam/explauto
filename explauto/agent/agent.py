@@ -80,7 +80,7 @@ class Agent(Observable):
         return x
 
 
-    def infer(self, expl_dims, inf_dims, x, pref = ''):
+    def infer(self, expl_dims, inf_dims, x, pref=''):
         """ Use the sensorimotor model to compute the expected value on inf_dims given that the value on expl_dims is x.
 
         .. note:: This corresponds to a prediction if expl_dims=self.conf.m_dims and inf_dims=self.conf.s_dims and to inverse prediction if expl_dims=self.conf.s_dims and inf_dims=self.conf.m_dims.

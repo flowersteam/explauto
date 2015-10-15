@@ -1,22 +1,24 @@
-import numpy as np
-
 from sklearn.neighbors import KernelDensity
 
+import numpy as np
+
 from ..utils import bounds_min_max, rand_bounds
-from .interest_model import InterestModel
+from .interest_model import interest_models as all_interest_models
+from .random import MiscRandomInterest
 from .tree import InterestTree, Tree
-import tree.interest_models as tree_interest_models
 
 
-class TDDensityInterest(InterestModel):
-    def __init__(self, conf, expl_dims, kernel, bandwith):
-        InterestModel.__init__(self, expl_dims)
-
+class TDDensityInterest(MiscRandomInterest):
+    def __init__(self, conf, expl_dims, kernel, bandwidth, time_window, self_weight, td_weight):
+        MiscRandomInterest.__init__(self, conf, expl_dims, **all_interest_models['miscRandom'][1]['default'])
         self.bounds = conf.bounds[:, expl_dims]
         self.kernel = kernel
-        self.bandwith = bandwith
+        self.bandwidth = bandwidth
+        self.time_window = time_window
+        self.self_weight = self_weight
+        self.td_weight = td_weight
         self.data_s = []
-        self.td_density = None
+        self.td_tree = None
         self.up_to_date = False    
     
     def check_bounds(self, s):
@@ -26,10 +28,18 @@ class TDDensityInterest(InterestModel):
         return rand_bounds(self.bounds).flatten()
         
     def sample(self):
+        """
+        We sample with td_points density distribution with some probability, and otherwise randomly.
+        
+        """
         if self.n_td_points() == 0:
             return self.random_sample()        
         elif self.up_to_date:
-            return self.check_bounds(self.td_density.sample(n_samples=1))
+            if self.td_weight / (self.self_weight + self.td_weight) > np.random.rand():
+                s = self.check_bounds(self.td_tree.sample(n_samples=1))
+                return self.check_bounds(s)
+            else:
+                return self.random_sample()
         else:
             self.update_density()
             return self.sample()
@@ -41,13 +51,10 @@ class TDDensityInterest(InterestModel):
         self.up_to_date = False
         self.data_s.append(s)        
         
-    def update_density(self, s):
-        self.td_tree = KernelDensity(kernel=self.kernel, bandwith=self.bandwith).fit(np.array(self.data_s))
+    def update_density(self):
+        self.td_tree = KernelDensity(kernel=self.kernel, bandwidth=self.bandwidth).fit(np.array(self.data_s)[-self.time_window:, :])
         self.up_to_date = True
         
-    def update(self, xy, ms):
-        pass
-
 
 class TDDensityTree(Tree):
     def __init__(self, 
@@ -55,6 +62,9 @@ class TDDensityTree(Tree):
                  bounds_x, 
                  get_data_c, 
                  get_data_s,
+                 get_td_time_limit,
+                 self_weight,
+                 td_weight,
                  set_data_c, 
                  max_points_per_region, 
                  max_depth,
@@ -62,10 +72,17 @@ class TDDensityTree(Tree):
                  competence_measure,
                  progress_win_size, 
                  progress_measure, 
+                 interest_measure, 
                  sampling_mode, 
                  comp_min_cut,
-                 idxs=[], 
+                 idxs=None, 
                  split_dim=0):
+        
+        self.get_data_s = get_data_s
+        self.get_td_time_limit = get_td_time_limit
+        self.self_weight = self_weight
+        self.td_weight = td_weight
+        self.td_idxs = []
         
         Tree.__init__(self,
                      get_data_x, 
@@ -78,58 +95,141 @@ class TDDensityTree(Tree):
                      competence_measure,
                      progress_win_size, 
                      progress_measure, 
+                     interest_measure, 
                      sampling_mode, 
                      comp_min_cut,
-                     idxs=[], 
-                     split_dim=0)
+                     idxs=idxs, 
+                     split_dim=split_dim)
         
-        self.get_data_s = get_data_s
-        self.td_idxs = []
         
     def create_subtrees(self, l_bounds_x, g_bounds_x, lower_idx, greater_idx, split_dim):
-        Tree.create_subtrees(self, l_bounds_x, g_bounds_x, lower_idx, greater_idx, split_dim)
+        self.lower = TDDensityTree(self.get_data_x, 
+                                  l_bounds_x, 
+                                  self.get_data_c, 
+                                  self.get_data_s,
+                                  self.get_td_time_limit,
+                                  self.self_weight,
+                                  self.td_weight,
+                                  self.set_data_c, 
+                                  self.max_points_per_region, 
+                                  self.max_depth - 1,
+                                  self.split_mode,                           
+                                  self.competence_measure,
+                                  self.progress_win_size, 
+                                  self.progress_measure, 
+                                  self.interest_measure, 
+                                  self.sampling_mode, 
+                                  self.comp_min_cut,
+                                  idxs=lower_idx, 
+                                  split_dim=split_dim)
+        
+        self.greater = TDDensityTree(self.get_data_x, 
+                                    g_bounds_x, 
+                                    self.get_data_c, 
+                                    self.get_data_s,  
+                                    self.get_td_time_limit,
+                                    self.self_weight,
+                                    self.td_weight,
+                                    self.set_data_c, 
+                                    self.max_points_per_region, 
+                                    self.max_depth - 1,
+                                    self.split_mode,                    
+                                    self.competence_measure,
+                                    self.progress_win_size, 
+                                    self.progress_measure, 
+                                    self.interest_measure, 
+                                    self.sampling_mode, 
+                                    self.comp_min_cut,
+                                    idxs=greater_idx, 
+                                    split_dim=split_dim)   
+        
         for td_idx in self.td_idxs:
             if self.get_data_s()[td_idx, self.split_dim] > self.split_value:
-                self.greater.td_idx.append(td_idx)
+                self.greater.td_idxs.append(td_idx)
             else:
-                self.lower.td_idx.append(td_idx)
+                self.lower.td_idxs.append(td_idx)
     
-    def sample_leaves_weights(self):
-        leaves = self.self.get_leaves()
-        weights = np.array(map(lambda leaf:leaf.progress * len(leaf.td_idxs), leaves)) # (progress * volume) * (n_td_points / volume)
-        return leaves, weights
-    
-    def add_td_goal(self, td_idx):
-        self.pt2leaf(self.get_data_s()[td_idx, :]).td_idxs.append(td_idx)
+    def compute_interest(self):
+        #print "--------leaf", self.bounds_x, "progress", self.progress, "td_interest", self.td_interest()
+        self.max_interest = self.progress * self.volume() * (self.self_weight + self.td_interest())
         
+    def td_interest(self):
+        self.update_td_idxs()
+        return self.td_weight * float(len(self.td_idxs)) #self.td_weight already divided by time_window
+        
+    def update_td_idxs(self):
+        self.td_idxs = [td_idx for td_idx in self.td_idxs if td_idx >= self.get_td_time_limit()]
+        
+    def add_top_down_goal(self, td_idx):
+        self.pt2leaf(self.get_data_s()[td_idx, :]).td_idxs.append(td_idx)
+        self.recompute_tree_max_interest()
+    
+    def print_tree(self, depth=0):
+        """ 
+        Print human-readable tree (recursive).
+        
+        """
+        print
+        for _ in range(depth):
+            print "    ",
+        print "Node bounds:", self.bounds_x 
+        if self.leafnode:
+            for _ in range(depth):
+                print "    ",
+            print "Leaf progress:", self.progress, "td_interest", self.td_interest(), "max interest", self.max_interest
+            for _ in range(depth):
+                print "    ",
+            print "Leaf indices    :", self.idxs
+            for _ in range(depth):
+                print "    ",
+            print "Leaf points     :", self.get_data_x()[self.idxs][:,0]
+            for _ in range(depth):
+                print "    ",
+            print "Leaf td indices    :", self.td_idxs
+            for _ in range(depth):
+                print "    ",
+            if self.get_data_s() is not None:
+                print "Leaf td points     :", self.get_data_s()[self.td_idxs][:,0]
+                for _ in range(depth):
+                    print "    ",
+            print "Leaf competences:", self.get_data_c()[self.idxs]
+        else:
+            self.lower.print_tree(depth+1)
+            self.greater.print_tree(depth+1)
     
 class TDDensityTreeInterest(InterestTree):
-    def __init__(self, 
-                 conf, 
-                 expl_dims):
+    def __init__(self, conf, expl_dims, time_window, self_weight, td_weight):
+        
+        self.data_s = None
+        self.time_window = time_window
+        self.self_weight = self_weight
+        self.td_weight = td_weight
         
         InterestTree.__init__(self, 
                               conf, 
                               expl_dims,
-                              **tree_interest_models['tree'][1]['default']
+                              **all_interest_models['tree'][1]['default']
                               )
-        self.data_s = None
         
     def create_tree(self):
         self.tree = TDDensityTree(lambda:self.data_x, 
                                  np.array(self.bounds, dtype=np.float), 
                                  lambda:self.data_c, 
                                  lambda:self.data_s,
+                                 lambda:self.n_td_points() - self.time_window,
+                                 self.self_weight,
+                                 self.td_weight / float(self.time_window),
                                  lambda idx, c: self.set_data_c(idx, c), 
-                                 max_points_per_region=self.max_points_per_region, 
-                                 max_depth=self.max_depth,
-                                 split_mode=self.split_mode, 
-                                 competence_measure=self.competence_measure,
-                                 progress_win_size=self.progress_win_size, 
-                                 progress_measure=self.progress_measure, 
-                                 sampling_mode=self.sampling_mode,
-                                 comp_min_cut=self.comp_min_cut,
-                                 idxs=[])
+                                 self.max_points_per_region, 
+                                 self.max_depth,
+                                 self.split_mode, 
+                                 self.competence_measure,
+                                 self.progress_win_size, 
+                                 self.progress_measure, 
+                                 self.interest_measure, 
+                                 self.sampling_mode,
+                                 self.comp_min_cut,
+                                 )
         
     def sample(self):
         if self.data_s is not None:
@@ -137,22 +237,27 @@ class TDDensityTreeInterest(InterestTree):
         else:
             return InterestTree.sample(self)
         
-    def n_td_points(self):
+    def n_td_points(self): 
         if self.data_s is None:
             return 0
         else:
             return np.shape(self.data_s)[0]
     
-    def add_td_goal(self, s):
+    def add_top_down_goal(self, s):
         if self.data_s is None:
             self.data_s = np.array([s])
         else:
             self.data_s = np.append(self.data_s, np.array([s]), axis=0)      
-        self.tree.add_td_goal(self.n_td_points() - 1)
+        self.tree.add_top_down_goal(self.n_td_points() - 1)
         
         
         
 interest_models = {'TDDensity': (TDDensityInterest, {'default': {'kernel': 'tophat',
-                                                                 'bandwith': 0.1}}),
-                   'TDDensityTree': (TDDensityTreeInterest, {'default': {}})
+                                                                 'bandwidth': 0.2,
+                                                                 'time_window': 20,
+                                                                 'self_weight': 0.,
+                                                                 'td_weight': 1.}}),
+                   'TDDensityTree': (TDDensityTreeInterest, {'default': {'time_window': 20,
+                                                                         'self_weight': 0.5,
+                                                                         'td_weight': 0.5}})
                    }
