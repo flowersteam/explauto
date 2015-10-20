@@ -35,7 +35,7 @@ def joint_positions(angles, lengths, unit='rad'):
 
     if unit == 'rad':
         a = np.array(angles)
-    elif unit == 'deg':
+    elif unit == 'std':
         a = np.pi * np.array(angles)
     else:
         raise NotImplementedError
@@ -82,3 +82,4 @@ class SimpleArmEnvironment(Environment):
         ax.axis([self.conf.s_mins[0], self.conf.s_maxs[0], self.conf.s_mins[1], self.conf.s_maxs[1]])
         ax.set_xlabel('X')
         ax.set_ylabel('Y')
+
