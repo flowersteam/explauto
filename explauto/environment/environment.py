@@ -76,7 +76,7 @@ class Environment(Observable):
 
         return s
 
-    def update(self, m_ag, log=True, batch=False):
+    def update(self, m_ag, reset=False, log=True, batch=False):
         """ Computes sensorimotor values from motor orders.
 
         :param numpy.array m_ag: a motor command with shape (self.conf.m_ndims, ) or a set of n motor commands of shape (n, self.conf.m_ndims)
@@ -87,8 +87,8 @@ class Environment(Observable):
 
         .. note:: self.conf.ndims = self.conf.m_ndims + self.conf.s_ndims is the dimensionality of the sensorimotor space (dim of the motor space + dim of the sensory space).
         """
-
-        self.reset()
+        if reset:
+            self.reset()
         if batch or len(array(m_ag).shape) == 1:
             s = self.one_update(m_ag, log)
         else:
@@ -96,9 +96,9 @@ class Environment(Observable):
             if m_ag is not None:
                 for m in m_ag:
                     s.append(self.one_update(m, log))
-                s = array(s)
+                #s = array(s)
             else:
-                s = zeros(self.conf.s_ndims)
+                s = list(zeros(self.conf.s_ndims))
         return s
 
     def reset(self):
