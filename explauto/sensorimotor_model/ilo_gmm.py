@@ -21,7 +21,7 @@ class IloGmm(SensorimotorModel):
         self.s_dims = conf.s_dims
         self.mode = ''
 
-    def infer(self, in_dims, out_dims, x):
+    def get_local_data(self, in_dims, out_dims, x):
         if self.dataset.size < self.min_n_neighbors:
             raise ExplautoBootstrapError
         if self.dataset.size < self.n_neighbors:
@@ -44,10 +44,20 @@ class IloGmm(SensorimotorModel):
         data = []
         for i in indexes:
             data.append(hstack(self.dataset.get_xy(i)))
-        data = array(data)
+        return array(data)
+
+    def fit_local_gmm(self, in_dims, out_dims, x):
         gmm = GMM(n_components=self.n_components, covariance_type='full')
-        gmm.fit(data)
-        return gmm.inference(in_dims, out_dims, x).sample().flatten()
+        gmm.fit(self.get_local_data(in_dims, out_dims, x))
+        return gmm
+
+    def compute_conditional_gmm(self, in_dims, out_dims, x):
+        gmm = self.fit_local_gmm(in_dims, out_dims, x)
+        return gmm.inference(in_dims, out_dims, x)
+
+    def infer(self, in_dims, out_dims, x):
+        gmm = self.compute_conditional_gmm(in_dims, out_dims, x)
+        return gmm.sample().flatten()
 
     def update(self, m, s):
         self.dataset.add_xy(tuple(m), tuple(s))
