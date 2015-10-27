@@ -76,7 +76,7 @@ class Environment(Observable):
 
         return s
 
-    def update(self, m_ag, reset=False, log=True, batch=False):
+    def update(self, m_ag, reset=False, log=False, batch=False):
         """ Computes sensorimotor values from motor orders.
 
         :param numpy.array m_ag: a motor command with shape (self.conf.m_ndims, ) or a set of n motor commands of shape (n, self.conf.m_ndims)

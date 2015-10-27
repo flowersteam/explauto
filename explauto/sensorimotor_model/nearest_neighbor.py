@@ -4,7 +4,7 @@ from numpy.linalg import norm
 
 from ..exceptions import ExplautoBootstrapError
 from .sensorimotor_model import SensorimotorModel
-from .dataset import Dataset
+from models.dataset import BufferedDataset as Dataset
 
 n_neighbors = 1
 # algorithm = 'kd_tree'

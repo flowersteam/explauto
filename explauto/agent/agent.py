@@ -1,7 +1,6 @@
 import logging
 import numpy as np
 
-
 from ..utils.config import make_configuration
 from ..utils.observer import Observable
 from ..utils import rand_bounds, bounds_min_max

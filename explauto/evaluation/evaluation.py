@@ -4,12 +4,12 @@ from numpy import linalg, array, zeros, sum, min, max, transpose, where
 
 
 class Evaluation(object):
-    def __init__(self, log, ag, env, testcases):
+    def __init__(self, log, ag, env, testcases, modes=["explo"]):
         self.log = log
         self.ag = ag
         self.env = env
         self.testcases = testcases
-        self.modes = self.log.config.eval_modes
+        self.modes = modes
 
         
     def evaluate(self):

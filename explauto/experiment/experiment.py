@@ -121,7 +121,7 @@ class Experiment(Observer):
             topic, msg = self.notifications.get()
             self.log.add(topic, msg)
 
-    def evaluate_at(self, eval_at, testcases):
+    def evaluate_at(self, eval_at, testcases, modes=["explo"]):
         """ Sets the evaluation interation indices.
 
             :param list eval_at: iteration indices where an evaluation should be performed
@@ -131,7 +131,7 @@ class Experiment(Observer):
         self.eval_at = eval_at
         self.log.eval_at = eval_at
 
-        self.evaluation = Evaluation(self.log, self.ag, self.env, testcases)
+        self.evaluation = Evaluation(self.log, self.ag, self.env, testcases, modes=modes)
         for test in testcases:
             self.log.add('testcases', test)
 
