@@ -86,6 +86,7 @@ class MiscRandomInterest(RandomInterest):
         mode = mode or self.competence_mode
         if mode == 'knn':
             if self.n_points() > self.competence_k:
+                assert len(x) == len(self.data_x[0]), (len(x), len(self.data_x[0]))
                 weights = 'uniform'
                 knr = KNeighborsRegressor(n_neighbors=self.competence_k, 
                                           weights=weights)
