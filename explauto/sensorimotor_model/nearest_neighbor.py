@@ -4,7 +4,7 @@ from numpy.linalg import norm
 
 from ..exceptions import ExplautoBootstrapError
 from .sensorimotor_model import SensorimotorModel
-from models.dataset import BufferedDataset as Dataset
+from models.dataset import IncrementalBufferedDataset as Dataset
 
 n_neighbors = 1
 # algorithm = 'kd_tree'
@@ -54,8 +54,12 @@ class NearestNeighbor(SensorimotorModel):
                     dists, indexes = self.dataset.nn_y(x, k=1)
                     self.mean_explore = self.dataset.get_x(indexes[0])
                     self.to_explore = self.n_explore
+                    res = sample_gaussian(self.mean_explore, self.sigma_expl ** 2)
+                    #print "BD nn_y. y=", x, "x=", self.mean_explore, "x + noise=", res, "predicted y=", self.dataset.get_y(self.dataset.nn_x(res)[1][0])              
                 self.to_explore -= 1
-                return sample_gaussian(self.mean_explore, self.sigma_expl ** 2)
+                
+                #return res
+                return res, self.dataset.get_y(self.dataset.nn_x(res)[1][0])    
             else:  # exploit'
                 dists, indexes = self.dataset.nn_y(x, k=1)
                 return self.dataset.get_x(indexes[0])

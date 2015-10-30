@@ -88,9 +88,10 @@ class Agent(Observable):
             if self.n_bootstrap > 0:
                 self.n_bootstrap -= 1
                 raise ExplautoBootstrapError
-            y = self.sensorimotor_model.infer(expl_dims,
+            y, x_pred = self.sensorimotor_model.infer(expl_dims,
                                               inf_dims,
                                               x.flatten())
+            self.s = x_pred
         except ExplautoBootstrapError:
             logger.warning('Sensorimotor model not bootstrapped yet')
             y = rand_bounds(self.conf.bounds[:, inf_dims]).flatten()
