@@ -4,7 +4,7 @@ from numpy.linalg import norm
 
 from ..exceptions import ExplautoBootstrapError
 from .sensorimotor_model import SensorimotorModel
-from models.dataset import IncrementalBufferedDataset as Dataset
+from models.dataset import BufferedDataset as Dataset
 
 n_neighbors = 1
 # algorithm = 'kd_tree'
@@ -59,10 +59,10 @@ class NearestNeighbor(SensorimotorModel):
                 self.to_explore -= 1
                 
                 #return res
-                return res, self.dataset.get_y(self.dataset.nn_x(res)[1][0])    
+                return res, self.dataset.get_y(self.dataset.nn_x(res)[1][0]), self.dataset.get_y(indexes[0]) # m, sp, snn
             else:  # exploit'
                 dists, indexes = self.dataset.nn_y(x, k=1)
-                return self.dataset.get_x(indexes[0])
+                return self.dataset.get_x(indexes[0]), self.dataset.get_y(indexes[0]), self.dataset.get_y(indexes[0])
 
         else:
             raise NotImplementedError("NearestNeighbor only implements forward"

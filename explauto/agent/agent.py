@@ -79,7 +79,7 @@ class Agent(Observable):
         return x
 
 
-    def infer(self, expl_dims, inf_dims, x, pref=''):
+    def infer(self, expl_dims, inf_dims, x):
         """ Use the sensorimotor model to compute the expected value on inf_dims given that the value on expl_dims is x.
 
         .. note:: This corresponds to a prediction if expl_dims=self.conf.m_dims and inf_dims=self.conf.s_dims and to inverse prediction if expl_dims=self.conf.s_dims and inf_dims=self.conf.m_dims.
@@ -88,17 +88,13 @@ class Agent(Observable):
             if self.n_bootstrap > 0:
                 self.n_bootstrap -= 1
                 raise ExplautoBootstrapError
-            y, x_pred = self.sensorimotor_model.infer(expl_dims,
+            y = self.sensorimotor_model.infer(expl_dims,
                                               inf_dims,
                                               x.flatten())
-            self.s = x_pred
+            
         except ExplautoBootstrapError:
             logger.warning('Sensorimotor model not bootstrapped yet')
             y = rand_bounds(self.conf.bounds[:, inf_dims]).flatten()
-        
-        
-        self.emit(pref + 'inference' + '_' + self.mid, y)
-        
         return y
 
 

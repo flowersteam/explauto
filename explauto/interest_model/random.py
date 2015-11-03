@@ -5,7 +5,7 @@ from sklearn.neighbors import KNeighborsRegressor
 from ..utils import rand_bounds
 from .interest_model import InterestModel
 from .competences import competence_exp, competence_dist
-from models.dataset import IncrementalBufferedDataset as Dataset
+from models.dataset import BufferedDataset as Dataset
 
 
 class RandomInterest(InterestModel):
@@ -48,54 +48,41 @@ class MiscRandomInterest(RandomInterest):
         self.progress_mode = progress_mode
         self.data_xc = Dataset(len(expl_dims), 1)
         self.current_interest = 0.
-        
-        
-        
-#     def add_x(self, x):
-#         if self.data_x is None:
-#             self.data_x = np.array([x])
-#         else:
-#             self.data_x = np.append(self.data_x, np.array([x]), axis=0)    
-#         
-#     def add_c(self, c):
-#         if self.data_c is None:
-#             self.data_c = np.array([c])
-#         else:
-#             self.data_c = np.append(self.data_c, c) 
-            
+              
             
     def add_xc(self, x, c):
         self.data_xc.add_xy(x, [c])
         
-#     def add_i(self, i):
-#         if self.data_i is None:
-#             self.data_i = np.array([i])
-#         else:
-#             self.data_i = np.append(self.data_i, i)     
-
     def update_interest(self, i):
         self.current_interest += (1. / self.win_size) *(i - self.current_interest) 
 
-    def update(self, xy, ms):
-        #self.add_x(xy[self.expl_dims])
+    def update(self, xy, ms, x=None):
         #print
-        #print "competence_measure ", "xy=", len(xy), "ms=", len(ms)
-        c = self.competence_measure(xy, ms)
-        #print "competence_measure ", "xy=", xy, "ms=", ms, "c=", c
+        c = self.competence_measure(xy[self.expl_dims], ms[self.expl_dims])
+        #print "miscRandom ", "xy=", xy, "ms=", ms, "c=", c
 #         print "self.expl_dims", self.expl_dims
 #         print "xy", xy
 #         print "ms", ms
 #         print "c", c
 #         print 
-        #self.add_c(c)
-        self.update_interest(self.interest_pt(xy[self.expl_dims], c))
-        self.add_xc(xy[self.expl_dims], c)
+
+        if self.progress_mode == 'local':
+            if x is None:
+                self.update_interest(self.interest_pt(xy[self.expl_dims], c))
+            else:
+                self.update_interest(self.interest_pt(x, c))
+        elif self.progress_mode == 'global':
+            pass
+        else:
+            raise NotImplementedError
+        
+        if x is None:
+            self.add_xc(xy[self.expl_dims], c)
+        else:
+            #print "miscRandom add x=", x
+            self.add_xc(x, c)
 
     def n_points(self):
-#         if self.data_x is None:
-#             return 0
-#         else:
-#             return np.shape(self.data_x)[0]
         return len(self.data_xc)
     
     def competence(self, mode='sw'):
@@ -138,11 +125,6 @@ class MiscRandomInterest(RandomInterest):
         return np.abs(c - mean_local_comp)        
         
     def interest_local(self): 
-#         if self.n_points() < 2:
-#             return 0.
-#         else:   
-#             idxs = range(self.n_points())[- self.win_size:]
-#             return np.mean(self.data_i[idxs])
         return self.current_interest
         
     def interest_global(self): 
@@ -150,7 +132,7 @@ class MiscRandomInterest(RandomInterest):
             return 0.
         else:
             idxs = range(self.n_points())[- self.win_size:]
-            v = self.data_c[idxs]
+            v = [self.data_xc.get_y(idx) for idx in idxs]
             n = len(v)
             comp_beg = np.mean(v[:int(float(n)/2.)])
             comp_end = np.mean(v[int(float(n)/2.):])
@@ -170,5 +152,5 @@ interest_models = {'random': (RandomInterest, {'default': {}}),
                        {'competence_measure': lambda target,reached : competence_exp(target, reached, dist_min=0.0, power=1.),
                                    'win_size': 100,
                                    'competence_mode': 'knn',
-                                   'competence_k': 5,
+                                   'competence_k': 10,
                                    'progress_mode': 'local'}})}

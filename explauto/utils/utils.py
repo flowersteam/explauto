@@ -13,6 +13,13 @@ def bounds_min_max(v, mins, maxs):
     res = np.maximum(res, mins)
     return res
 
+def prop_choice(v, eps=0.):
+    if np.sum(v) == 0 or np.random.rand() < eps:
+        return np.random.randint(np.size(v))
+    else:
+        probas = np.array(v) / np.sum(v)
+        return np.where(np.random.multinomial(1, probas) == 1)[0][0]
+    
 def softmax_choice(v, temperature=1.):
     if np.sum(v) == 0:
         return np.random.randint(np.size(v))
