@@ -59,6 +59,7 @@ class NearestNeighbor(SensorimotorModel):
                 self.to_explore -= 1
                 
                 #return res
+                print "NN len(sp)", len(self.dataset.get_y(self.dataset.nn_x(res)[1][0]))
                 return res, self.dataset.get_y(self.dataset.nn_x(res)[1][0]), self.dataset.get_y(indexes[0]) # m, sp, snn
             else:  # exploit'
                 dists, indexes = self.dataset.nn_y(x, k=1)
