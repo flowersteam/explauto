@@ -36,7 +36,7 @@ class MiscRandomInterest(RandomInterest):
                  competence_measure,
                  win_size,
                  competence_mode,
-                 competence_k,
+                 k,
                  progress_mode):
         
         RandomInterest.__init__(self, conf, expl_dims)
@@ -44,7 +44,7 @@ class MiscRandomInterest(RandomInterest):
         self.competence_measure = competence_measure
         self.win_size = win_size
         self.competence_mode = competence_mode
-        self.competence_k = competence_k
+        self.k = k
         self.progress_mode = progress_mode
         self.data_xc = Dataset(len(expl_dims), 1)
         self.current_interest = 0.
@@ -68,9 +68,9 @@ class MiscRandomInterest(RandomInterest):
 
         if self.progress_mode == 'local':
             if x is None:
-                self.update_interest(self.interest_pt(xy[self.expl_dims], c))
+                self.update_interest(self.interest_xc(xy[self.expl_dims], c))
             else:
-                self.update_interest(self.interest_pt(x, c))
+                self.update_interest(self.interest_xc(x, c))
         elif self.progress_mode == 'global':
             pass
         else:
@@ -85,7 +85,7 @@ class MiscRandomInterest(RandomInterest):
     def n_points(self):
         return len(self.data_xc)
     
-    def competence(self, mode='sw'):
+    def competence_global(self, mode='sw'):
         if self.n_points() > 0:
             if mode == 'all':
                 return np.mean(self.data_c)
@@ -97,36 +97,35 @@ class MiscRandomInterest(RandomInterest):
         else:
             return 0.
         
-    def competence_pt(self, x, mode=None):
-        mode = mode or self.competence_mode
-        if mode == 'knn':
-            if self.n_points() > self.competence_k:
-#                 assert len(x) == len(self.data_x[0]), (len(x), len(self.data_x[0]))
-#                 weights = 'uniform'
-#                 knr = KNeighborsRegressor(n_neighbors=self.competence_k, 
-#                                           weights=weights)
-#                 knr.fit(self.data_x, self.data_c)
-#                 return knr.predict(x) 
-                dists, idxs = self.data_xc.nn_x(x, k=self.competence_k)
-                #print "competences around x=", x, ": dists=", dists, "competences=", [self.data_xc.get_y(idx)[0] for idx in idxs]
-                return np.mean([self.data_xc.get_y(idx) for idx in idxs])
-            else:
-                return self.competence()
+    def competence_pt(self, x):
+        if self.n_points() > self.k: 
+            _, idxs = self.data_xc.nn_x(x, k=self.k)
+            #print "competences around x=", x, ": dists=", dists, "competences=", [self.data_xc.get_y(idx)[0] for idx in idxs]
+            return np.mean([self.data_xc.get_y(idx) for idx in idxs])
         else:
-            return self.competence(mode=mode)
+            return self.competence()
                 
-    def interest_pt(self, x, c):
+    def interest_xc(self, x, c=None):
         """
         Interest of point x with competence c with respect to local competence
         
         """
         mean_local_comp = self.competence_pt(x)
         #print "mean local comp=", mean_local_comp, "c=", c, "i=", np.abs(c - mean_local_comp)    
-        return np.abs(c - mean_local_comp)        
+        return np.abs(c - mean_local_comp)     
         
-    def interest_local(self): 
-        return self.current_interest
-        
+    def interest_pt(self, x):
+        if self.n_points() > self.k:
+            _, idxs = self.data_xc.nn_x(x, k=self.k)
+            idxs = sorted(idxs)
+            v = [self.data_xc.get_y(idx) for idx in idxs]
+            n = len(v)
+            comp_beg = np.mean(v[:int(float(n)/2.)])
+            comp_end = np.mean(v[int(float(n)/2.):])
+            return np.abs(comp_end - comp_beg)
+        else:
+            return self.interest_global()
+            
     def interest_global(self): 
         if self.n_points() < 2:
             return 0.
@@ -138,9 +137,12 @@ class MiscRandomInterest(RandomInterest):
             comp_end = np.mean(v[int(float(n)/2.):])
             return np.abs(comp_end - comp_beg)
         
+    def competence(self):
+        return self.competence_global()
+        
     def interest(self):
         if self.progress_mode == 'local':
-            return self.interest_local()
+            return self.current_interest
         elif self.progress_mode == 'global':
             return self.interest_global()
         else:
@@ -148,9 +150,15 @@ class MiscRandomInterest(RandomInterest):
         
         
 interest_models = {'random': (RandomInterest, {'default': {}}),
-                   'miscRandom': (MiscRandomInterest, {'default': 
+                   'miscRandom_local': (MiscRandomInterest, {'default': 
                        {'competence_measure': lambda target,reached : competence_exp(target, reached, dist_min=0.0, power=1.),
                                    'win_size': 100,
                                    'competence_mode': 'knn',
-                                   'competence_k': 10,
-                                   'progress_mode': 'local'}})}
+                                   'k': 10,
+                                   'progress_mode': 'local'}}),
+                   'miscRandom_global': (MiscRandomInterest, {'default': 
+                       {'competence_measure': lambda target,reached : competence_exp(target, reached, dist_min=0.0, power=1.),
+                                   'win_size': 100,
+                                   'competence_mode': 'knn',
+                                   'k': 10,
+                                   'progress_mode': 'global'}})}
