@@ -78,6 +78,11 @@ class NearestNeighbor(SensorimotorModel):
 
         self.dataset.add_xy(tuple(m), tuple(s))
         self.t += 1
+        
+    def update_batch(self, m_list, s_list):
+        self.dataset.add_xy_batch(m_list, s_list)
+        self.t += len(m_list)
+        
 
 configurations = {'default': {'sigma_ratio': 1./6.},
                   'exact': {'sigma_ratio': 0.}
