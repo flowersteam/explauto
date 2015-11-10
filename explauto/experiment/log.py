@@ -4,15 +4,9 @@ from ..utils.density_image import density_image
 
 
 class ExperimentLog(object):
-    def __init__(self, conf, expl_dims, inf_dims):
+    def __init__(self, conf=None, expl_dims=None, inf_dims=None):
         self._logs = defaultdict(list)
         self.counts = defaultdict(int)
-        self.eval_errors = []
-        self.eval_reached = []
-        self.explo = []
-        self.explo_comp = []
-        self.explo_comp_explo = []
-        self.explo_comp_results = []
         self.conf = conf
         self.expl_dims = expl_dims
         self.inf_dims = inf_dims
