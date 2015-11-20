@@ -10,7 +10,7 @@ from .tree import InterestTree, Tree
 
 class TDDensityInterest(MiscRandomInterest):
     def __init__(self, conf, expl_dims, kernel, bandwidth, time_window, self_weight, td_weight):
-        MiscRandomInterest.__init__(self, conf, expl_dims, **all_interest_models['miscRandom'][1]['default'])
+        MiscRandomInterest.__init__(self, conf, expl_dims, **all_interest_models['miscRandom_local'][1]['default'])
         self.bounds = conf.bounds[:, expl_dims]
         self.kernel = kernel
         self.bandwidth = bandwidth
@@ -52,7 +52,7 @@ class TDDensityInterest(MiscRandomInterest):
         self.data_s.append(s)        
         
     def update_density(self):
-        self.td_tree = KernelDensity(kernel=self.kernel, bandwidth=self.bandwidth).fit(np.array(self.data_s)[-self.time_window:, :])
+        self.td_tree = KernelDensity(kernel=self.kernel, bandwidth=self.bandwidth).fit(np.array(self.data_s[-self.time_window:]))
         self.up_to_date = True
         
 
@@ -196,6 +196,7 @@ class TDDensityTree(Tree):
         else:
             self.lower.print_tree(depth+1)
             self.greater.print_tree(depth+1)
+    
     
 class TDDensityTreeInterest(InterestTree):
     def __init__(self, conf, expl_dims, time_window, self_weight, td_weight):
