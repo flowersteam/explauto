@@ -48,6 +48,10 @@ class NonParametric(SensorimotorModel):
         self.model.add_xy(tuple(m), tuple(s))
         self.t += 1
 
+    def update_batch(self, m_list, s_list):
+        self.model.add_xy_batch(m_list, s_list)
+        self.t += len(m_list)
+    
 
 configurations = {'LWLR-BFGS': {'fwd': 'LWLR', 'inv': 'L-BFGS-B'},
                   'ES-LWLR-BFGS': {'fwd': 'ES-LWLR', 'inv': 'L-BFGS-B'},
