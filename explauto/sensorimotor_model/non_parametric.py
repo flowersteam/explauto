@@ -1,3 +1,5 @@
+import numpy as np
+
 from numpy import array
 from sklearn.mixture import sample_gaussian
 from ..exceptions import ExplautoBootstrapError
@@ -25,21 +27,43 @@ class NonParametric(SensorimotorModel):
         self.t = 0
 
     def infer(self, in_dims, out_dims, x):
-        #print self.mode, x
         if self.t < max(self.model.imodel.fmodel.k, self.model.imodel.k):
             raise ExplautoBootstrapError
         if in_dims == self.m_dims and out_dims == self.s_dims:  # forward
             return array(self.model.predict_effect(tuple(x.flatten())))
         elif in_dims == self.s_dims and out_dims == self.m_dims:  # inverse
             if self.mode == 'explore':
+#                 print "LWLR"
+#                 print "sg", x
+#                 dists, idxs = self.model.imodel.fmodel.dataset.nn_y(x)
+#                 snn=array(self.model.imodel.fmodel.dataset.get_y(idxs[0]))
+#                 print "snn", snn
+#                 print "x guess", array(self.model.imodel.fmodel.dataset.get_x(idxs[0]))
                 self.mean_explore = array(self.model.infer_order(tuple(x.flatten())))
+#                 print "m", self.mean_explore
                 res = sample_gaussian(self.mean_explore, self.sigma_expl ** 2)
+#                 print "m + eps", res
+#                 print "p(m)", array(self.model.predict_effect(tuple(self.mean_explore.flatten())))
+#                 d1 = np.linalg.norm(array(self.model.predict_effect(tuple(self.mean_explore.flatten()))) - x)
+#                 d2 = np.linalg.norm(snn - x)
+#                 print "dist(p(m), sg) =", d1
+#                 print "dist(snn, sg) =", d2
+#                 if d1 > d2:
+#                     print "-------- OPTIM FAILED"
+#                 else:
+#                     print "-------- OPTIM SUCCEED"
+#                 print "sp", array(self.model.predict_effect(tuple(res.flatten())))
                 #print "sp, snn", array(self.model.predict_effect(tuple(res.flatten()))), array(self.model.predict_effect(tuple(self.mean_explore.flatten())))
                 return res, array(self.model.predict_effect(tuple(res.flatten()))), array(self.model.predict_effect(tuple(self.mean_explore.flatten()))) # m, sp, snn
             else:  # exploit'
                 res = array(self.model.infer_order(tuple(x.flatten())))
                 sp = array(self.model.predict_effect(tuple(res.flatten())))
                 return res, sp, sp
+            
+        elif in_dims == [di for di in in_dims if di in self.s_dims] and out_dims == self.m_dims:  # partial inverse
+            res = self.model.imodel.infer_x(array(x.flatten()), in_dims)
+            sp = None#array(self.model.predict_effect(tuple(res)))
+            return res, sp, sp
         else:
             raise NotImplementedError("NonParametic only implements forward (M -> S)"
                                       "and inverse (S -> M) model, not general prediction")

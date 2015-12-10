@@ -1,5 +1,7 @@
+import numpy as np
+
 from sklearn.mixture import sample_gaussian
-from numpy import inf, ones  # array, vstack
+from numpy import inf, ones, array
 from numpy.linalg import norm
 
 from ..exceptions import ExplautoBootstrapError
@@ -58,6 +60,13 @@ class NearestNeighbor(SensorimotorModel):
                     #print "BD nn_y. y=", x, "x=", self.mean_explore, "x + noise=", res, "predicted y=", self.dataset.get_y(self.dataset.nn_x(res)[1][0])              
                 self.to_explore -= 1
                 
+#                 print "knn"
+#                 print "sg", x
+#                 print "m", self.mean_explore
+#                 print "m + eps", res
+#                 print "p(m)", self.dataset.get_y(indexes[0])
+#                 print "sp", self.dataset.get_y(self.dataset.nn_x(res)[1][0])
+#                 print "dist(snn, sg) =", np.linalg.norm(self.dataset.get_y(indexes[0]) - x)
                 #return res
                 return res, self.dataset.get_y(self.dataset.nn_x(res)[1][0]), self.dataset.get_y(indexes[0]) # m, sp, snn
             else:  # exploit'
