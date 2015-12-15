@@ -29,7 +29,7 @@ class NonParametric(SensorimotorModel):
         if in_dims == self.m_dims and out_dims == self.s_dims:  # forward
             return array(self.model.predict_effect(tuple(x.flatten())))
         elif in_dims == self.s_dims and out_dims == self.m_dims:  # inverse
-            return array(self.model.infer_order(tuple(x.flatten())))
+            return array(self.model.infer_order(tuple(x)))
         else:
             raise NotImplementedError("NonParametic only implements forward (M -> S)"
                                       "and inverse (S -> M) model, not general prediction")
@@ -50,6 +50,7 @@ configurations = {'LWLR-BFGS': {'fwd': 'LWLR', 'inv': 'L-BFGS-B'},
 configurations['default'] = configurations['LWLR-BFGS']
 
 sensorimotor_models = {
-    'non_parametric': (NonParametric, configurations),
-    'knn': (NonParametric, {'default': {'fwd': 'ES-WNN', 'inv': 'ES-WNN'}}),
+    #'non_parametric': (NonParametric, configurations),
+    'LWLR-BFGS': (NonParametric, {'default': {'fwd': 'LWLR', 'inv': 'L-BFGS-B'}}),
+    'WNN': (NonParametric, {'default': {'fwd': 'WNN', 'inv': 'WNN'}}),
 }
