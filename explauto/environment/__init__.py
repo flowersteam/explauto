@@ -3,7 +3,7 @@ import importlib
 
 
 environments = {}
-for mod_name in ['simple_arm', 'pendulum', 'pypot']:
+for mod_name in ['simple_arm', 'pendulum', 'npendulum', 'pypot']:
     try:
         module = importlib.import_module('explauto.environment.{}'.format(mod_name))
         env = getattr(module, 'environment')
