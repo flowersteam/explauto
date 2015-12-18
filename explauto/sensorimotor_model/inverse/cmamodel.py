@@ -43,3 +43,28 @@ class CMAESInverseModel(OptimizedInverseModel):
             result.append((res[1], res[0]))
  
         return [xi for fi, xi in sorted(result)]
+    
+    def infer_dims(self, x, y, dims_x, dims_y, dims_out):
+        """Infer probable output from input x, y
+        """
+        OptimizedInverseModel.infer_x(self, y)
+        assert len(x) == len(dims_x)
+        assert len(y) == len(dims_y)
+        if len(self.fmodel.dataset) == 0:
+            return [[0.0]*self.dim_out]
+        else:
+            _, index = self.fmodel.dataset.nn_dims(x, y, dims_x, dims_y, k=1)
+            guesses = [self.fmodel.dataset.get_dims(index[0], dims_out)]
+                    
+            result = []
+            for g in guesses:
+                res = cma.fmin(lambda q:self._error_dims(q, dims_x, dims_y, dims_out), g, self.cmaes_sigma, 
+                               options={'bounds':[self.lower, self.upper],
+                               'verb_log':0,
+                               'verb_disp':False,
+                               'maxfevals':self.maxfevals})
+                result.append((res[1], res[0]))
+     
+            return sorted(result)[0][1]
+                
+            

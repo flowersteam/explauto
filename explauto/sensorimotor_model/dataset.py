@@ -165,6 +165,19 @@ class Dataset(object):
 
     def get_xy(self, index):
         return self.get_x(index), self.get_y(index)
+    
+    def get_dims(self, index, dims_x=None, dims_y=None, dims=None):
+        if dims is None:
+            print "x", dims_x
+            print "y", dims_y
+            return np.hstack((np.array(self.data[0][index])[dims_x], np.array(self.data[1][index])[np.array(dims_y) - self.dim_x]))
+        else:
+            if max(dims) < self.dim_x:
+                return np.array(self.data[0][index])[dims]
+            elif min(dims) > self.dim_x:
+                return np.array(self.data[1][index])[np.array(dims) - self.dim_x]                
+            else:
+                raise NotImplementedError
 
     def iter_x(self):
         return iter(d for d in self.data[0])
@@ -178,7 +191,7 @@ class Dataset(object):
     def __len__(self):
         return self.size
 
-    def nn_x(self, x, k = 1, radius = np.inf, eps = 0.0, p = 2):
+    def nn_x(self, x, k=1, radius=np.inf, eps=0.0, p=2):
         """Find the k nearest neighbors of x in the observed input data
         @see Databag.nn() for argument description
         @return  distance and indexes of found nearest neighbors.
@@ -187,31 +200,39 @@ class Dataset(object):
         k_x = min(k, self.size)
         # Because linear models requires x vector to be extended to [1.0]+x
         # to accomodate a constant, we store them that way.
-        return self._nn(DATA_X, x, k = k_x, radius = radius, eps = eps, p = p)
+        return self._nn(DATA_X, x, k=k_x, radius=radius, eps=eps, p=p)
 
-    def nn_y(self, y, k = 1, radius = np.inf, eps = 0.0, p = 2):
+    def nn_y(self, y, k=1, radius=np.inf, eps=0.0, p=2):
         """Find the k nearest neighbors of y in the observed output data
         @see Databag.nn() for argument description
         @return  distance and indexes of found nearest neighbors.
         """
         assert len(y) == self.dim_y
         k_y = min(k, self.size)
-        return self._nn(DATA_Y, y, k = k_y, radius = radius, eps = eps, p = p)
-    
-    def nn_y_sub(self, y, dims, k = 1, radius = np.inf, eps = 0.0, p = 2):
-        """Find the k nearest neighbors of y in the observed output data
+        return self._nn(DATA_Y, y, k=k_y, radius=radius, eps=eps, p=p)
+
+    def nn_dims(self, x, y, dims_x, dims_y, k=1, radius=np.inf, eps=0.0, p=2):
+        """Find the k nearest neighbors of a subset of dims of x and y in the observed output data
         @see Databag.nn() for argument description
         @return  distance and indexes of found nearest neighbors.
         """
-        assert len(y) == len(dims)
-    
-        if self.kdtree_y_sub is None: # we assume this feature is used after exploration ; no more updates
-            self.kdtree_y_sub = scipy.spatial.cKDTree([np.array(data_i)[np.array(dims) - self.dim_x] for data_i in self.data[DATA_Y]])
-        return self.kdtree_y_sub.query(y, 
-                                       k = k, 
-                                       distance_upper_bound = radius,
-                                       eps = eps, 
-                                       p = p)
+        print x, y, dims_x, dims_y
+        assert len(x) == len(dims_x)
+        assert len(y) == len(dims_y)
+        if len(dims_x) == 0:
+            kdtree = scipy.spatial.cKDTree([np.array(data_y)[np.array(dims_y) - self.dim_x] for data_y in self.data[DATA_Y]])
+        elif len(dims_y) == 0:
+            kdtree = scipy.spatial.cKDTree([np.array(data_x)[dims_x] for data_x in self.data[DATA_X]])
+        else:
+            kdtree = scipy.spatial.cKDTree([np.hstack((np.array(data_x)[dims_x], np.array(data_y)[np.array(dims_y) - self.dim_x])) for data_x,data_y in zip(self.data[DATA_X], self.data[DATA_Y])])
+        dists, idxes =  kdtree.query(np.hstack((x, y)), 
+                               k = k, 
+                               distance_upper_bound = radius,
+                               eps = eps, 
+                               p = p)
+        if k == 1:
+            dists, idxes = np.array([dists]), [idxes]
+        return dists, idxes
 
     def _nn(self, side, v, k = 1, radius = np.inf, eps = 0.0, p = 2):
         """Compute the k nearest neighbors of v in the observed data,
@@ -290,6 +311,12 @@ class BufferedDataset(Dataset):
             return self.buffer.data[1][index-self.size]
         else:
             return self.data[1][index]
+        
+    def get_dims(self, index, dims_x=None, dims_y=None, dims=None):
+        if index >= self.size:
+            return self.buffer.get_dims(index-self.size, dims_x, dims_y, dims)
+        else:
+            return self.get_dims(index, dims_x, dims_y, dims)
 
     def iter_x(self):
         return iter(d for d in self.data[0] + self.buffer.data[0])
@@ -303,7 +330,7 @@ class BufferedDataset(Dataset):
     def __len__(self):
         return self.size + self.buffer.size
 
-    def nn_x(self, x, k = 1, radius = np.inf, eps = 0.0, p = 2):
+    def nn_x(self, x, k=1, radius=np.inf, eps=0.0, p=2):
         """Find the k nearest neighbors of x in the observed input data
         @see Databag.nn() for argument description
         @return  distance and indexes of found nearest neighbors.
@@ -312,9 +339,9 @@ class BufferedDataset(Dataset):
         k_x = min(k, self.__len__())
         # Because linear models requires x vector to be extended to [1.0]+x
         # to accomodate a constant, we store them that way.
-        return self._nn(DATA_X, x, k = k_x, radius = radius, eps = eps, p = p)
+        return self._nn(DATA_X, x, k=k_x, radius=radius, eps=eps, p=p)
 
-    def nn_y(self, y, dims=None, k = 1, radius = np.inf, eps = 0.0, p = 2):
+    def nn_y(self, y, dims=None, k = 1, radius=np.inf, eps=0.0, p=2):
         """Find the k nearest neighbors of y in the observed output data
         @see Databag.nn() for argument description
         @return  distance and indexes of found nearest neighbors.
@@ -322,17 +349,21 @@ class BufferedDataset(Dataset):
         if dims is None:
             assert len(y) == self.dim_y
             k_y = min(k, self.__len__())
-            return self._nn(DATA_Y, y, k = k_y, radius = radius, eps = eps, p = p)
+            return self._nn(DATA_Y, y, k=k_y, radius=radius, eps=eps, p=p)
         else:
             return self.nn_y_sub(y, dims, k, radius, eps, p)
         
-    def nn_y_sub(self, y, dims, k = 1, radius = np.inf, eps = 0.0, p = 2):
+    def nn_dims(self, x, y, dims_x, dims_y, k=1, radius=np.inf, eps=0.0, p=2):
+        """Find the k nearest neighbors of a subset of dims of x and y in the observed output data
+        @see Databag.nn() for argument description
+        @return  distance and indexes of found nearest neighbors.
+        """
         if self.size > 0:
-            dists, idxes = Dataset.nn_y_sub(self, y, dims, k, radius, eps, p)
+            dists, idxes = Dataset.nn_dims(self, x, y, dims_x, dims_y, k, radius, eps, p)
         else:
-            return self.buffer.nn_y_sub(y, dims, k, radius, eps, p)
+            return self.buffer.nn_dims(x, y, dims_x, dims_y, k, radius, eps, p)
         if self.buffer.size > 0:
-            buffer_dists, buffer_idxes = self.buffer.nn_y_sub(y, dims, k, radius, eps, p)
+            buffer_dists, buffer_idxes = self.buffer.nn_dims(x, y, dims_x, dims_y, k, radius, eps, p)
             buffer_idxes = [i + self.size for i in buffer_idxes]
             ziped = zip(dists, idxes)
             buffer_ziped = zip(buffer_dists, buffer_idxes)
@@ -341,9 +372,8 @@ class BufferedDataset(Dataset):
             return [knn[0] for knn in knns], [knn[1] for knn in knns] 
         else:
             return dists, idxes
-            
         
-    def _nn(self, side, v, k = 1, radius = np.inf, eps = 0.0, p = 2):
+    def _nn(self, side, v, k=1, radius=np.inf, eps=0.0, p=2):
         """Compute the k nearest neighbors of v in the observed data,
         :arg side  if equal to DATA_X, search among input data.
                      if equal to DATA_Y, search among output data.

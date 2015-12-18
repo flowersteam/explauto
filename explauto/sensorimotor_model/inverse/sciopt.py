@@ -14,19 +14,19 @@ class ScipyInverseModel(OptimizedInverseModel):
     def __init__(self, dim_x=None, dim_y=None, fwd=None, constraints = (), algo = 'L-BFGS-B', **kwargs):
         raise NotImplementedError
 
-    def infer_x(self, y, y_dims=None):
+    def infer_x(self, y):
         """Infer probable x from input y
         @param y  the desired output for infered x.
         @return   a list of probable x
         """
-        OptimizedInverseModel.infer_x(self, y, y_dims)
+        OptimizedInverseModel.infer_x(self, y)
         if self.fmodel.size() == 0:
             return self._random_x()
 
-        x_guesses = [self._guess_x_simple(y, y_dims)[0]]
+        x_guesses = [self._guess_x_simple(y)[0]]
         result = []
         for i, xg in enumerate(x_guesses):
-            res = scipy.optimize.minimize(lambda x: self._error(x, y_dims), xg,
+            res = scipy.optimize.minimize(self._error, xg,
                                           args        = (),
                                           method      = self.algo,
                                           bounds      = self.constraints,
@@ -35,9 +35,37 @@ class ScipyInverseModel(OptimizedInverseModel):
 
 
 
-            d = self._error(res.x, y_dims)
+            d = self._error(res.x)
             result.append((d, i, res.x))
         return [self._enforce_bounds(xi) for fi, i, xi in sorted(result)]
+    
+    def infer_dims(self, x, y, dims_x, dims_y, dims_out):
+        """Infer probable output from input x, y
+        """
+        OptimizedInverseModel.infer_x(self, y)
+        assert len(x) == len(dims_x)
+        assert len(y) == len(dims_y)
+        if len(self.fmodel.dataset) == 0:
+            return [[0.0]*self.dim_out]
+        else:
+            _, index = self.fmodel.dataset.nn_dims(x, y, dims_x, dims_y, k=1)
+            guesses = [self.fmodel.dataset.get_dims(index[0], dims=dims_out)]
+            result = []
+                    
+            for g in guesses:
+                print "guess", g
+                res = scipy.optimize.minimize(lambda q:self._error_dims(q, dims_x, dims_y, dims_out), g,
+                                              args        = (),
+                                              method      = self.algo,
+                                              options     = self.conf
+                                             )
+    
+    
+    
+                d = self._error(res.x)
+                result.append((d, res.x))
+            return [self._enforce_bounds(xi) for fi, xi in sorted(result)][0]
+            
 
     def _enforce_bounds(self, x):
         """"Enforce the bounds on x if only infinitesimal violations occurs"""
@@ -71,7 +99,7 @@ class BFGSInverseModel(ScipyInverseModel):
                  ftol    = 1e-5,
                  gtol    = 1e-3,
                  maxcor  =   10,
-                 disp    = True,
+                 disp    = False,
                  **kwargs):
         """
         * L-BFGS-B options (from scipy doc):

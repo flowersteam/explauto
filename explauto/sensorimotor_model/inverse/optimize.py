@@ -37,19 +37,28 @@ class OptimizedInverseModel(inverse.InverseModel):
         """Setup the limits for every initialiser."""
         self.constraints = tuple(constraints)
         assert len(self.constraints) == self.fmodel.dim_x
-        self.y_desired = None
+        self.goal = None
 
     def _random_x(self):
         return (tuple(random.uniform(b_min, b_max) for b_min, b_max in self.bounds),)
 
-    def _error(self, x, y_dims=None):
+    def _error(self, x):
         """Error function.
         Once self.y_desired has been defined, compute the error
         of input x using the forward model.
         """
-        #print 'x', x
-        y_pred = self.fmodel.predict_y(x, y_dims)
-        err_v  = y_pred - self.y_desired
+        y_pred = self.fmodel.predict_y(x)
+        err_v  = y_pred - self.goal
         error = sum(e*e for e in err_v)
-        #print "OptimizedInverseModel y_desired:", self.y_desired, " x:", x, " ypred:", y_pred, " error:", error 
+        return error
+
+    def _error_dims(self, q, dims_x, dims_y, dims_out):
+        """Error function.
+        Once self.goal has been defined, compute the error
+        of input using the generalized forward model.
+        """
+        print (q, dims_x, dims_y, dims_out)
+        pred = self.fmodel.predict_dims(q, dims_x, dims_y, dims_out)
+        err_v  = pred - self.goal
+        error = sum(e*e for e in err_v)
         return error

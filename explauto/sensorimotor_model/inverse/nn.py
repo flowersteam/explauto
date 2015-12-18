@@ -13,6 +13,8 @@ class NNInverseModel(inverse.InverseModel):
         """
         @param k  the number of neighbors to consider for averaging
         """
+        self.dim_x = dim_x
+        self.dim_y = dim_y
         inverse.InverseModel.__init__(self, dim_x, dim_y, **kwargs)
         self.fmodel = fmodel
 
@@ -23,7 +25,18 @@ class NNInverseModel(inverse.InverseModel):
         """
         assert len(y) == self.fmodel.dim_y, "Wrong dimension for y. Expected %i, got %i" % (self.fmodel.dim_y, len(y))
         if len(self.fmodel.dataset) == 0:
-            return [[0.0]*self.dim_y]
+            return [[0.0]*self.dim_x]
         else:
-            _, index = self.fmodel.dataset.nn_y(y, k = 1)
+            _, index = self.fmodel.dataset.nn_y(y, k=1)
             return [self.fmodel.dataset.get_x(index[0])]
+
+    def infer_dims(self, x, y, dims_x, dims_y, dims_out):
+        """Infer probable output from input x, y
+        """
+        assert len(x) == len(dims_x)
+        assert len(y) == len(dims_y)
+        if len(self.fmodel.dataset) == 0:
+            return [0.0]*self.dim_out
+        else:
+            _, index = self.fmodel.dataset.nn_dims(x, y, dims_x, dims_y, k=1)
+            return self.fmodel.dataset.get_dims(index[0], dims=dims_out)

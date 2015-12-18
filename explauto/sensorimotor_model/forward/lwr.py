@@ -86,7 +86,7 @@ class LWLRForwardModel(ForwardModel):
 
 
     #@profile
-    def predict_y(self, xq, y_dims=None, sigma=None, k=None):
+    def predict_y(self, xq, sigma=None, k=None):
         """Provide a prediction of xq in the output space
 
         @param xq  an array of float of length dim_x
@@ -96,16 +96,13 @@ class LWLRForwardModel(ForwardModel):
         sigma_sq = self.sigma_sq if sigma is None else sigma*sigma
         k = k or self.k
 
-        dists, index = self.dataset.nn_x(xq, k = k)
+        dists, index = self.dataset.nn_x(xq, k=k)
 
-        w = self._weights(dists, sigma_sq)
+        w = self._weights(dists, index, sigma_sq)
         Xq  = np.array(np.append([1.0], xq), ndmin = 2)
         X   = np.array([self.dataset.get_x_padded(i) for i in index])
-        if y_dims is None:
-            Y = np.array([self.dataset.get_y(i) for i in index])
-        else:
-            Y = np.array([np.array(self.dataset.get_y(i))[np.array(y_dims) - self.dataset.dim_x] for i in index])
-            
+        Y = np.array([self.dataset.get_y(i) for i in index])
+        
         W   = np.diag(w)
         WX  = np.dot(W, X)
         WXT = WX.T
@@ -116,8 +113,44 @@ class LWLRForwardModel(ForwardModel):
         Yq  = np.dot(Xq, self.mat)
 
         return Yq.ravel()
+    
+    #@profile
+    def predict_dims(self, q, dims_x, dims_y, dims_out, sigma=None, k=None):
+        """Provide a prediction of q in the output space
 
-    def _weights(self, dists, sigma_sq):
+        @param xq  an array of float of length dim_x
+        @param estimated_sigma  if False (default), sigma_sq=self.sigma_sq, else it is estimated from the neighbor distances in self._weights(.)
+        """
+        print q
+        assert len(q) == len(dims_x) + len(dims_y)
+        sigma_sq = self.sigma_sq if sigma is None else sigma*sigma
+        k = k or self.k
+
+        if max(dims_out) < self.dim_x:
+            dists, index = self.dataset.nn_dims(q, [], dims_out, [], k=k)
+        elif min(dims_out) > self.dim_x:
+            dists, index = self.dataset.nn_dims([], q, [], dims_out, k=k)
+        else:
+            raise NotImplementedError            
+
+        w = self._weights(dists, index, sigma_sq)
+        Xq  = np.array(np.append([1.0], q), ndmin = 2)
+        X   = np.array([np.append([1.0], self.dataset.get_dims(i, dims_x=dims_x, dims_y=dims_y)) for i in index])
+        Y = np.array([self.dataset.get_dims(i, dims=dims_out) for i in index])
+        
+        W   = np.diag(w)
+        WX  = np.dot(W, X)
+        WXT = WX.T
+
+        B   = np.dot(np.linalg.pinv(np.dot(WXT, WX)),WXT)
+
+        self.mat = np.dot(B, np.dot(W, Y))
+        
+        Yq  = np.dot(Xq, self.mat)
+
+        return Yq.ravel()
+
+    def _weights(self, dists, index, sigma_sq):
 
         w = np.fromiter((gaussian_kernel(d, sigma_sq)
                          for d in dists), np.float, len(dists))
@@ -130,7 +163,7 @@ class LWLRForwardModel(ForwardModel):
             return np.fromiter((w_i/wsum if w_i > eps else 0.0 for w_i in w), np.float)
 
 
-class NSLWLRForwardModel(ForwardModel):
+class NSLWLRForwardModel(LWLRForwardModel):
     """Non-Stationary Locally Weighted Linear Regression Forward Model
         TODO: cpp implementation of NSLWLR                            """
 
@@ -150,49 +183,6 @@ class NSLWLRForwardModel(ForwardModel):
         ForwardModel.__init__(self, dim_x, dim_y, sigma = sigma, k = self.k, **kwargs)
         self.sigma_sq = sigma*sigma
         self.sigma_t_sq = sigma_t*sigma_t
-
-    @property
-    def sigma(self):
-        return self.conf['sigma']
-
-    @sigma.setter
-    def sigma(self, sigma):
-        self.sigma_sq = sigma*sigma
-        self.conf['sigma'] = sigma
-
-    ### LWR regression
-
-
-    #@profile
-    def predict_y(self, xq, sigma=None, k = None):
-        """Provide an prediction of xq in the output space
-
-        @param xq  an array of float of length dim_x
-        @param estimated_sigma  if False (default), sigma_sq=self.sigma_sq, else it is estimated from the neighbor distances in self._weights(.)
-        """
-        #print(len(xq) , self.dataset.dim_x)
-        assert len(xq) == self.dataset.dim_x
-        sigma_sq = self.sigma_sq if sigma is None else sigma*sigma
-        k = k or self.k
-
-        dists, index = self.dataset.nn_x(xq, k = k)
-
-        w = self._weights(dists, index, sigma_sq)
-
-        Xq  = np.array(np.append([1.0], xq), ndmin = 2)
-        X   = np.array([self.dataset.get_x_padded(i) for i in index])
-        Y    = np.array([self.dataset.get_y(i) for i in index])
-
-        W   = np.diag(w)
-        WX  = np.dot(W, X)
-        WXT = WX.T
-
-        B   = np.dot(np.linalg.pinv(np.dot(WXT, WX)),WXT)
-
-        self.mat = np.dot(B, np.dot(W, Y))
-        Yq  = np.dot(Xq, self.mat)
-
-        return Yq.ravel()
 
     def _weights(self, dists, index, sigma_sq):
 
@@ -219,6 +209,6 @@ class ESLWLRForwardModel(LWLRForwardModel):
 
     name = 'ES-LWLR'
 
-    def _weights(self, dists, sigma_sq):
+    def _weights(self, dists, index, sigma_sq):
         sigma_sq=(dists**2).sum()/len(dists)/2
         return LWLRForwardModel._weights(self, dists, sigma_sq)

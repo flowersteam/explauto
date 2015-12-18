@@ -37,7 +37,16 @@ class InverseModel(object):
         @param y  the desired output for infered x.
         """
         assert len(y) == self.fmodel.dim_y or len(y) == len(y_dims), "Wrong dimension for y. Expected %i, got %i" % (self.fmodel.dim_y, len(y))
-        self.y_desired = np.array(y)
+        self.goal = np.array(y)
+        
+    def infer_dims(self, x, y, dims_x, dims_y, dims_out):
+        """Infer probable x from input y
+
+        @param y  the desired output for infered x.
+        """
+        assert len(x) == len(dims_x)
+        assert len(y) == len(dims_y)
+        self.goal = np.hstack((x, y))
 
     def _random_x(self):
         """If the database is empty, generate a random vector."""

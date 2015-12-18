@@ -41,12 +41,19 @@ class NonParametric(SensorimotorModel):
             else:  # exploit'
                 return array(self.model.infer_order(tuple(x.flatten())))                
             
-        elif in_dims == [di for di in in_dims if di in self.s_dims] and out_dims == self.m_dims:  # partial inverse
-            return self.model.imodel.infer_x(array(x.flatten()), in_dims)
-                    
-        else:
-            raise NotImplementedError("NonParametic only implements forward (M -> S)"
-                                      "and inverse (S -> M) model, not general prediction")
+        else:  # general prediction
+            assert len(x) == len(in_dims)
+            dims_x = [d for d in in_dims if d < self.model.imodel.dim_x]
+            dims_y = [d for d in in_dims if d >= self.model.imodel.dim_x]
+            xi = array(x)[:len(dims_x)]
+            yi = array(x)[len(dims_x):]
+            print (xi, yi, dims_x, dims_y, out_dims)
+            self.mean_explore = array(self.model.imodel.infer_dims(xi, yi, dims_x, dims_y, out_dims))
+            
+            if self.mode == 'explore':
+                return self.mean_explore
+            else:  # exploit'
+                return sample_gaussian(self.mean_explore, self.sigma_expl ** 2)    
 
     def update(self, m, s):
         self.model.add_xy(tuple(m), tuple(s))
@@ -59,7 +66,7 @@ class NonParametric(SensorimotorModel):
 
 
 sensorimotor_models = {
-    'NN': (NonParametric, {'default': {'fwd': 'NN', 'inv': 'NN'}}),
+    'NN': (NonParametric, {'default': {'fwd': 'NN', 'inv': 'NN', 'sigma_explo_ratio':1.0}}),
     'WNN': (NonParametric, {'default': {'fwd': 'WNN', 'inv': 'WNN', 'k':20, 'sigma':0.1}}),
     'LWLR-BFGS': (NonParametric, {'default': {'fwd': 'LWLR', 'k':10, 'inv': 'L-BFGS-B', 'maxfun':50}}),
     'LWLR-CMAES': (NonParametric, {'default': {'fwd': 'LWLR', 'k':10, 'inv': 'CMAES', 'cmaes_sigma':0.05, 'maxfevals':20}}),
