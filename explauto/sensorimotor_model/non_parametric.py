@@ -47,7 +47,6 @@ class NonParametric(SensorimotorModel):
             dims_y = [d for d in in_dims if d >= self.model.imodel.dim_x]
             xi = array(x)[:len(dims_x)]
             yi = array(x)[len(dims_x):]
-            print (xi, yi, dims_x, dims_y, out_dims)
             self.mean_explore = array(self.model.imodel.infer_dims(xi, yi, dims_x, dims_y, out_dims))
             
             if self.mode == 'explore':

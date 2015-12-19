@@ -168,8 +168,6 @@ class Dataset(object):
     
     def get_dims(self, index, dims_x=None, dims_y=None, dims=None):
         if dims is None:
-            print "x", dims_x
-            print "y", dims_y
             return np.hstack((np.array(self.data[0][index])[dims_x], np.array(self.data[1][index])[np.array(dims_y) - self.dim_x]))
         else:
             if max(dims) < self.dim_x:
@@ -216,7 +214,6 @@ class Dataset(object):
         @see Databag.nn() for argument description
         @return  distance and indexes of found nearest neighbors.
         """
-        print x, y, dims_x, dims_y
         assert len(x) == len(dims_x)
         assert len(y) == len(dims_y)
         if len(dims_x) == 0:

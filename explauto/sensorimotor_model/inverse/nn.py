@@ -17,6 +17,7 @@ class NNInverseModel(inverse.InverseModel):
         self.dim_y = dim_y
         inverse.InverseModel.__init__(self, dim_x, dim_y, **kwargs)
         self.fmodel = fmodel
+        self.k = fmodel.k
 
     def infer_x(self, y):
         """Infer probable x from input y
