@@ -31,6 +31,16 @@ class NNForwardModel(ForwardModel):
         """
         _, indexes = self.dataset.nn_x(xq, k = 1)
         return self.dataset.get_y(indexes[0])
+        
+    def predict_given_context(self, x, c, c_dims):
+        """Provide a prediction of x with context c on dimensions c_dims in the output space being S - c_dims
+
+        @param x  an array of float of length dim_x
+        @return    predicted y as np.array of float
+        """
+        assert len(c) == len(c_dims)
+        _, index = self.dataset.nn_dims(x, c, range(self.dim_x), list(np.array(c_dims) + self.dim_x), k=1)
+        return self.dataset.get_y(index[0])
 
 
 class NSNNForwardModel(ForwardModel):

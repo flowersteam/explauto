@@ -1,6 +1,7 @@
 
+import numpy as np
+
 from numpy import array
-from sklearn.mixture import sample_gaussian
 
 from ..exceptions import ExplautoBootstrapError
 from .sensorimotor_model import SensorimotorModel
@@ -32,27 +33,26 @@ class NonParametric(SensorimotorModel):
             raise ExplautoBootstrapError
         
         if in_dims == self.m_dims and out_dims == self.s_dims:  # forward
-            return array(self.model.predict_effect(tuple(x.flatten())))
+            return array(self.model.predict_effect(tuple(x)))
         
         elif in_dims == self.s_dims and out_dims == self.m_dims:  # inverse
             if self.mode == 'explore':
                 self.mean_explore = array(self.model.infer_order(tuple(x)))
-                return sample_gaussian(self.mean_explore, self.sigma_expl ** 2)
+                return np.random.normal(self.mean_explore, self.sigma_expl)
             else:  # exploit'
-                return array(self.model.infer_order(tuple(x.flatten())))                
+                return array(self.model.infer_order(tuple(x)))                
             
-        else:  # general prediction
+        else:  # general prediction, no exploration noise
             assert len(x) == len(in_dims)
             dims_x = [d for d in in_dims if d < self.model.imodel.dim_x]
             dims_y = [d for d in in_dims if d >= self.model.imodel.dim_x]
             xi = array(x)[:len(dims_x)]
             yi = array(x)[len(dims_x):]
-            self.mean_explore = array(self.model.imodel.infer_dims(xi, yi, dims_x, dims_y, out_dims))
-            
-            if self.mode == 'explore':
-                return self.mean_explore
-            else:  # exploit'
-                return sample_gaussian(self.mean_explore, self.sigma_expl ** 2)    
+            self.mean_explore = array(self.model.imodel.infer_dims(xi, yi, dims_x, dims_y, out_dims))            
+            return self.mean_explore
+
+    def predict_given_context(self, x, c, c_dims):
+        return self.model.imodel.fmodel.predict_given_context(x, c, c_dims)
 
     def update(self, m, s):
         self.model.add_xy(tuple(m), tuple(s))
@@ -61,7 +61,9 @@ class NonParametric(SensorimotorModel):
     def update_batch(self, m_list, s_list):
         self.model.add_xy_batch(m_list, s_list)
         self.t += len(m_list)
-    
+        
+    def size(self):
+        return self.t
 
 
 sensorimotor_models = {

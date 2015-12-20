@@ -313,7 +313,7 @@ class BufferedDataset(Dataset):
         if index >= self.size:
             return self.buffer.get_dims(index-self.size, dims_x, dims_y, dims)
         else:
-            return self.get_dims(index, dims_x, dims_y, dims)
+            return Dataset.get_dims(self, index, dims_x, dims_y, dims)
 
     def iter_x(self):
         return iter(d for d in self.data[0] + self.buffer.data[0])
