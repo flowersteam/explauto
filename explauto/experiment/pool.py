@@ -5,7 +5,7 @@ from numpy import array, hstack
 from copy import deepcopy
 from numpy import random
 
-from . import Settings
+from . import make_settings
 from .experiment import Experiment
 from ..environment import environments
 
@@ -67,7 +67,7 @@ class ExperimentPool(object):
         l = itertools.product(environments, babblings,
                               interest_models, sensorimotor_models)
 
-        settings = [Settings(env, env_conf, bab, im, im_conf, sm, sm_conf)
+        settings = [make_settings(env, bab, im, sm, env_conf, im_conf, sm_conf)
                     for ((env, env_conf), bab, (im, im_conf), (sm, sm_conf)) in l]
 
         return cls(settings, evaluate_at, testcases, same_testcases)
