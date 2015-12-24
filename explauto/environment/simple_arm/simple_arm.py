@@ -65,6 +65,9 @@ class SimpleArmEnvironment(Environment):
         hand_pos += self.noise * np.random.randn(*hand_pos.shape)
         return hand_pos
 
+    def plot(self, ax, m, s, **kwargs_plot):
+        self.plot_arm(ax, m, **kwargs_plot)
+
     def plot_arm(self, ax, m_, **kwargs_plot):
         m = self.compute_motor_command(m_)
         x, y = joint_positions(m, self.lengths)

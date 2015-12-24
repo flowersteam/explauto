@@ -6,6 +6,7 @@ from numpy import array
 from ..exceptions import ExplautoBootstrapError
 from .sensorimotor_model import SensorimotorModel
 from .learner import Learner
+from explauto.utils import bounds_min_max
 
 
 class NonParametric(SensorimotorModel):
@@ -13,10 +14,10 @@ class NonParametric(SensorimotorModel):
         Original code available at https://github.com/humm/models
         Adapted by Sebastien Forestier at https://github.com/sebastien-forestier/models
     """
-    def __init__(self, conf, sigma_explo_ratio=0.05, fwd='LWLR', inv='L-BFGS-B', **learner_kwargs):
+    def __init__(self, conf, sigma_explo_ratio=0.1, fwd='LWLR', inv='L-BFGS-B', **learner_kwargs):
 
         SensorimotorModel.__init__(self, conf)
-        for attr in ['m_ndims', 's_ndims', 'm_dims', 's_dims', 'bounds']:
+        for attr in ['m_ndims', 's_ndims', 'm_dims', 's_dims', 'bounds', 'm_mins', 'm_maxs']:
             setattr(self, attr, getattr(conf, attr))
 
         self.sigma_expl = (conf.m_maxs - conf.m_mins) * float(sigma_explo_ratio)
@@ -38,7 +39,9 @@ class NonParametric(SensorimotorModel):
         elif in_dims == self.s_dims and out_dims == self.m_dims:  # inverse
             if self.mode == 'explore':
                 self.mean_explore = array(self.model.infer_order(tuple(x)))
-                return np.random.normal(self.mean_explore, self.sigma_expl)
+                r = np.random.normal(self.mean_explore, self.sigma_expl)
+                res = bounds_min_max(r, self.m_mins, self.m_maxs)
+                return res
             else:  # exploit'
                 return array(self.model.infer_order(tuple(x)))                
             
@@ -67,7 +70,7 @@ class NonParametric(SensorimotorModel):
 
 
 sensorimotor_models = {
-    'NN': (NonParametric, {'default': {'fwd': 'NN', 'inv': 'NN', 'sigma_explo_ratio':1.0}}),
+    'NN': (NonParametric, {'default': {'fwd': 'NN', 'inv': 'NN', 'sigma_explo_ratio':0.1}}),
     'WNN': (NonParametric, {'default': {'fwd': 'WNN', 'inv': 'WNN', 'k':20, 'sigma':0.1}}),
     'LWLR-BFGS': (NonParametric, {'default': {'fwd': 'LWLR', 'k':10, 'inv': 'L-BFGS-B', 'maxfun':50}}),
     'LWLR-CMAES': (NonParametric, {'default': {'fwd': 'LWLR', 'k':10, 'inv': 'CMAES', 'cmaes_sigma':0.05, 'maxfevals':20}}),

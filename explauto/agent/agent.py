@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 class Agent(Observable):
-    def __init__(self, conf, sm_model, im_model, n_bootstrap=0):
+    def __init__(self, conf, sm_model, im_model, n_bootstrap=0, context_dims=None):
         Observable.__init__(self)
         self.conf = conf
         self.ms = np.zeros(self.conf.ndims)
@@ -24,12 +24,14 @@ class Agent(Observable):
         # self.competence = competence
         self.t = 0
         self.n_bootstrap = n_bootstrap
+        self.context_dims = context_dims
+        
 
     @classmethod
     def from_classes(cls,
                  im_model_cls, im_model_config, expl_dims,
                  sm_model_cls, sm_model_config, inf_dims,
-                 m_mins, m_maxs, s_mins, s_maxs, n_bootstrap=0):
+                 m_mins, m_maxs, s_mins, s_maxs, n_bootstrap=0, context_dims=None):
         """Initialize agent class
 
         :param class im_model_cls: a subclass of InterestedModel, as those registered in the interest_model package
@@ -50,31 +52,27 @@ class Agent(Observable):
 
         conf = make_configuration(m_mins, m_maxs, s_mins, s_maxs)
 
-        # self.ms = np.zeros(self.conf.ndims)
-        # self.expl_dims = expl_dims
-        # self.inf_dims = inf_dims
-
         sm_model = sm_model_cls(conf, **sm_model_config)
         im_model = im_model_cls(conf, expl_dims,
                                            **im_model_config)
 
-        return cls(conf, sm_model, im_model)
-        # # self.competence = competence
-        # self.t = 0
-        # self.n_bootstrap = n_bootstrap
-        # self.state = np.zeros(self.conf.ndims)
+        return cls(conf, sm_model, im_model, n_bootstrap, context_dims)
 
 
-    def choose(self):
+    def choose(self, context=None):
         """ Returns a point chosen by the interest model
         """
         try:
-            x = self.interest_model.sample()
+            if self.context_dims is None:
+                x = self.interest_model.sample()
+            else:
+                x = self.interest_model.sample_given_context(context, self.context_dims)
         except ExplautoBootstrapError:
             logger.warning('Interest model not bootstrapped yet')
             x = rand_bounds(self.conf.bounds[:, self.expl_dims]).flatten()
+            if self.context_dims is not None:
+                x = x[list(set(self.expl_dims) - set(self.context_dims))]
         return x
-
 
     def infer(self, expl_dims, inf_dims, x):
         """ Use the sensorimotor model to compute the expected value on inf_dims given that the value on expl_dims is x.
@@ -92,7 +90,6 @@ class Agent(Observable):
             logger.warning('Sensorimotor model not bootstrapped yet')
             y = rand_bounds(self.conf.bounds[:, inf_dims]).flatten()
         return y
-
 
     def extract_ms(self, x, y):
         """ Returns the motor and sensory parts from a point in the exploration
@@ -113,7 +110,7 @@ class Agent(Observable):
         """
         return bounds_min_max(s, self.conf.s_mins, self.conf.s_maxs)
 
-    def produce(self):
+    def produce(self, context=None):
         """ Exploration (see the `Explauto introduction <about.html>`__ for more detail):
 
         * Choose a value x on expl_dims according to the interest model
@@ -125,8 +122,12 @@ class Agent(Observable):
 
         .. note:: This correspond to motor babbling if expl_dims=self.conf.m_dims and inf_dims=self.conf.s_dims and to  goal babbling if expl_dims=self.conf.s_dims and inf_dims=self.conf.m_dims.
         """
-
-        self.x = self.choose()
+        if context is None:
+            self.x = self.choose()
+        else:
+            ds_g = self.choose(context)
+            self.x = np.hstack((context, ds_g)) 
+        
         self.y = self.infer(self.expl_dims, self.inf_dims, self.x)
 
         self.m, self.s = self.extract_ms(self.x, self.y)
@@ -140,7 +141,7 @@ class Agent(Observable):
         return movement
 
 
-    def perceive(self, s_):
+    def perceive(self, s_, context=None):
         """ Learning (see the `Explauto introduction <about.html>`__ for more detail):
 
         * update the sensorimotor model with (m, s)
@@ -149,6 +150,16 @@ class Agent(Observable):
         """
         s = self.sensory_primitive(s_)
         self.emit('perception', s)
-        self.sensorimotor_model.update(self.m, s)
-        self.interest_model.update(np.hstack((self.m, self.s)), np.hstack((self.m, s)))
+        if context is None:                
+            self.sensorimotor_model.update(self.m, s)
+            self.interest_model.update(np.hstack((self.m, self.s)), np.hstack((self.m, s)))
+        else:            
+            m = self.m[:len(self.m)/2]
+            dm = self.m[len(self.m)/2:]
+            ds = s[len(s)/2:]
+            s = s[:len(s)/2]
+            ds_g = self.s[:len(self.s)/2]
+            self.sensorimotor_model.update(np.hstack((m, dm)), np.hstack((s, ds)))
+            self.interest_model.update(np.hstack((m, dm, s, ds)), np.hstack((m, dm, context, ds_g)))
+            
         self.t += 1

@@ -133,3 +133,6 @@ class Environment(Observable):
         for ms in list(lattice.grid.values()):
             result.append(ms[1])
         return array(result)
+    
+    def plot(self, ax, m, s, **kwargs):
+        pass
