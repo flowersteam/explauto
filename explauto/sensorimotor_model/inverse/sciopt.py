@@ -11,7 +11,7 @@ class ScipyInverseModel(OptimizedInverseModel):
     on an error function computed from the forward model.
     """
 
-    def __init__(self, dim_x=None, dim_y=None, fwd=None, constraints = (), algo = 'L-BFGS-B', **kwargs):
+    def __init__(self, **kwargs):
         raise NotImplementedError
 
     def infer_x(self, y):
@@ -39,22 +39,20 @@ class ScipyInverseModel(OptimizedInverseModel):
             result.append((d, i, res.x))
         return [self._enforce_bounds(xi) for fi, i, xi in sorted(result)]
     
-    def infer_dims(self, x, y, dims_x, dims_y, dims_out):
+    def infer_dm(self, m, s, ds):
         """Infer probable output from input x, y
         """
-        OptimizedInverseModel.infer_x(self, y)
-        assert len(x) == len(dims_x)
-        assert len(y) == len(dims_y)
+        OptimizedInverseModel.infer_dm(self, ds)
         if len(self.fmodel.dataset) == 0:
             return [[0.0]*self.dim_out]
         else:
-            _, index = self.fmodel.dataset.nn_dims(x, y, dims_x, dims_y, k=1)
-            guesses = [self.fmodel.dataset.get_dims(index[0], dims=dims_out)]
+            _, index = self.fmodel.dataset.nn_dims(m, np.hstack((s, ds)), range(len(m)), range(self.dim_x, self.dim_x + self.dim_y), k=1)
+            guesses = [self.fmodel.dataset.get_dims(index[0], dims=range(len(m), self.dim_x))]
             result = []
                     
             for g in guesses:
                 print "guess", g
-                res = scipy.optimize.minimize(lambda q:self._error_dims(q, dims_x, dims_y, dims_out), g,
+                res = scipy.optimize.minimize(lambda dm:self._error_dm(m, dm, s), g,
                                               args        = (),
                                               method      = self.algo,
                                               options     = self.conf
@@ -62,9 +60,9 @@ class ScipyInverseModel(OptimizedInverseModel):
     
     
     
-                d = self._error(res.x)
+                d = self._error_dm(m, res.x, s)
                 result.append((d, res.x))
-            return [self._enforce_bounds(xi) for fi, xi in sorted(result)][0]
+            return [xi for fi, xi in sorted(result)][0]
             
 
     def _enforce_bounds(self, x):

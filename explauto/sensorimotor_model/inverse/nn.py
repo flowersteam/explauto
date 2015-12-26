@@ -1,4 +1,7 @@
 
+
+import numpy as np
+
 from .. import forward
 from . import inverse
 
@@ -31,6 +34,10 @@ class NNInverseModel(inverse.InverseModel):
             _, index = self.fmodel.dataset.nn_y(y, k=1)
             return [self.fmodel.dataset.get_x(index[0])]
 
+    def infer_dm(self, m, s, ds):
+        return self.infer_dims(m, np.hstack((s, ds)), range(len(m)), range(self.dim_x, self.dim_x + self.dim_y), range(len(m), self.dim_x))
+        
+        
     def infer_dims(self, x, y, dims_x, dims_y, dims_out):
         """Infer probable output from input x, y
         """

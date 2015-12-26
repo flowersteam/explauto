@@ -18,7 +18,7 @@ class DiscretizedProgress(InterestModel):
         self.space = Space(numpy.hstack((conf.m_mins, conf.s_mins))[expl_dims],
                            numpy.hstack((conf.m_maxs, conf.s_maxs))[expl_dims], card)
 
-        self.dist_min = numpy.sqrt(sum(self.space.bin_widths ** 2)) / 1.
+        self.dist_min = numpy.sqrt(sum(self.space.bin_widths ** 2)) / 10.
 
         self.comp_max = measure(numpy.array([0.]), numpy.array([0.]), dist_min=self.dist_min)
         self.comp_min = measure(numpy.array([0.]), numpy.array([numpy.linalg.norm(conf.s_mins - conf.s_maxs)]), dist_min=self.dist_min)
@@ -95,7 +95,7 @@ class DiscreteProgress(InterestModel):
         # Choose the region with max progress
         self.w = abs(progress_array)
         temp = 3.
-        self.w = numpy.exp(temp * self.w - temp * self.w.max())
+        self.w = numpy.exp((self.w - self.w.max()) / temp)
         index_new = discrete_random_draw(self.w.flatten())
         # Convert the index of the region from the free dims to all dims
         multi_new = numpy.unravel_index(index_new, free_cardinalities)

@@ -27,16 +27,15 @@ class ContextEnvironment(Environment):
         return bounds_min_max(ag_state, self.conf.m_mins, self.conf.m_maxs)
     
     def compute_sensori_effect(self, mdm):
+        m = mdm[:len(mdm)/2]
+        dm = mdm[len(mdm)/2:]
         if self.context_mode['choose_m'] == True:  
-            m = mdm[:len(mdm)/2]
-            dm = mdm[len(mdm)/2:]
             s = self.env.update(m, reset=False)
             self.current_motor_position = m
             self.current_sensori_position = s
         else:
-            dm = mdm
-        s = self.current_sensori_position
-        self.current_motor_position = self.current_motor_position + np.array(dm)
+            s = self.current_sensori_position
+        self.current_motor_position = self.env.compute_motor_command(self.current_motor_position + np.array(dm))
         new_sensori_position = np.array(self.env.update(self.current_motor_position, reset=False))
         ds = new_sensori_position - self.current_sensori_position
         self.current_sensori_position = new_sensori_position

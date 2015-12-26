@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 
 class Agent(Observable):
-    def __init__(self, conf, sm_model, im_model, n_bootstrap=0, context_dims=None):
+    def __init__(self, conf, sm_model, im_model, n_bootstrap=0, context_mode=None):
         Observable.__init__(self)
         self.conf = conf
         self.ms = np.zeros(self.conf.ndims)
@@ -24,14 +24,14 @@ class Agent(Observable):
         # self.competence = competence
         self.t = 0
         self.n_bootstrap = n_bootstrap
-        self.context_dims = context_dims
+        self.context_mode = context_mode
         
 
     @classmethod
     def from_classes(cls,
                  im_model_cls, im_model_config, expl_dims,
                  sm_model_cls, sm_model_config, inf_dims,
-                 m_mins, m_maxs, s_mins, s_maxs, n_bootstrap=0, context_dims=None):
+                 m_mins, m_maxs, s_mins, s_maxs, n_bootstrap=0, context_mode=None):
         """Initialize agent class
 
         :param class im_model_cls: a subclass of InterestedModel, as those registered in the interest_model package
@@ -56,22 +56,22 @@ class Agent(Observable):
         im_model = im_model_cls(conf, expl_dims,
                                            **im_model_config)
 
-        return cls(conf, sm_model, im_model, n_bootstrap, context_dims)
+        return cls(conf, sm_model, im_model, n_bootstrap, context_mode)
 
 
     def choose(self, context=None):
         """ Returns a point chosen by the interest model
         """
         try:
-            if self.context_dims is None:
+            if self.context_mode is None:
                 x = self.interest_model.sample()
             else:
-                x = self.interest_model.sample_given_context(context, self.context_dims)
+                x = self.interest_model.sample_given_context(context, self.context_mode['context_dims'])
         except ExplautoBootstrapError:
             logger.warning('Interest model not bootstrapped yet')
             x = rand_bounds(self.conf.bounds[:, self.expl_dims]).flatten()
-            if self.context_dims is not None:
-                x = x[list(set(self.expl_dims) - set(self.context_dims))]
+            if self.context_mode is not None:
+                x = x[list(set(self.expl_dims) - set(self.context_mode['context_dims']))]
         return x
 
     def infer(self, expl_dims, inf_dims, x):
@@ -86,6 +86,7 @@ class Agent(Observable):
             y = self.sensorimotor_model.infer(expl_dims,
                                               inf_dims,
                                               x.flatten())
+                    
         except ExplautoBootstrapError:
             logger.warning('Sensorimotor model not bootstrapped yet')
             y = rand_bounds(self.conf.bounds[:, inf_dims]).flatten()
@@ -124,11 +125,24 @@ class Agent(Observable):
         """
         if context is None:
             self.x = self.choose()
+            self.y = self.infer(self.expl_dims, self.inf_dims, self.x)
         else:
-            ds_g = self.choose(context)
-            self.x = np.hstack((context, ds_g)) 
+            ds_g = self.choose(context) 
+            if self.context_mode['choose_m']:
+                self.x = np.hstack((context, ds_g))
+                self.y = self.infer(self.expl_dims, self.inf_dims, self.x)
+            else:
+                m = context[:self.conf.m_ndims/2]
+                s = context[self.conf.m_ndims/2:]
+                self.x = np.hstack((s, ds_g))
+                in_dims = range(self.conf.m_ndims/2) + range(self.conf.m_ndims, self.conf.m_ndims + self.conf.s_ndims)
+                out_dims = range(self.conf.m_ndims/2, self.conf.m_ndims)
+                dm = self.infer(in_dims, 
+                                out_dims, 
+                                np.array(m + list(self.x)))
+                self.y = np.hstack((m, dm))
+            
         
-        self.y = self.infer(self.expl_dims, self.inf_dims, self.x)
 
         self.m, self.s = self.extract_ms(self.x, self.y)
 
@@ -160,6 +174,6 @@ class Agent(Observable):
             s = s[:len(s)/2]
             ds_g = self.s[:len(self.s)/2]
             self.sensorimotor_model.update(np.hstack((m, dm)), np.hstack((s, ds)))
-            self.interest_model.update(np.hstack((m, dm, s, ds)), np.hstack((m, dm, context, ds_g)))
+            self.interest_model.update(np.hstack((m, dm, context, ds_g)), np.hstack((m, dm, s, ds)))
             
         self.t += 1

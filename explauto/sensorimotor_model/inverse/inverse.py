@@ -31,22 +31,19 @@ class InverseModel(object):
         self.dim_y = dim_y
         self.conf = kwargs
 
-    def infer_x(self, y, y_dims=None):
+    def infer_x(self, y):
         """Infer probable x from input y
 
         @param y  the desired output for infered x.
         """
-        assert len(y) == self.fmodel.dim_y or len(y) == len(y_dims), "Wrong dimension for y. Expected %i, got %i" % (self.fmodel.dim_y, len(y))
+        assert len(y) == self.fmodel.dim_y, "Wrong dimension for y. Expected %i, got %i" % (self.fmodel.dim_y, len(y))
         self.goal = np.array(y)
         
-    def infer_dims(self, x, y, dims_x, dims_y, dims_out):
-        """Infer probable x from input y
+    def infer_dm(self, ds):
+        """Infer probable dm from input ds
 
-        @param y  the desired output for infered x.
         """
-        assert len(x) == len(dims_x)
-        assert len(y) == len(dims_y)
-        self.goal = np.hstack((x, y))
+        self.goal = ds
 
     def _random_x(self):
         """If the database is empty, generate a random vector."""

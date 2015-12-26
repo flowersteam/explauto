@@ -1,5 +1,7 @@
 import logging
 import threading
+import numpy as np
+
 from copy import copy
 from numpy import hstack
 
@@ -102,16 +104,18 @@ class Experiment(Observer):
                     env_state = self.env.update(m)
                     self.ag.perceive(env_state)
                 else:
-                    context = self.env.current_sensori_position
+                    if self.context_mode.has_key('reset_iterations') and np.mod(t, self.context_mode['reset_iterations']) == 0:
+                        self.env.reset()
+                    s = self.env.current_sensori_position
                     if self.context_mode['choose_m'] is True:
-                        mdm = self.ag.produce(context)
+                        mdm = self.ag.produce(s)
                         sds = self.env.update(mdm, reset=False)
-                        self.ag.perceive(sds, context=context)
+                        self.ag.perceive(sds, context=s)
                     else:
                         m = self.env.current_motor_position
-                        dm = self.ag.produce(context)     
-                        sds = self.env.update(hstack((m, dm)), reset=False)
-                        self.ag.perceive(sds, context=context)                   
+                        mdm = self.ag.produce(list(m)+list(s))     
+                        sds = self.env.update(mdm, reset=False)
+                        self.ag.perceive(sds, context=s)                   
                     
             except ExplautoEnvironmentUpdateError:
                 logger.warning('Environment update error at time %d with '
@@ -143,8 +147,12 @@ class Experiment(Observer):
         """
         self.eval_at = eval_at
         self.log.eval_at = eval_at
-
-        self.evaluation = Evaluation(self.ag, self.env, testcases)
+        
+        if self.context_mode is None or self.context_mode['choose_m']:
+            mode = 'inverse'
+        else:
+            mode = 'delta'
+        self.evaluation = Evaluation(self.ag, self.env, testcases, mode=mode)
         for test in testcases:
             self.log.add('testcases', test)
 
@@ -176,6 +184,6 @@ class Experiment(Observer):
         else:
             agent = Agent.from_classes(im_cls, im_configs[settings.interest_model_config], expl_dims,
                           sm_cls, sm_configs[settings.sensorimotor_model_config], inf_dims,
-                          env.conf.m_mins, env.conf.m_maxs, env.conf.s_mins, env.conf.s_maxs, context_dims=settings.context_mode['context_dims'])
+                          env.conf.m_mins, env.conf.m_maxs, env.conf.s_mins, env.conf.s_maxs, context_mode=settings.context_mode)
             
         return cls(env, agent, settings.context_mode)

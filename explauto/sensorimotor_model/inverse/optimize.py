@@ -1,5 +1,6 @@
 
 import random
+import numpy as np
 
 from . import inverse
 from ..forward.lwr import LWLRForwardModel
@@ -52,13 +53,12 @@ class OptimizedInverseModel(inverse.InverseModel):
         error = sum(e*e for e in err_v)
         return error
 
-    def _error_dims(self, q, dims_x, dims_y, dims_out):
+    def _error_dm(self, m, dm, s):
         """Error function.
         Once self.goal has been defined, compute the error
         of input using the generalized forward model.
         """
-        print (q, dims_x, dims_y, dims_out)
-        pred = self.fmodel.predict_dims(q, dims_x, dims_y, dims_out)
+        pred = self.fmodel.predict_given_context(np.hstack((m, dm)), s, range(len(s)))
         err_v  = pred - self.goal
         error = sum(e*e for e in err_v)
         return error

@@ -114,6 +114,14 @@ class LWLRForwardModel(ForwardModel):
 
         return Yq.ravel()
     
+    
+    def predict_given_context(self, x, c, c_dims):
+        q = list(x) + list(c)
+        return self.predict_dims(q, 
+                                 range(self.dim_x), 
+                                 np.array(range(self.dim_x, self.dim_x + self.dim_y))[c_dims], 
+                                 list(set(range(self.dim_x, self.dim_x + self.dim_y)) - set(np.array(range(self.dim_x, self.dim_x + self.dim_y))[c_dims])))
+    
     #@profile
     def predict_dims(self, q, dims_x, dims_y, dims_out, sigma=None, k=None):
         """Provide a prediction of q in the output space
@@ -121,17 +129,11 @@ class LWLRForwardModel(ForwardModel):
         @param xq  an array of float of length dim_x
         @param estimated_sigma  if False (default), sigma_sq=self.sigma_sq, else it is estimated from the neighbor distances in self._weights(.)
         """
-        print q
         assert len(q) == len(dims_x) + len(dims_y)
         sigma_sq = self.sigma_sq if sigma is None else sigma*sigma
-        k = k or self.k
-
-        if max(dims_out) < self.dim_x:
-            dists, index = self.dataset.nn_dims(q, [], dims_out, [], k=k)
-        elif min(dims_out) > self.dim_x:
-            dists, index = self.dataset.nn_dims([], q, [], dims_out, k=k)
-        else:
-            raise NotImplementedError            
+        k = k or self.k       
+        
+        dists, index = self.dataset.nn_dims(q[:len(dims_x)], q[len(dims_x):], dims_x, dims_y, k=k)
 
         w = self._weights(dists, index, sigma_sq)
         Xq  = np.array(np.append([1.0], q), ndmin = 2)
