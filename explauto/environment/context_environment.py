@@ -3,6 +3,7 @@ import numpy as np
 
 from explauto.environment.environment import Environment
 from ..utils import bounds_min_max
+from ..utils import rand_bounds
 
 
 class ContextEnvironment(Environment):
@@ -22,6 +23,9 @@ class ContextEnvironment(Environment):
     def reset(self):
         self.current_motor_position = np.array(self.rest_position)
         self.current_sensori_position = np.array(self.env.update(self.current_motor_position, reset=True))
+    
+    def random_dm(self, n=1):
+        return rand_bounds(self.conf.bounds[:, len(self.conf.m_dims)/2:len(self.conf.m_dims)], n)
     
     def compute_motor_command(self, ag_state):
         return bounds_min_max(ag_state, self.conf.m_mins, self.conf.m_maxs)
