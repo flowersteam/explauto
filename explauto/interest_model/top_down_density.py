@@ -254,7 +254,7 @@ class TDDensityTreeInterest(InterestTree):
         
         
 interest_models = {'TDDensity': (TDDensityInterest, {'default': {'kernel': 'tophat',
-                                                                 'bandwidth': 0.2,
+                                                                 'bandwidth': 0.1,
                                                                  'time_window': 20,
                                                                  'self_weight': 0.5,
                                                                  'td_weight': 0.5}}),
