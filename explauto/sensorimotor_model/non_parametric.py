@@ -55,14 +55,9 @@ class NonParametric(SensorimotorModel):
 #                 print "sp", array(self.model.predict_effect(tuple(res.flatten())))
                 #print "sp, snn", array(self.model.predict_effect(tuple(res.flatten()))), array(self.model.predict_effect(tuple(self.mean_explore.flatten())))
                 return res, array(self.model.predict_effect(tuple(res.flatten()))), array(self.model.predict_effect(tuple(self.mean_explore.flatten()))) # m, sp, snn
-            else:  # exploit'
-                res = array(self.model.infer_order(tuple(x.flatten())))
-                sp = array(self.model.predict_effect(tuple(res.flatten())))
-                return res, sp, sp
-            
-        elif in_dims == [di for di in in_dims if di in self.s_dims] and out_dims == self.m_dims:  # partial inverse
-            res = self.model.imodel.infer_x(array(x.flatten()), in_dims)
-            sp = None#array(self.model.predict_effect(tuple(res)))
+        elif in_dims in self.s_dims and out_dims == self.m_dims:  # partial inverse, exploit
+            res = array(self.model.infer_order(tuple(x.flatten()))) # TOCHECK
+            sp = array(self.model.predict_effect(tuple(res.flatten())))
             return res, sp, sp
         else:
             raise NotImplementedError("NonParametic only implements forward (M -> S)"
