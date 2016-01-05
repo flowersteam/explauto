@@ -59,14 +59,14 @@ class Agent(Observable):
         return cls(conf, sm_model, im_model, n_bootstrap, context_mode)
 
 
-    def choose(self, context=None):
+    def choose(self, context=None, context_dims=None):
         """ Returns a point chosen by the interest model
         """
         try:
             if self.context_mode is None:
                 x = self.interest_model.sample()
             else:
-                x = self.interest_model.sample_given_context(context, self.context_mode['context_dims'])
+                x = self.interest_model.sample_given_context(context, context_dims)
         except ExplautoBootstrapError:
             logger.warning('Interest model not bootstrapped yet')
             x = rand_bounds(self.conf.bounds[:, self.expl_dims]).flatten()
@@ -127,16 +127,16 @@ class Agent(Observable):
             self.x = self.choose()
             self.y = self.infer(self.expl_dims, self.inf_dims, self.x)
         else:
-            ds_g = self.choose(context) 
+            ds_g = self.choose(context, range(self.conf.s_ndims/2)) 
             if self.context_mode['choose_m']:
                 self.x = np.hstack((context, ds_g))
                 self.y = self.infer(self.expl_dims, self.inf_dims, self.x)
             else:
                 m = context[:self.conf.m_ndims/2]
                 s = context[self.conf.m_ndims/2:]
-                self.x = np.hstack((s, ds_g))
                 in_dims = range(self.conf.m_ndims/2) + range(self.conf.m_ndims, self.conf.m_ndims + self.conf.s_ndims)
                 out_dims = range(self.conf.m_ndims/2, self.conf.m_ndims)
+                self.x = np.hstack((s, ds_g))
                 dm = self.infer(in_dims, 
                                 out_dims, 
                                 np.array(m + list(self.x)))

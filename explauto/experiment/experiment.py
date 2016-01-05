@@ -113,7 +113,7 @@ class Experiment(Observer):
                         self.ag.perceive(sds, context=s)
                     else:
                         m = self.env.current_motor_position
-                        mdm = self.ag.produce(list(m)+list(s))     
+                        mdm = self.ag.produce(list(m)+list(s))
                         sds = self.env.update(mdm, reset=False)
                         self.ag.perceive(sds, context=s)                   
                     

@@ -25,8 +25,8 @@ class Evaluation(object):
         elif self.mode == 'delta':
             self.env.reset()
             errors = []
+            self.env.reset()
             for s_g in self.testcases:
-                
                 
                 m = self.env.current_motor_position
                 s = self.env.current_sensori_position

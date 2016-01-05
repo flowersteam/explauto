@@ -51,7 +51,6 @@ class ScipyInverseModel(OptimizedInverseModel):
             result = []
                     
             for g in guesses:
-                print "guess", g
                 res = scipy.optimize.minimize(lambda dm:self._error_dm(m, dm, s), g,
                                               args        = (),
                                               method      = self.algo,
