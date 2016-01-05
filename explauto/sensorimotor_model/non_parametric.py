@@ -39,7 +39,8 @@ class NonParametric(SensorimotorModel):
         elif in_dims == self.s_dims and out_dims == self.m_dims:  # inverse
             if self.mode == 'explore':
                 self.mean_explore = array(self.model.infer_order(tuple(x)))
-                r = np.random.normal(self.mean_explore, self.sigma_expl)
+                r = self.mean_explore
+                r[self.sigma_expl > 0] = np.random.normal(r[self.sigma_expl > 0], self.sigma_expl[self.sigma_expl > 0])
                 res = bounds_min_max(r, self.m_mins, self.m_maxs)
                 return res
             else:  # exploit'
@@ -78,8 +79,8 @@ class NonParametric(SensorimotorModel):
 
 
 sensorimotor_models = {
-    'NN': (NonParametric, {'default': {'fwd': 'NN', 'inv': 'NN', 'sigma_explo_ratio':0.1},
-                           'exact': {'fwd': 'NN', 'inv': 'NN', 'sigma_explo_ratio':0.}}),
+    'nearest_neighbor': (NonParametric, {'default': {'fwd': 'NN', 'inv': 'NN', 'sigma_explo_ratio':0.1},
+                                         'exact': {'fwd': 'NN', 'inv': 'NN', 'sigma_explo_ratio':0.}}),
     'WNN': (NonParametric, {'default': {'fwd': 'WNN', 'inv': 'WNN', 'k':20, 'sigma':0.1}}),
     'LWLR-BFGS': (NonParametric, {'default': {'fwd': 'LWLR', 'k':10, 'inv': 'L-BFGS-B', 'maxfun':50}}),
     'LWLR-CMAES': (NonParametric, {'default': {'fwd': 'LWLR', 'k':10, 'inv': 'CMAES', 'cmaes_sigma':0.05, 'maxfevals':20}}),
