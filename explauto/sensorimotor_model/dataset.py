@@ -1,9 +1,3 @@
-"""
-From Fabien Benureau's models library.
-
-https://github.com/humm/models
-
-"""
 
 try:
     import numpy as np
@@ -14,6 +8,7 @@ except:
 
 DATA_X = 0
 DATA_Y = 1
+
 
 class Databag(object):
     """Hold a set of vectors and provides nearest neighbors capabilities"""
@@ -52,7 +47,7 @@ class Databag(object):
         :arg radius: the maximum radius (default: +inf)
         :return:     distance and indexes of found nearest neighbors.
         """
-        assert len(x) == self.dim
+        assert len(x) == self.dim, 'dimension of input {} does not match expected dimension {}.'.format(len(x), self.dim)
         k_x = min(k, self.size)
         # Because linear models requires x vector to be extended to [1.0]+x
         # to accomodate a constant, we store them that way.
@@ -144,28 +139,46 @@ class Dataset(object):
         self.size     = 0
         self.kdtree   = [None, None]   # KDTreeX, KDTreeY
         self.nn_ready = [False, False] # if True, the tree is up-to-date.
+        self.kdtree_y_sub = None
 
     def add_xy(self, x, y):
-        assert len(x) == self.dim_x and len(y) == self.dim_y
-        self.data[0].append(np.append([1.0], x))
+        assert len(x) == self.dim_x and len(y) == self.dim_y, (len(x), len(y), self.dim_x, self.dim_y)
+        self.data[0].append(np.array(x))
         self.data[1].append(np.array(y))
         self.size += 1
         self.nn_ready = [False, False]
 
+    def add_xy_batch(self, x_list, y_list):
+        assert len(x_list) == len(y_list)
+        self.data[0] = self.data[0] + x_list
+        self.data[1] = self.data[1] + y_list
+        self.size += len(x_list)
+        
     def get_x(self, index):
-        return self.data[0][index][1:]
+        return self.data[0][index]
 
     def get_x_padded(self, index):
-        return self.data[0][index]
+        return np.append(1.0,self.data[0][index])
 
     def get_y(self, index):
         return self.data[1][index]
 
     def get_xy(self, index):
         return self.get_x(index), self.get_y(index)
+    
+    def get_dims(self, index, dims_x=None, dims_y=None, dims=None):
+        if dims is None:
+            return np.hstack((np.array(self.data[0][index])[dims_x], np.array(self.data[1][index])[np.array(dims_y) - self.dim_x]))
+        else:
+            if max(dims) < self.dim_x:
+                return np.array(self.data[0][index])[dims]
+            elif min(dims) > self.dim_x:
+                return np.array(self.data[1][index])[np.array(dims) - self.dim_x]                
+            else:
+                raise NotImplementedError
 
     def iter_x(self):
-        return iter(d[1:] for d in self.data[0])
+        return iter(d for d in self.data[0])
 
     def iter_y(self):
         return iter(self.data[1])
@@ -176,7 +189,7 @@ class Dataset(object):
     def __len__(self):
         return self.size
 
-    def nn_x(self, x, k = 1, radius = np.inf, eps = 0.0, p = 2):
+    def nn_x(self, x, k=1, radius=np.inf, eps=0.0, p=2):
         """Find the k nearest neighbors of x in the observed input data
         @see Databag.nn() for argument description
         @return  distance and indexes of found nearest neighbors.
@@ -185,16 +198,38 @@ class Dataset(object):
         k_x = min(k, self.size)
         # Because linear models requires x vector to be extended to [1.0]+x
         # to accomodate a constant, we store them that way.
-        return self._nn(DATA_X, np.append([1.0], x), k = k_x, radius = radius, eps = eps, p = p)
+        return self._nn(DATA_X, x, k=k_x, radius=radius, eps=eps, p=p)
 
-    def nn_y(self, y, k = 1, radius = np.inf, eps = 0.0, p = 2):
+    def nn_y(self, y, k=1, radius=np.inf, eps=0.0, p=2):
         """Find the k nearest neighbors of y in the observed output data
         @see Databag.nn() for argument description
         @return  distance and indexes of found nearest neighbors.
         """
         assert len(y) == self.dim_y
         k_y = min(k, self.size)
-        return self._nn(DATA_Y, y, k = k_y, radius = radius, eps = eps, p = p)
+        return self._nn(DATA_Y, y, k=k_y, radius=radius, eps=eps, p=p)
+
+    def nn_dims(self, x, y, dims_x, dims_y, k=1, radius=np.inf, eps=0.0, p=2):
+        """Find the k nearest neighbors of a subset of dims of x and y in the observed output data
+        @see Databag.nn() for argument description
+        @return  distance and indexes of found nearest neighbors.
+        """
+        assert len(x) == len(dims_x)
+        assert len(y) == len(dims_y)
+        if len(dims_x) == 0:
+            kdtree = scipy.spatial.cKDTree([np.array(data_y)[np.array(dims_y) - self.dim_x] for data_y in self.data[DATA_Y]])
+        elif len(dims_y) == 0:
+            kdtree = scipy.spatial.cKDTree([np.array(data_x)[dims_x] for data_x in self.data[DATA_X]])
+        else:
+            kdtree = scipy.spatial.cKDTree([np.hstack((np.array(data_x)[dims_x], np.array(data_y)[np.array(dims_y) - self.dim_x])) for data_x,data_y in zip(self.data[DATA_X], self.data[DATA_Y])])
+        dists, idxes =  kdtree.query(np.hstack((x, y)), 
+                               k = k, 
+                               distance_upper_bound = radius,
+                               eps = eps, 
+                               p = p)
+        if k == 1:
+            dists, idxes = np.array([dists]), [idxes]
+        return dists, idxes
 
     def _nn(self, side, v, k = 1, radius = np.inf, eps = 0.0, p = 2):
         """Compute the k nearest neighbors of v in the observed data,
@@ -218,91 +253,141 @@ class Dataset(object):
             self.kdtree[side]   = scipy.spatial.cKDTree(self.data[side])
             self.nn_ready[side] = True
 
-class ScaledDataset(Dataset):
-    """Hold observations an provide nearest neighbors facilities.
-    Allow to assign and modify weights on input data dimensions.
 
-    Due to some limitations, this will keep twice the data in memory.
-    """
 
-    @classmethod
-    def from_data(cls, data, weights_x = None, weights_y = None):
-        """Create a dataset from an array of data, infering the dimension from the datapoint"""
+class BufferedDataset(Dataset):
+    """Add a buffer of a few points to avoid recomputing the kdtree at each addition"""
 
-        if len(data) == 0:
-            raise ValueError("data array is empty.")
-
-        dim_x, dim_y = len(data[0][0]), len(data[0][1])
-        weights_x = weights_x or np.array([1.0]*dim_x)
-        weights_y = weights_y or np.array([1.0]*dim_y)
-
-        dataset = cls(dim_x, dim_y, weights_x = weights_x, weights_y = weights_y)
-
-        for dp in data:
-            assert len(dp[0]) == dim_x and len(dp[1]) == dim_y
-            dataset.add_xy(dp[0], dp[1])
-
-        return dataset
-
-    def __init__(self, dim_x, dim_y, weights_x = None, weights_y = None):
+    def __init__(self, dim_x, dim_y, buffer_size=200):
         """
-        :arg dim_x:  the dimension of the input vectors
-        :arg dim_y:  the dimension of the output vectors
+            :arg dim_x:  the dimension of the input vectors
+            :arg dim_y:  the dimension of the output vectors
         """
-        self.dim_x = dim_x
-        self.dim_y = dim_y
-        self.weights_x = np.array([1.0]*(dim_x+1)) if weights_x is None else np.append([1.0], weights_x)
-        self.weights_y = np.array([1.0]*dim_y) if weights_x is None else np.array(weights_y)
-
-        self.reset()
-
+        
+        self.buffer_size = buffer_size
+        self.buffer = Dataset(dim_x, dim_y)
+        
+        Dataset.__init__(self, dim_x, dim_y)
+        
     def reset(self):
-        """Reset the dataset to zero elements."""
+        self.buffer.reset()
         Dataset.reset(self)
-        self.wdata = [[], []]
-
+        
     def add_xy(self, x, y):
-        Dataset.add_xy(self, x, y)
-        self.wdata[0].append(self.weights_x*self.data[0][-1])
-        self.wdata[1].append(self.weights_y*self.data[1][-1])
+        if self.buffer.size < self.buffer_size:
+            self.buffer.add_xy(x, y)
+        else:
+            self.data[0] = self.data[0] + self.buffer.data[0]
+            self.data[1] = self.data[1] + self.buffer.data[1]
+            self.size += self.buffer.size
+            self.buffer = Dataset(self.dim_x, self.dim_y)
+            self.nn_ready = [False, False]
+            self.buffer.add_xy(x, y)
+        
+    def add_xy_batch(self, x_list, y_list):
+        assert len(x_list) == len(y_list)
+        Dataset.add_xy_batch(self, self.buffer.data[0], self.buffer.data[1])
+        self.buffer = Dataset(self.dim_x, self.dim_y)
+        Dataset.add_xy_batch(self, x_list, y_list)
+        self.nn_ready = [False, False]
+            
+    def get_x(self, index):
+        if index >= self.size:
+            return self.buffer.data[0][index-self.size]
+        else:
+            return self.data[0][index]
 
-    def nn_x(self, x, k = 1, radius = np.inf, eps = 0.0, p = 2):
+    def get_x_padded(self, index):
+        if index >= self.size:
+            return np.append(1.0, self.buffer.data[0][index-self.size])
+        else:
+            return np.append(1.0, self.data[0][index])
+
+    def get_y(self, index):
+        if index >= self.size:
+            return self.buffer.data[1][index-self.size]
+        else:
+            return self.data[1][index]
+        
+    def get_dims(self, index, dims_x=None, dims_y=None, dims=None):
+        if index >= self.size:
+            return self.buffer.get_dims(index-self.size, dims_x, dims_y, dims)
+        else:
+            return Dataset.get_dims(self, index, dims_x, dims_y, dims)
+
+    def iter_x(self):
+        return iter(d for d in self.data[0] + self.buffer.data[0])
+
+    def iter_y(self):
+        return iter(self.data[1] + self.buffer.data[1])
+
+    def iter_xy(self):
+        return zip(self.iter_x(), self.data[1] + self.buffer.data[1])
+
+    def __len__(self):
+        return self.size + self.buffer.size
+
+    def nn_x(self, x, k=1, radius=np.inf, eps=0.0, p=2):
         """Find the k nearest neighbors of x in the observed input data
         @see Databag.nn() for argument description
-        :return:  distance and indexes of found nearest neighbors.
+        @return  distance and indexes of found nearest neighbors.
         """
         assert len(x) == self.dim_x
-        k_x = min(k, self.size)
+        k_x = min(k, self.__len__())
         # Because linear models requires x vector to be extended to [1.0]+x
         # to accomodate a constant, we store them that way.
-        return self._nn(DATA_X, self.weights_x*np.append([1.0], x), k = k_x, radius = radius, eps = eps, p = p)
+        return self._nn(DATA_X, x, k=k_x, radius=radius, eps=eps, p=p)
 
-    def nn_y(self, y, k = 1, radius = np.inf, eps = 0.0, p = 2):
-        """Find the n nearest neighbors of y in the observed output data
+    def nn_y(self, y, dims=None, k = 1, radius=np.inf, eps=0.0, p=2):
+        """Find the k nearest neighbors of y in the observed output data
         @see Databag.nn() for argument description
-        :return:  distance and indexes of found nearest neighbors.
+        @return  distance and indexes of found nearest neighbors.
         """
-        assert len(y) == self.dim_y
-        k_y = min(k, self.size)
-        return self._nn(DATA_Y, self.weights_y*y, k = k_y, radius = radius, eps = eps, p = p)
-
-    def _build_tree(self, side):
-        """Build the KDTree for the observed data
-        :arg side:  if equal to DATA_X, build input data tree.
-                    if equal to DATA_Y, build output data tree.
+        if dims is None:
+            assert len(y) == self.dim_y
+            k_y = min(k, self.__len__())
+            return self._nn(DATA_Y, y, k=k_y, radius=radius, eps=eps, p=p)
+        else:
+            return self.nn_y_sub(y, dims, k, radius, eps, p)
+        
+    def nn_dims(self, x, y, dims_x, dims_y, k=1, radius=np.inf, eps=0.0, p=2):
+        """Find the k nearest neighbors of a subset of dims of x and y in the observed output data
+        @see Databag.nn() for argument description
+        @return  distance and indexes of found nearest neighbors.
         """
-        if not self.nn_ready[side]:
-            self.kdtree[side]   = scipy.spatial.cKDTree(self.wdata[side])
-            self.nn_ready[side] = True
-
-
-
-# TODO: a logger plus propre
-# try:
-#     from cdataset import cDataset
-#     pDataset = Dataset # keeping the python version accessible
-#     Dataset = cDataset
-# except ImportError:
-#     import traceback
-#     traceback.print_exc()
-#     print("warning: cdataset.cDataset import error, defaulting to (slower) python implementation.")
+        if self.size > 0:
+            dists, idxes = Dataset.nn_dims(self, x, y, dims_x, dims_y, k, radius, eps, p)
+        else:
+            return self.buffer.nn_dims(x, y, dims_x, dims_y, k, radius, eps, p)
+        if self.buffer.size > 0:
+            buffer_dists, buffer_idxes = self.buffer.nn_dims(x, y, dims_x, dims_y, k, radius, eps, p)
+            buffer_idxes = [i + self.size for i in buffer_idxes]
+            ziped = zip(dists, idxes)
+            buffer_ziped = zip(buffer_dists, buffer_idxes)
+            sorted_dists_idxes = sorted(ziped + buffer_ziped, key=lambda di:di[0])
+            knns = sorted_dists_idxes[:k]
+            return [knn[0] for knn in knns], [knn[1] for knn in knns] 
+        else:
+            return dists, idxes
+        
+    def _nn(self, side, v, k=1, radius=np.inf, eps=0.0, p=2):
+        """Compute the k nearest neighbors of v in the observed data,
+        :arg side  if equal to DATA_X, search among input data.
+                     if equal to DATA_Y, search among output data.
+        @return  distance and indexes of found nearest neighbors.
+        """
+        if self.size > 0:
+            dists, idxes = Dataset._nn(self, side, v, k, radius, eps, p)
+        else:
+            return self.buffer._nn(side, v, k, radius, eps, p)
+        if self.buffer.size > 0:
+            buffer_dists, buffer_idxes = self.buffer._nn(side, v, k, radius, eps, p)
+            buffer_idxes = [i + self.size for i in buffer_idxes]
+            ziped = zip(dists, idxes)
+            buffer_ziped = zip(buffer_dists, buffer_idxes)
+            sorted_dists_idxes = sorted(ziped + buffer_ziped, key=lambda di:di[0])
+            knns = sorted_dists_idxes[:k]
+            return [knn[0] for knn in knns], [knn[1] for knn in knns] 
+        else:
+            return dists, idxes
+        
