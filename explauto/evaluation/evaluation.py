@@ -1,3 +1,4 @@
+import numpy as np
 from numpy import linalg
 
 
@@ -7,20 +8,36 @@ class Evaluation(object):
         self.env = env
         self.mode = mode
 
-        if mode not in ('inverse', 'forward'):
+        if mode not in ('inverse', 'forward', 'delta'):
             raise ValueError('mode should be "inverse" or "forward"',
                              '"general" predictions coming soon)')
         self.testcases = testcases
 
     def evaluate(self, n_tests_forward=None, testcases_forward=None):
-        mode = self.ag.sensorimotor_model.mode
+        sm_mode = self.ag.sensorimotor_model.mode
         self.ag.sensorimotor_model.mode = 'exploit'
         if self.mode == 'inverse':
             errors = []
             for s_g in self.testcases:
                 m = self.ag.infer(self.ag.conf.s_dims, self.ag.conf.m_dims, s_g).flatten()
-                s = self.env.update(m, log=False)
+                s = self.env.update(m, log=False, reset=True)
                 errors.append(linalg.norm(s_g - s))
+        elif self.mode == 'delta':
+            self.env.reset()
+            errors = []
+            self.env.reset()
+            for s_g in self.testcases:
+                
+                m = self.env.current_motor_position
+                s = self.env.current_sensori_position
+                in_dims = range(self.ag.conf.m_ndims/2) + range(self.ag.conf.m_ndims, self.ag.conf.m_ndims + self.ag.conf.s_ndims)
+                out_dims = range(self.ag.conf.m_ndims/2, self.ag.conf.m_ndims)
+                dm = self.ag.infer(in_dims, 
+                                out_dims, 
+                                np.array(list(m) + list(np.hstack((s, s_g[len(s_g)/2:])))))
+                mdm = np.hstack((m, dm))
+                sds = self.env.update(mdm, reset=False)
+                errors.append(linalg.norm(s_g[len(s_g)/2:] - sds[len(sds)/2:]))
         elif self.mode == 'forward':
             print 'forward prediction tests still in beta version, use with caution'
             if n_tests_forward is not None:
@@ -42,7 +59,7 @@ class Evaluation(object):
             raise ValueError('mode should be "inverse" or "forward"',
                               '"general" predictions coming soon)')
 
-        self.ag.sensorimotor_model.mode = mode
+        self.ag.sensorimotor_model.mode = sm_mode
         return errors
 
     def plot_testcases(self, ax, dims, **kwargs_plot):

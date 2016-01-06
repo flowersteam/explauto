@@ -9,7 +9,8 @@ class Settings(namedtuple('Settings', ('environment',
                                        'interest_model',
                                        'interest_model_config',
                                        'sensorimotor_model',
-                                       'sensorimotor_model_config'))):
+                                       'sensorimotor_model_config',
+                                       'context_mode'))):
     @property
     def default_testcases(self):
         return environments[self.environment][2](self.environment_config)
@@ -20,12 +21,13 @@ def make_settings(environment,
                   interest_model, sensorimotor_model,
                   environment_config='default',
                   interest_model_config='default',
-                  sensorimotor_model_config='default'):
+                  sensorimotor_model_config='default',
+                  context_mode=None):
 
     return Settings(environment, environment_config,
                     babbling_mode,
                     interest_model, interest_model_config,
-                    sensorimotor_model, sensorimotor_model_config)
+                    sensorimotor_model, sensorimotor_model_config, context_mode)
 
 from .experiment import Experiment
 from .pool import ExperimentPool

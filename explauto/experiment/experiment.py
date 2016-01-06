@@ -1,5 +1,7 @@
 import logging
 import threading
+import numpy as np
+
 from copy import copy
 from numpy import hstack
 
@@ -12,13 +14,14 @@ from .log import ExperimentLog
 from ..environment import environments
 from ..interest_model import interest_models
 from ..sensorimotor_model import sensorimotor_models
+from ..environment.context_environment import ContextEnvironment
 
 
 logger = logging.getLogger(__name__)
 
 
 class Experiment(Observer):
-    def __init__(self, environment, agent):
+    def __init__(self, environment, agent, context_mode=None):
         """ This class is used to setup, run and log the results of an experiment.
 
             :param environment: an environment
@@ -32,6 +35,7 @@ class Experiment(Observer):
 
         self.env = environment
         self.ag = agent
+        self.context_mode = context_mode
         # env.inds_in = inds_in
         # env.inds_out = inds_out
         # self.records = zeros((n_records, env.state.shape[0]))
@@ -94,10 +98,25 @@ class Experiment(Observer):
             # Clear messages received from the evaluation
             self.notifications.queue.clear()
 
-            m = self.ag.produce()
             try:
-                env_state = self.env.update(m)
-                self.ag.perceive(env_state)
+                if self.context_mode is None:
+                    m = self.ag.produce()
+                    env_state = self.env.update(m)
+                    self.ag.perceive(env_state)
+                else:
+                    if self.context_mode.has_key('reset_iterations') and np.mod(t, self.context_mode['reset_iterations']) == 0:
+                        self.env.reset()
+                    s = self.env.current_sensori_position
+                    if self.context_mode['choose_m'] is True:
+                        mdm = self.ag.produce(s)
+                        sds = self.env.update(mdm, reset=False)
+                        self.ag.perceive(sds, context=s)
+                    else:
+                        m = self.env.current_motor_position
+                        mdm = self.ag.produce(list(m)+list(s))
+                        sds = self.env.update(mdm, reset=False)
+                        self.ag.perceive(sds, context=s)                   
+                    
             except ExplautoEnvironmentUpdateError:
                 logger.warning('Environment update error at time %d with '
                                'motor command %s. '
@@ -128,8 +147,12 @@ class Experiment(Observer):
         """
         self.eval_at = eval_at
         self.log.eval_at = eval_at
-
-        self.evaluation = Evaluation(self.ag, self.env, testcases)
+        
+        if self.context_mode is None or self.context_mode['choose_m']:
+            mode = 'inverse'
+        else:
+            mode = 'delta'
+        self.evaluation = Evaluation(self.ag, self.env, testcases, mode=mode)
         for test in testcases:
             self.log.add('testcases', test)
 
@@ -139,7 +162,10 @@ class Experiment(Observer):
         env_cls, env_configs, _ = environments[settings.environment]
         config = env_configs[settings.environment_config]
 
-        env = env_cls(**config)
+        if settings.context_mode is None:
+            env = env_cls(**config)
+        else:
+            env = ContextEnvironment(env_cls, config, settings.context_mode)
 
         im_cls, im_configs = interest_models[settings.interest_model]
         sm_cls, sm_configs = sensorimotor_models[settings.sensorimotor_model]
@@ -151,8 +177,13 @@ class Experiment(Observer):
         expl_dims = env.conf.m_dims if (babbling == 'motor') else env.conf.s_dims
         inf_dims = env.conf.s_dims if (babbling == 'motor') else env.conf.m_dims
 
-        agent = Agent.from_classes(im_cls, im_configs[settings.interest_model_config], expl_dims,
-                      sm_cls, sm_configs[settings.sensorimotor_model_config], inf_dims,
-                      env.conf.m_mins, env.conf.m_maxs, env.conf.s_mins, env.conf.s_maxs)
-
-        return cls(env, agent)
+        if settings.context_mode is None:
+            agent = Agent.from_classes(im_cls, im_configs[settings.interest_model_config], expl_dims,
+                          sm_cls, sm_configs[settings.sensorimotor_model_config], inf_dims,
+                          env.conf.m_mins, env.conf.m_maxs, env.conf.s_mins, env.conf.s_maxs)
+        else:
+            agent = Agent.from_classes(im_cls, im_configs[settings.interest_model_config], expl_dims,
+                          sm_cls, sm_configs[settings.sensorimotor_model_config], inf_dims,
+                          env.conf.m_mins, env.conf.m_maxs, env.conf.s_mins, env.conf.s_maxs, context_mode=settings.context_mode)
+            
+        return cls(env, agent, settings.context_mode)

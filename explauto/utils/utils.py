@@ -1,6 +1,19 @@
 import numpy as np
+import math
 
 from scipy import stats
+
+
+def dist(p1, p2):
+    return math.sqrt(sum((p1i-p2i)**2 for p1i, p2i in zip(p1, p2)))
+
+
+def gaussian_kernel(d, sigma_sq):
+    """Compute the gaussian kernel function of a given distance
+    @param d         the euclidean distance
+    @param sigma_sq  sigma of the gaussian, squared.
+    """
+    return math.exp(-(d*d)/(2*sigma_sq))
 
 
 def rand_bounds(bounds, n=1):
