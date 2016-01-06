@@ -797,6 +797,7 @@ class Tree(object):
 
 
 interest_models = {'tree': (InterestTree, {'default': {'max_points_per_region': 100,
+                                                       'max_depth': 20,
                                                        'split_mode': 'best_interest_diff',
                                                        'competence_measure': lambda target,reached : competence_exp(target, reached, 0., 10.),
                                                        'progress_win_size': 50,
