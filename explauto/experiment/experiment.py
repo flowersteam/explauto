@@ -106,13 +106,13 @@ class Experiment(Observer):
                 else:
                     if self.context_mode.has_key('reset_iterations') and np.mod(t, self.context_mode['reset_iterations']) == 0:
                         self.env.reset()
+                    m = self.env.current_motor_position
                     s = self.env.current_sensori_position
                     if self.context_mode['choose_m'] is True:
-                        mdm = self.ag.produce(s)
+                        mdm = self.ag.produce(list(m)+list(s))
                         sds = self.env.update(mdm, reset=False)
                         self.ag.perceive(sds, context=s)
                     else:
-                        m = self.env.current_motor_position
                         mdm = self.ag.produce(list(m)+list(s))
                         sds = self.env.update(mdm, reset=False)
                         self.ag.perceive(sds, context=s)                   

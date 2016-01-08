@@ -27,6 +27,7 @@ class Evaluation(object):
             errors = []
             self.env.reset()
             for s_g in self.testcases:
+                self.env.reset()
                 
                 m = self.env.current_motor_position
                 s = self.env.current_sensori_position
