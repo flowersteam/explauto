@@ -59,14 +59,20 @@ class Agent(Observable):
         return cls(conf, sm_model, im_model, n_bootstrap, context_mode)
 
 
-    def choose(self, context=None, context_dims=None):
+    def choose(self, context_ms=None):
         """ Returns a point chosen by the interest model
         """
         try:
             if self.context_mode is None:
                 x = self.interest_model.sample()
             else:
-                x = self.interest_model.sample_given_context(context, context_dims)
+                if self.expl_dims == self.conf.s_dims:
+                    x = np.hstack((context_ms[self.conf.m_ndims/2:], self.interest_model.sample_given_context(context_ms[self.conf.m_ndims/2:], range(self.conf.s_ndims/2))))
+                else:
+                    if self.context_mode['choose_m']:
+                        x = self.interest_model.sample()
+                    else:
+                        x = np.hstack((context_ms[:self.conf.m_ndims/2], self.interest_model.sample_given_context(context_ms[:self.conf.m_ndims/2], range(self.conf.m_ndims/2))))
         except ExplautoBootstrapError:
             logger.warning('Interest model not bootstrapped yet')
             x = rand_bounds(self.conf.bounds[:, self.expl_dims]).flatten()
@@ -86,7 +92,6 @@ class Agent(Observable):
             y = self.sensorimotor_model.infer(expl_dims,
                                               inf_dims,
                                               x.flatten())
-                    
         except ExplautoBootstrapError:
             logger.warning('Sensorimotor model not bootstrapped yet')
             y = rand_bounds(self.conf.bounds[:, inf_dims]).flatten()
@@ -111,7 +116,7 @@ class Agent(Observable):
         """
         return bounds_min_max(s, self.conf.s_mins, self.conf.s_maxs)
 
-    def produce(self, context=None):
+    def produce(self, context_ms=None):
         """ Exploration (see the `Explauto introduction <about.html>`__ for more detail):
 
         * Choose a value x on expl_dims according to the interest model
@@ -123,26 +128,22 @@ class Agent(Observable):
 
         .. note:: This correspond to motor babbling if expl_dims=self.conf.m_dims and inf_dims=self.conf.s_dims and to  goal babbling if expl_dims=self.conf.s_dims and inf_dims=self.conf.m_dims.
         """
-        if context is None:
+        if context_ms is None:
             self.x = self.choose()
             self.y = self.infer(self.expl_dims, self.inf_dims, self.x)
         else:
-            ds_g = self.choose(context, range(self.conf.s_ndims/2)) 
-            if self.context_mode['choose_m']:
-                self.x = np.hstack((context, ds_g))
-                self.y = self.infer(self.expl_dims, self.inf_dims, self.x)
-            else:
-                m = context[:self.conf.m_ndims/2]
-                s = context[self.conf.m_ndims/2:]
+            self.x = self.choose(context_ms) 
+            if self.expl_dims == self.conf.s_dims and not self.context_mode['choose_m']:
+                m = context_ms[:self.conf.m_ndims/2]
                 in_dims = range(self.conf.m_ndims/2) + range(self.conf.m_ndims, self.conf.m_ndims + self.conf.s_ndims)
                 out_dims = range(self.conf.m_ndims/2, self.conf.m_ndims)
-                self.x = np.hstack((s, ds_g))
                 dm = self.infer(in_dims, 
                                 out_dims, 
                                 np.array(m + list(self.x)))
                 self.y = np.hstack((m, dm))
-            
-        
+            else:
+                self.y = self.infer(self.expl_dims, self.inf_dims, self.x)
+                    
 
         self.m, self.s = self.extract_ms(self.x, self.y)
 
