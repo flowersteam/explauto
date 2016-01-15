@@ -54,11 +54,17 @@ class MiscRandomInterest(RandomInterest):
         self.data_xc.add_xy(x, [c])
         
     def update_interest(self, i):
-        self.current_interest += (1. / self.win_size) *(i - self.current_interest) 
+        self.current_interest += (1. / self.win_size) *(i - self.current_interest)         
+        #print "current interest", self.current_interest
 
     def update(self, xy, ms, x=None):
         #print
         c = self.competence_measure(xy[self.expl_dims], ms[self.expl_dims])
+        #print
+        #print "competence dist", competence_dist(xy[self.expl_dims], ms[self.expl_dims])
+        #print "ms", ms
+        #print "expl_dims", self.expl_dims
+        #print "competence", xy[self.expl_dims], ms[self.expl_dims], c
         #print "miscRandom ", "xy=", xy, "ms=", ms, "c=", c
 #         print "self.expl_dims", self.expl_dims
 #         print "xy", xy
@@ -111,7 +117,9 @@ class MiscRandomInterest(RandomInterest):
         
         """
         mean_local_comp = self.competence_pt(x)
+        #print "mean_local_comp", mean_local_comp
         #print "mean local comp=", mean_local_comp, "c=", c, "i=", np.abs(c - mean_local_comp)    
+        #print "interest", np.abs(c - mean_local_comp)
         return np.abs(c - mean_local_comp)     
         
     def interest_pt(self, x):
@@ -151,13 +159,15 @@ class MiscRandomInterest(RandomInterest):
         
 interest_models = {'random': (RandomInterest, {'default': {}}),
                    'miscRandom_local': (MiscRandomInterest, {'default': 
-                       {'competence_measure': lambda target,reached : competence_exp(target, reached, dist_min=0.0, power=1.),
+                       {'competence_measure': competence_dist,
+                       #{'competence_measure': lambda target,reached : competence_exp(target, reached, dist_min=0.0, power=1.),
                                    'win_size': 100,
                                    'competence_mode': 'knn',
                                    'k': 10,
                                    'progress_mode': 'local'}}),
                    'miscRandom_global': (MiscRandomInterest, {'default': 
-                       {'competence_measure': lambda target,reached : competence_exp(target, reached, dist_min=0.0, power=1.),
+                       {'competence_measure': competence_dist, 
+                       #{'competence_measure': lambda target,reached : competence_exp(target, reached, dist_min=0.0, power=1.),
                                    'win_size': 100,
                                    'competence_mode': 'knn',
                                    'k': 10,
