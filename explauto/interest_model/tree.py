@@ -98,6 +98,10 @@ class InterestTree(InterestModel):
                 return self.tree.competence_cum()
             else:
                 raise NotImplementedError    
+            
+    def interest_pt(self, x):
+        leaf = self.tree.pt2leaf(x)
+        return self.tree.pt2leaf(x).progress
     
     def interest(self, mode="max"):
         if mode == "all":
@@ -907,10 +911,11 @@ class Tree(object):
     
 
 
-interest_models = {'tree': (InterestTree, {'default': {'max_points_per_region': 40,
+interest_models = {'tree': (InterestTree, {'default': {'max_points_per_region': 100,
                                                        'max_depth':15,
                                                        'split_mode': 'middle',
-                                                       'competence_measure': lambda target,reached : competence_exp(target, reached, 0.001, 1.),
+                                                       #'competence_measure': competence_dist,
+                                                       'competence_measure': lambda target,reached : competence_exp(target, reached, 0.001, power=1.),
                                                        'progress_win_size': 20,
                                                        'progress_measure': 'abs_deriv_smooth',  
                                                        'interest_measure': ["progress", "volume"],              
