@@ -105,6 +105,13 @@ class MiscRandomInterest(RandomInterest):
         
     def competence_pt(self, x):
         if self.n_points() > self.k: 
+            dists, idxs = self.data_xc.nn_x(x, k=1)
+            return self.data_xc.get_y(idxs[0])[0] - dists[0]
+        else:
+            return self.competence()
+        
+    def mean_competence_pt(self, x):
+        if self.n_points() > self.k: 
             _, idxs = self.data_xc.nn_x(x, k=self.k)
             #print "competences around x=", x, ": dists=", dists, "competences=", [self.data_xc.get_y(idx)[0] for idx in idxs]
             return np.mean([self.data_xc.get_y(idx) for idx in idxs])
@@ -116,7 +123,7 @@ class MiscRandomInterest(RandomInterest):
         Interest of point x with competence c with respect to local competence
         
         """
-        mean_local_comp = self.competence_pt(x)
+        mean_local_comp = self.mean_competence_pt(x)
         #print "mean_local_comp", mean_local_comp
         #print "mean local comp=", mean_local_comp, "c=", c, "i=", np.abs(c - mean_local_comp)    
         #print "interest", np.abs(c - mean_local_comp)
