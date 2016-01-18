@@ -84,6 +84,7 @@ class MiscRandomInterest(RandomInterest):
         
         if x is None:
             self.add_xc(xy[self.expl_dims], c)
+            self.add_xc(ms[self.expl_dims], self.competence_measure(ms[self.expl_dims], ms[self.expl_dims])) # ONLY IN DETERMINISTIC ENV
         else:
             #print "miscRandom add x=", x
             self.add_xc(x, c)
@@ -168,14 +169,14 @@ interest_models = {'random': (RandomInterest, {'default': {}}),
                    'miscRandom_local': (MiscRandomInterest, {'default': 
                        {'competence_measure': competence_dist,
                        #{'competence_measure': lambda target,reached : competence_exp(target, reached, dist_min=0.0, power=1.),
-                                   'win_size': 100,
+                                   'win_size': 200,
                                    'competence_mode': 'knn',
                                    'k': 10,
                                    'progress_mode': 'local'}}),
                    'miscRandom_global': (MiscRandomInterest, {'default': 
                        {'competence_measure': competence_dist, 
                        #{'competence_measure': lambda target,reached : competence_exp(target, reached, dist_min=0.0, power=1.),
-                                   'win_size': 100,
+                                   'win_size': 200,
                                    'competence_mode': 'knn',
                                    'k': 10,
                                    'progress_mode': 'global'}})}
