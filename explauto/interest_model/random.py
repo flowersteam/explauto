@@ -107,7 +107,7 @@ class MiscRandomInterest(RandomInterest):
     def competence_pt(self, x):
         if self.n_points() > self.k: 
             dists, idxs = self.data_xc.nn_x(x, k=1)
-            return self.data_xc.get_y(idxs[0])[0] - dists[0]
+            return self.data_xc.get_y(idxs[0])[0]
         else:
             return self.competence()
         
