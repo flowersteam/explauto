@@ -1,7 +1,5 @@
 import numpy as np
 
-from sklearn.neighbors import KNeighborsRegressor
-
 from ..utils import rand_bounds
 from .interest_model import InterestModel
 from .competences import competence_exp, competence_dist
@@ -84,7 +82,6 @@ class MiscRandomInterest(RandomInterest):
         
         if x is None:
             self.add_xc(xy[self.expl_dims], c)
-            self.add_xc(ms[self.expl_dims], self.competence_measure(ms[self.expl_dims], ms[self.expl_dims])) # ONLY IN DETERMINISTIC ENV
         else:
             #print "miscRandom add x=", x
             self.add_xc(x, c)
@@ -103,13 +100,6 @@ class MiscRandomInterest(RandomInterest):
                 raise NotImplementedError
         else:
             return 0.
-        
-    def competence_pt(self, x):
-        if self.n_points() > self.k: 
-            dists, idxs = self.data_xc.nn_x(x, k=1)
-            return self.data_xc.get_y(idxs[0])[0] - dists[0]
-        else:
-            return self.competence()
         
     def mean_competence_pt(self, x):
         if self.n_points() > self.k: 
@@ -171,12 +161,12 @@ interest_models = {'random': (RandomInterest, {'default': {}}),
                        #{'competence_measure': lambda target,reached : competence_exp(target, reached, dist_min=0.0, power=1.),
                                    'win_size': 200,
                                    'competence_mode': 'knn',
-                                   'k': 10,
+                                   'k': 20,
                                    'progress_mode': 'local'}}),
                    'miscRandom_global': (MiscRandomInterest, {'default': 
                        {'competence_measure': competence_dist, 
                        #{'competence_measure': lambda target,reached : competence_exp(target, reached, dist_min=0.0, power=1.),
                                    'win_size': 200,
                                    'competence_mode': 'knn',
-                                   'k': 10,
+                                   'k': 20,
                                    'progress_mode': 'global'}})}
