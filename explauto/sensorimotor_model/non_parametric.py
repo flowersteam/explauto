@@ -55,6 +55,10 @@ class NonParametric(SensorimotorModel):
 #                 print "sp", array(self.model.predict_effect(tuple(res.flatten())))
                 #print "sp, snn", array(self.model.predict_effect(tuple(res.flatten()))), array(self.model.predict_effect(tuple(self.mean_explore.flatten())))
                 return res, array(self.model.predict_effect(tuple(res.flatten()))), array(self.model.predict_effect(tuple(self.mean_explore.flatten()))) # m, sp, snn
+            else:
+                res = array(self.model.infer_order(tuple(x.flatten())))
+                return res, array(self.model.predict_effect(tuple(res.flatten()))), array(self.model.predict_effect(tuple(res.flatten()))) # m, sp, snn
+                
         elif in_dims in self.s_dims and out_dims == self.m_dims:  # partial inverse, exploit
             res = array(self.model.infer_order(tuple(x.flatten()))) # TOCHECK
             sp = array(self.model.predict_effect(tuple(res.flatten())))
