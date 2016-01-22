@@ -42,6 +42,8 @@ class MiscRandomInterest(RandomInterest):
         self.competence_measure = competence_measure
         self.win_size = win_size
         self.competence_mode = competence_mode
+        self.competence_min = self.competence_measure(self.bounds[0,:], 
+                                                      self.bounds[1,:])
         self.k = k
         self.progress_mode = progress_mode
         self.data_xc = Dataset(len(expl_dims), 1)
@@ -57,7 +59,7 @@ class MiscRandomInterest(RandomInterest):
 
     def update(self, xy, ms, x=None):
         #print
-        c = self.competence_measure(xy[self.expl_dims], ms[self.expl_dims])
+        c = - self.competence_measure(xy[self.expl_dims], ms[self.expl_dims]) / self.competence_min
         #print
         #print "competence dist", competence_dist(xy[self.expl_dims], ms[self.expl_dims])
         #print "ms", ms
