@@ -18,6 +18,7 @@ class DmpPrimitive(object):
         self.motor = copy(self.default)
         self.n_dmps = dmps
         self.n_bfs = bfs
+        self.timesteps = timesteps
         
         if type == 'discrete':
             self.dmp = DMPs_discrete(dmps=dmps, bfs=bfs, dt=2./timesteps)
@@ -37,7 +38,7 @@ class DmpPrimitive(object):
         self.dmp.y0 = self.motor[:self.dmp.dmps]
         self.dmp.goal = self.motor[-self.dmp.dmps:]
         self.dmp.w = self.motor[self.dmp.dmps:-self.dmp.dmps].reshape(self.dmp.dmps, self.dmp.bfs)
-        y, dy, ddy = self.dmp.rollout()
+        y, dy, ddy = self.dmp.rollout(timesteps=self.timesteps, tau=1.)
         self.dmp.cs.run_time /= n_times
         self.dmp.timesteps /= n_times
         return y
