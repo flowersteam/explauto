@@ -94,7 +94,7 @@ class Experiment(Observer):
     def _run(self, range_iter):
         for t in range_iter:
             if np.mod(t, len(range_iter)/10) == 0:
-                print "Iteration ", t, "time", time.time()
+                print "Iteration ", t
             if t in self.eval_at and self.evaluation is not None:
                 self.evaluate()
 
