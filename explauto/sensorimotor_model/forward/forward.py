@@ -1,5 +1,5 @@
 
-from ..dataset import BufferedDataset as Dataset
+from explauto.models.dataset import BufferedDataset as Dataset
 
 
 class ForwardModel(object):
