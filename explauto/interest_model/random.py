@@ -55,23 +55,9 @@ class MiscRandomInterest(RandomInterest):
         
     def update_interest(self, i):
         self.current_interest += (1. / self.win_size) *(i - self.current_interest)         
-        #print "current interest", self.current_interest
 
     def update(self, xy, ms, x=None):
-        #print
         c = - self.competence_measure(xy[self.expl_dims], ms[self.expl_dims]) / self.competence_min
-        #print
-        #print "competence dist", competence_dist(xy[self.expl_dims], ms[self.expl_dims])
-        #print "ms", ms
-        #print "expl_dims", self.expl_dims
-        #print "competence", xy[self.expl_dims], ms[self.expl_dims], c
-        #print "miscRandom ", "xy=", xy, "ms=", ms, "c=", c
-#         print "self.expl_dims", self.expl_dims
-#         print "xy", xy
-#         print "ms", ms
-#         print "c", c
-#         print 
-
         if self.progress_mode == 'local':
             if x is None:
                 self.update_interest(self.interest_xc(xy[self.expl_dims], c))
@@ -85,7 +71,6 @@ class MiscRandomInterest(RandomInterest):
         if x is None:
             self.add_xc(xy[self.expl_dims], c)
         else:
-            #print "miscRandom add x=", x
             self.add_xc(x, c)
 
     def n_points(self):
@@ -106,7 +91,6 @@ class MiscRandomInterest(RandomInterest):
     def mean_competence_pt(self, x):
         if self.n_points() > self.k: 
             _, idxs = self.data_xc.nn_x(x, k=self.k)
-            #print "competences around x=", x, ": dists=", dists, "competences=", [self.data_xc.get_y(idx)[0] for idx in idxs]
             return np.mean([self.data_xc.get_y(idx) for idx in idxs])
         else:
             return self.competence()
@@ -117,9 +101,6 @@ class MiscRandomInterest(RandomInterest):
         
         """
         mean_local_comp = self.mean_competence_pt(x)
-        #print "mean_local_comp", mean_local_comp
-        #print "mean local comp=", mean_local_comp, "c=", c, "i=", np.abs(c - mean_local_comp)    
-        #print "interest", np.abs(c - mean_local_comp)
         return np.abs(c - mean_local_comp)     
         
     def interest_pt(self, x):
@@ -160,14 +141,12 @@ class MiscRandomInterest(RandomInterest):
 interest_models = {'random': (RandomInterest, {'default': {}}),
                    'miscRandom_local': (MiscRandomInterest, {'default': 
                        {'competence_measure': competence_dist,
-                       #{'competence_measure': lambda target,reached : competence_exp(target, reached, dist_min=0.0, power=1.),
                                    'win_size': 200,
                                    'competence_mode': 'knn',
                                    'k': 20,
                                    'progress_mode': 'local'}}),
                    'miscRandom_global': (MiscRandomInterest, {'default': 
                        {'competence_measure': competence_dist, 
-                       #{'competence_measure': lambda target,reached : competence_exp(target, reached, dist_min=0.0, power=1.),
                                    'win_size': 200,
                                    'competence_mode': 'knn',
                                    'k': 20,
