@@ -11,6 +11,8 @@ class ExperimentLog(object):
         self.conf = conf
         self.expl_dims = expl_dims
         self.inf_dims = inf_dims
+        self.log_dir = None
+        self.n_purge = 0
 
     @property
     def logs(self):
@@ -19,6 +21,10 @@ class ExperimentLog(object):
     def add(self, topic, message):
         self._logs[topic].append(message)
         self.counts[topic] += 1
+        
+    def purge(self):
+        self._logs = defaultdict(list)
+        self.n_purge += 1
 
     def pack(self, topic_dims, t):
         """ Packs selected logs into a numpy array
