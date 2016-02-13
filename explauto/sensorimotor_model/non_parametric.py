@@ -82,6 +82,6 @@ sensorimotor_models = {
     'nearest_neighbor': (NonParametric, {'default': {'fwd': 'NN', 'inv': 'NN', 'sigma_explo_ratio':0.1},
                                          'exact': {'fwd': 'NN', 'inv': 'NN', 'sigma_explo_ratio':0.}}),
     'WNN': (NonParametric, {'default': {'fwd': 'WNN', 'inv': 'WNN', 'k':20, 'sigma':0.1}}),
-    'LWLR-BFGS': (NonParametric, {'default': {'fwd': 'LWLR', 'k':10, 'inv': 'L-BFGS-B', 'maxfun':50}}),
-    'LWLR-CMAES': (NonParametric, {'default': {'fwd': 'LWLR', 'k':10, 'inv': 'CMAES', 'cmaes_sigma':0.05, 'maxfevals':20}}),
+    'LWLR-BFGS': (NonParametric, {'default': {'fwd': 'LWLR', 'k':10, 'sigma':0.1, 'inv': 'L-BFGS-B', 'maxfun':50}}),
+    'LWLR-CMAES': (NonParametric, {'default': {'fwd': 'LWLR', 'k':10, 'sigma':0.1, 'inv': 'CMAES', 'cmaes_sigma':0.05, 'maxfevals':20}}),
 }
