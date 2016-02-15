@@ -49,9 +49,12 @@ class PoppyEnvironment(Environment):
         pos = {m.name: pos for m, pos in zip(self.motors, m_env)}
         self.robot.goto_position(pos, self.move_duration, wait=True)
 
-        return self.tracker.get_object_position(self.tracked_obj)
+        # This allows to actually apply a motor command
+        # Without having a tracker
+        if self.tracker is not None:
+            return self.tracker.get_object_position(self.tracked_obj)
 
     def reset(self):
-        """ Resets simulation and does nothing when using a real robot. """ 
+        """ Resets simulation and does nothing when using a real robot. """
         if self.robot.simulated:
             self.robot.reset_simulation()
