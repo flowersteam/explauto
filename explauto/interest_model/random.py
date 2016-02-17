@@ -46,11 +46,15 @@ class MiscRandomInterest(RandomInterest):
         self.k = k
         self.progress_mode = progress_mode
         self.data_xc = Dataset(len(expl_dims), 1)
+        self.data_sr = Dataset(len(expl_dims), 0)
         self.current_interest = 0.
               
             
     def add_xc(self, x, c):
         self.data_xc.add_xy(x, [c])
+        
+    def add_sr(self, x):
+        self.data_sr.add_xy(x)
         
     def update_interest(self, i):
         self.current_interest += (1. / self.win_size) * (i - self.current_interest)
@@ -71,6 +75,7 @@ class MiscRandomInterest(RandomInterest):
             self.add_xc(xy[self.expl_dims], c)
         else:
             self.add_xc(x, c)
+        self.add_sr(ms[self.expl_dims])
 
     def n_points(self):
         return len(self.data_xc)
@@ -94,16 +99,28 @@ class MiscRandomInterest(RandomInterest):
         else:
             return self.competence()
                 
-    def interest_xc(self, x, c=None):
+    def interest_xc(self, x, c):
         """
-        Interest of point x with competence c with respect to local competence
+        Interest of point x with competence c 
         
         """
-        mean_local_comp = self.mean_competence_pt(x)
-        if mean_local_comp == 0:
-            return np.abs(c - mean_local_comp)
+        if self.n_points() > 0:
+            idx_sg_NN = self.data_xc.nn_x(x, k=1)[1][0]
+            sr_NN = self.data_sr.get_x(idx_sg_NN)
+            c_old = self.competence_measure(x, sr_NN, dist_max=self.dist_max)
+#             print 
+#             print "x", x
+#             print "sr_NN", sr_NN
+#             print "c_old", c_old 
+#             print "c_new", c
+            return np.abs(c - c_old)
         else:
-            return np.abs((c - mean_local_comp)/mean_local_comp)
+            return 0.
+#         mean_local_comp = self.mean_competence_pt(x)
+#         if mean_local_comp == 0:
+#             return np.abs(c - mean_local_comp)
+#         else:
+#             return np.abs((c - mean_local_comp)/mean_local_comp)
         
     def interest_pt(self, x):
         if self.n_points() > self.k:

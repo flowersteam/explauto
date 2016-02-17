@@ -141,10 +141,12 @@ class Dataset(object):
         self.nn_ready = [False, False] # if True, the tree is up-to-date.
         self.kdtree_y_sub = None
 
-    def add_xy(self, x, y):
-        assert len(x) == self.dim_x and len(y) == self.dim_y, (len(x), len(y), self.dim_x, self.dim_y)
+    def add_xy(self, x, y=None):
+        assert len(x) == self.dim_x, (len(x), self.dim_x)
+        assert self.dim_y == 0 or len(y) == self.dim_y, (len(y), self.dim_y)
         self.data[0].append(np.array(x))
-        self.data[1].append(np.array(y))
+        if self.dim_y > 0:
+            self.data[1].append(np.array(y))
         self.size += 1
         self.nn_ready = [False, False]
 
@@ -273,12 +275,13 @@ class BufferedDataset(Dataset):
         self.buffer.reset()
         Dataset.reset(self)
         
-    def add_xy(self, x, y):
+    def add_xy(self, x, y=None):
         if self.buffer.size < self.buffer_size:
             self.buffer.add_xy(x, y)
         else:
             self.data[0] = self.data[0] + self.buffer.data[0]
-            self.data[1] = self.data[1] + self.buffer.data[1]
+            if self.dim_y > 0:
+                self.data[1] = self.data[1] + self.buffer.data[1]
             self.size += self.buffer.size
             self.buffer = Dataset(self.dim_x, self.dim_y)
             self.nn_ready = [False, False]
