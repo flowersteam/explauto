@@ -100,7 +100,10 @@ class MiscRandomInterest(RandomInterest):
         
         """
         mean_local_comp = self.mean_competence_pt(x)
-        return np.abs(c - mean_local_comp)     
+        if mean_local_comp == 0:
+            return np.abs(c - mean_local_comp)
+        else:
+            return np.abs((c - mean_local_comp)/mean_local_comp)
         
     def interest_pt(self, x):
         if self.n_points() > self.k:
