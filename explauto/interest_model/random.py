@@ -141,15 +141,9 @@ class MiscRandomInterest(RandomInterest):
         
         
 interest_models = {'random': (RandomInterest, {'default': {}}),
-                   'miscRandom_local': (MiscRandomInterest, {'default': 
+                   'misc_random': (MiscRandomInterest, {'default': 
                        {'competence_measure': competence_dist,
                                    'win_size': 100,
                                    'competence_mode': 'knn',
                                    'k': 100,
-                                   'progress_mode': 'local'}}),
-                   'miscRandom_global': (MiscRandomInterest, {'default': 
-                       {'competence_measure': competence_dist, 
-                                   'win_size': 100,
-                                   'competence_mode': 'knn',
-                                   'k': 100,
-                                   'progress_mode': 'global'}})}
+                                   'progress_mode': 'local'}})}
