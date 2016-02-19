@@ -21,7 +21,7 @@ class ExperimentLog(object):
     def add(self, topic, message):
         self._logs[topic].append(message)
         self.counts[topic] += 1
-        
+
     def purge(self):
         self._logs = defaultdict(list)
         self.n_purge += 1
@@ -123,5 +123,24 @@ class ExperimentLog(object):
                             bounds, False)
         # print kde.min(), kde.max()
 
-        #FIXME vmin, vmax
+        # FIXME vmin, vmax
         ax.imshow(kde.T[::-1, :], extent=bounds, vmin=0., vmax=kde.max())
+
+    def save(self, filename, mode='pickle'):
+
+        if mode == 'pickle':
+            import pickle
+            with open(filename, 'w') as f:
+                pickle.dump(self, f)
+        else:
+            raise NotImplementedError('{} is not implemented'.format(mode))
+
+    @classmethod
+    def from_file(cls, filename, mode='pickle'):
+
+        if mode == 'pickle':
+            import pickle
+            with open(filename, 'r') as f:
+                return pickle.load(f)
+        else:
+            raise NotImplementedError('{} is not implemented'.format(mode))
