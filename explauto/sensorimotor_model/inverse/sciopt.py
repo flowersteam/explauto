@@ -122,7 +122,6 @@ class BFGSInverseModel(ScipyInverseModel):
                        'maxcor'  : maxcor,
                        'disp'    : disp,
                       }
-        print self.conf
 
     def _guess_x(self, y_desired, **kwargs):
         _, indexes = self.fmodel.dataset.nn_y(y_desired, k=1)
