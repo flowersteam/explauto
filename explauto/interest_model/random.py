@@ -108,11 +108,11 @@ class MiscRandomInterest(RandomInterest):
             idx_sg_NN = self.data_xc.nn_x(x, k=1)[1][0]
             sr_NN = self.data_sr.get_x(idx_sg_NN)
             c_old = self.competence_measure(x, sr_NN, dist_max=self.dist_max)
-#             print 
-#             print "x", x
-#             print "sr_NN", sr_NN
-#             print "c_old", c_old 
-#             print "c_new", c
+            print 
+            print "x", x
+            print "sr_NN", sr_NN
+            print "c_old", c_old 
+            print "c_new", c
             return np.abs(c - c_old)
         else:
             return 0.
