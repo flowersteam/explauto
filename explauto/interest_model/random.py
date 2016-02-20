@@ -64,6 +64,7 @@ class MiscRandomInterest(RandomInterest):
         if self.progress_mode == 'local':
             if x is None:
                 self.update_interest(self.interest_xc(xy[self.expl_dims], c))
+                print 's', ms[self.expl_dims]
             else:
                 self.update_interest(self.interest_xc(x, c))
         elif self.progress_mode == 'global':
