@@ -26,7 +26,6 @@ class ScipyInverseModel(OptimizedInverseModel):
         x_guesses = [self._guess_x_simple(y)[0]]
         result = []
         for i, xg in enumerate(x_guesses):
-            print "call scipy", xg, self.goal
             res = scipy.optimize.minimize(self._error, xg,
                                           args        = (),
                                           method      = self.algo,
@@ -38,7 +37,6 @@ class ScipyInverseModel(OptimizedInverseModel):
 
             d = self._error(res.x)
             result.append((d, i, res.x))
-            print "result", result
         return [self._enforce_bounds(xi) for fi, i, xi in sorted(result)]
     
     def infer_dm(self, m, s, ds):
