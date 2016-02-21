@@ -51,7 +51,6 @@ class OptimizedInverseModel(inverse.InverseModel):
         y_pred = self.fmodel.predict_y(x)
         err_v  = y_pred - self.goal
         error = sum(e*e for e in err_v)
-        print error
         return error
 
     def _error_dm(self, m, dm, s):
