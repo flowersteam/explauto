@@ -94,11 +94,11 @@ class BFGSInverseModel(ScipyInverseModel):
     algo = 'L-BFGS-B'
 
     def __init__(self, dim_x=None, dim_y=None, fmodel=None, constraints = (),
-                 maxfun =  50,
+                 maxfun =  200,
                  ftol    = 1e-5,
                  gtol    = 1e-3,
                  maxcor  =   10,
-                 disp    = True,
+                 disp    = False,
                  **kwargs):
         """
         * L-BFGS-B options (from scipy doc):
