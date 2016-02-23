@@ -35,7 +35,8 @@ class MiscRandomInterest(RandomInterest):
                  win_size,
                  competence_mode,
                  k,
-                 progress_mode):
+                 progress_mode,
+                 mode="sg"):
         
         RandomInterest.__init__(self, conf, expl_dims)
         
@@ -45,8 +46,10 @@ class MiscRandomInterest(RandomInterest):
         self.dist_max = np.linalg.norm(self.bounds[0,:] - self.bounds[1,:])
         self.k = k
         self.progress_mode = progress_mode
+        self.mode = mode
         self.data_xc = Dataset(len(expl_dims), 1)
         self.data_sr = Dataset(len(expl_dims), 0)
+        self.current_progress = 0.
         self.current_interest = 0.
               
             
@@ -57,27 +60,31 @@ class MiscRandomInterest(RandomInterest):
         self.data_sr.add_xy(x)
         
     def update_interest(self, i):
-        self.current_interest += (1. / self.win_size) * (i - self.current_interest)
+        self.current_progress += (1. / self.win_size) * (i - self.current_progress)
+        self.current_interest = abs(self.current_progress)
 
-    def update(self, xy, ms, x=None):
-        c = self.competence_measure(xy[self.expl_dims], ms[self.expl_dims], dist_max=self.dist_max)
-        if self.progress_mode == 'local':
-            if x is None:
+    def update(self, xy, ms, snnp=None):
+        if self.mode == "sg":
+            c = self.competence_measure(xy[self.expl_dims], ms[self.expl_dims], dist_max=self.dist_max)
+            if self.progress_mode == 'local':
                 self.update_interest(self.interest_xc(xy[self.expl_dims], c))
                 #print 's', ms[self.expl_dims]
-            else:
-                self.update_interest(self.interest_xc(x, c))
-        elif self.progress_mode == 'global':
-            pass
-        else:
-            raise NotImplementedError
-        
-        if x is None:
+            elif self.progress_mode == 'global':
+                pass
+            
             self.add_xc(xy[self.expl_dims], c)
-        else:
-            self.add_xc(x, c)
-        self.add_sr(ms[self.expl_dims])
-
+            self.add_sr(ms[self.expl_dims])
+        elif self.mode == "sg_snn":
+            sgnnp = xy[self.expl_dims] + snnp
+            c = self.competence_measure(sgnnp, ms[self.expl_dims], dist_max=self.dist_max)
+            #print "competence", c, sgnnp, ms[self.expl_dims]
+            
+            self.update_interest(self.interest_xc(xy[self.expl_dims], c))
+            self.add_xc(xy[self.expl_dims], c)
+            
+            snnpr = ms[self.expl_dims] - snnp
+            self.add_sr(snnpr)
+            
     def n_points(self):
         return len(self.data_xc)
     
@@ -109,12 +116,15 @@ class MiscRandomInterest(RandomInterest):
             idx_sg_NN = self.data_xc.nn_x(x, k=1)[1][0]
             sr_NN = self.data_sr.get_x(idx_sg_NN)
             c_old = self.competence_measure(x, sr_NN, dist_max=self.dist_max)
+                
 #             print 
 #             print "x", x
 #             print "sr_NN", sr_NN
 #             print "c_old", c_old 
 #             print "c_new", c
-            return np.abs(c - c_old)
+
+            return c - c_old
+            #return np.abs(c - c_old)
         else:
             return 0.
 #         mean_local_comp = self.mean_competence_pt(x)
