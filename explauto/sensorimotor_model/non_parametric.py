@@ -41,14 +41,14 @@ class NonParametric(SensorimotorModel):
         elif in_dims == self.s_dims and out_dims == self.m_dims:  # inverse
             if not self.bootstrapped_s:
                 # If only one distinct point has been observed in the sensory space, then we output a random motor command
-                return rand_bounds(np.array([self.m_mins, self.m_maxs])), array(x), array(x)
+                return rand_bounds(np.array([self.m_mins, self.m_maxs]))#, array(x), array(x)
             else:
                 if self.mode == 'explore':
                     self.mean_explore = array(self.model.infer_order(tuple(x)))
                     r = self.mean_explore
                     r[self.sigma_expl > 0] = np.random.normal(r[self.sigma_expl > 0], self.sigma_expl[self.sigma_expl > 0])
                     res = bounds_min_max(r, self.m_mins, self.m_maxs)
-                    return res, self.model.imodel.fmodel.dataset.get_y(self.model.imodel.fmodel.dataset.nn_y(x)[1][0]), array(self.model.predict_effect(res))
+                    return res#, self.model.imodel.fmodel.dataset.get_y(self.model.imodel.fmodel.dataset.nn_y(x)[1][0]), array(self.model.predict_effect(res))
                 else:  # exploit'
                     return array(self.model.infer_order(tuple(x)))                
             
