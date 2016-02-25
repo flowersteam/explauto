@@ -41,7 +41,9 @@ class NonParametric(SensorimotorModel):
         elif in_dims == self.s_dims and out_dims == self.m_dims:  # inverse
             if not self.bootstrapped_s:
                 # If only one distinct point has been observed in the sensory space, then we output a random motor command
-                return rand_bounds(np.array([self.m_mins, self.m_maxs])), array(x), array(x)
+                res = rand_bounds(np.array([self.m_mins, self.m_maxs]))[0]
+                s = array(self.model.predict_effect(res))
+                return res, s, s
             else:
                 if self.mode == 'explore':
                     self.mean_explore = array(self.model.infer_order(tuple(x)))

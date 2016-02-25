@@ -63,7 +63,7 @@ class MiscRandomInterest(RandomInterest):
         self.current_progress += (1. / self.win_size) * (i - self.current_progress)
         self.current_interest = abs(self.current_progress)
 
-    def update(self, xy, ms, snnp=None):
+    def update(self, xy, ms, snnp=None, sp=None):
         if self.mode == "sg":
             c = self.competence_measure(xy[self.expl_dims], ms[self.expl_dims], dist_max=self.dist_max)
             if self.progress_mode == 'local':
@@ -84,6 +84,13 @@ class MiscRandomInterest(RandomInterest):
             
             snnpr = ms[self.expl_dims] - snnp
             self.add_sr(snnpr)
+        elif self.mode == "sp":
+            c = self.competence_measure(sp, ms[self.expl_dims], dist_max=self.dist_max)
+            #print "competence", c, sgnnp, ms[self.expl_dims]
+            
+            self.update_interest(self.interest_xc(xy[self.expl_dims], c))
+            self.add_xc(xy[self.expl_dims], c)
+            self.add_sr(sp)
             
     def n_points(self):
         return len(self.data_xc)
@@ -113,18 +120,26 @@ class MiscRandomInterest(RandomInterest):
         
         """
         if self.n_points() > 0:
-            idx_sg_NN = self.data_xc.nn_x(x, k=1)[1][0]
-            sr_NN = self.data_sr.get_x(idx_sg_NN)
-            c_old = self.competence_measure(x, sr_NN, dist_max=self.dist_max)
+            if self.mode == "sg" or self.mode == "sg_snn":
+                idx_sg_NN = self.data_xc.nn_x(x, k=1)[1][0]
+                sr_NN = self.data_sr.get_x(idx_sg_NN)
+                c_old = self.competence_measure(x, sr_NN, dist_max=self.dist_max)
+                    
+    #             print 
+    #             print "x", x
+    #             print "sr_NN", sr_NN
+    #             print "c_old", c_old 
+    #             print "c_new", c
+    
+                return c - c_old
+                #return np.abs(c - c_old)
+            elif self.mode == "sp":
+                idx_sg_NN = self.data_xc.nn_x(x, k=1)[1][0]
+                c_old = self.data_xc.get_y(idx_sg_NN)[0]
+#                 print "c_old", c_old 
+#                 print "c_new", c
+                return c - c_old
                 
-#             print 
-#             print "x", x
-#             print "sr_NN", sr_NN
-#             print "c_old", c_old 
-#             print "c_new", c
-
-            return c - c_old
-            #return np.abs(c - c_old)
         else:
             return 0.
 #         mean_local_comp = self.mean_competence_pt(x)
