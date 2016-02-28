@@ -131,8 +131,8 @@ class MiscRandomInterest(RandomInterest):
     #             print "c_old", c_old 
     #             print "c_new", c
     
-                return c - c_old
-                #return np.abs(c - c_old)
+                #return c - c_old
+                return np.abs(c - c_old)
             elif self.mode == "sp":
                 idx_sg_NN = self.data_xc.nn_x(x, k=1)[1][0]
                 c_old = self.data_xc.get_y(idx_sg_NN)[0]
