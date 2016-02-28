@@ -31,3 +31,4 @@ def make_settings(environment,
 
 from .experiment import Experiment
 from .pool import ExperimentPool
+from .log import ExperimentLog

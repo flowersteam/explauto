@@ -16,7 +16,7 @@
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: explauto.environment.pypot.pypot_robot
+.. automodule:: explauto.environment.poppy.poppy_env
     :members:
     :undoc-members:
     :show-inheritance:

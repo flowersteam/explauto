@@ -19,7 +19,7 @@ def forward(angles, lengths):
     return x[-1], y[-1]
 
 
-def joint_positions(angles, lengths):
+def joint_positions(angles, lengths, unit='rad'):
     """ Link object as defined by the standard DH representation.
 
     :param list angles: angles of each joint
@@ -33,7 +33,13 @@ def joint_positions(angles, lengths):
     if len(angles) != len(lengths):
         raise ValueError('angles and lengths must be the same size!')
 
-    a = np.array(angles)
+    if unit == 'rad':
+        a = np.array(angles)
+    elif unit == 'std':
+        a = np.pi * np.array(angles)
+    else:
+        raise NotImplementedError
+     
     a = np.cumsum(a)
     return np.cumsum(np.cos(a)*lengths), np.cumsum(np.sin(a)*lengths)
 

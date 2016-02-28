@@ -88,52 +88,57 @@ class Experiment(Observer):
             self.ag.sensorimotor_model.update(m, s)
             self.ag.interest_model.update(hstack((m, s_ag)), hstack((m, s)))
 
-
-
     def _run(self, n_iter):
-        for t in range(n_iter):
-            if t in self.eval_at and self.evaluation is not None:
-                self.log.eval_errors.append(self.evaluation.evaluate())
 
-            # Clear messages received from the evaluation
-            self.notifications.queue.clear()
-
-            try:
-                if self.context_mode is None:
-                    m = self.ag.produce()
-                    env_state = self.env.update(m)
-                    self.ag.perceive(env_state)
-                else:
-                    if self.context_mode.has_key('reset_iterations') and np.mod(t, self.context_mode['reset_iterations']) == 0:
-                        self.env.reset()
-                    m = self.env.current_motor_position
-                    s = self.env.current_sensori_position
-                    mdm = self.ag.produce(list(m)+list(s))
-                    sds = self.env.update(mdm, reset=False)
-                    self.ag.perceive(sds, context=s)                  
-                    
-            except ExplautoEnvironmentUpdateError:
-                logger.warning('Environment update error at time %d with '
-                               'motor command %s. '
-                               'This iteration wont be used to update agent models',
-                               t, m)
-
-            # self.records[self.i_rec, :] = self.env.state
-            # self.i_rec += 1
-
-            self._update_logs()
-
+        self._init()
+        for _ in range(n_iter):
+            self._step()
             if not self._running.is_set():
                 break
 
         self._running.clear()
+
+    def _init(self, current_step=0):
+        self.current_step = current_step
+
+    def _step(self):
+
+        self.current_step += 1
+
+        if self.current_step in self.eval_at and self.evaluation is not None:
+            self.log.eval_errors.append(self.evaluation.evaluate())
+
+        # Clear messages received from the evaluation
+        self.notifications.queue.clear()
+
+        try:
+            if self.context_mode is None:
+                m = self.ag.produce()
+                env_state = self.env.update(m)
+                self.ag.perceive(env_state)
+            else:
+                if 'reset_iterations' in self.context_mode and np.mod(self.current_step, self.context_mode['reset_iterations']) == 0:
+                    self.env.reset()
+                m = self.env.current_motor_position
+                s = self.env.current_sensori_position
+                mdm = self.ag.produce(list(m) + list(s))
+                sds = self.env.update(mdm, reset=False)
+                self.ag.perceive(sds, context=s)
+
+        except ExplautoEnvironmentUpdateError:
+            logger.warning('Environment update error at time %d with '
+                           'motor command %s. '
+                           'This iteration wont be used to update agent models',
+                           self.current_step, m)
+
+        self._update_logs()
 
     def _update_logs(self):
         while not self.notifications.empty():
             topic, msg = self.notifications.get()
             self.log.add(topic, msg)
 
-    def evaluate_at(self, eval_at, testcases):
+    def evaluate_at(self, eval_at, testcases, mode=None):
         """ Sets the evaluation interation indices.
 
             :param list eval_at: iteration indices where an evaluation should be performed
@@ -142,11 +147,13 @@ class Experiment(Observer):
         """
         self.eval_at = eval_at
         self.log.eval_at = eval_at
-        
-        if self.context_mode is None or self.context_mode['choose_m']:
-            mode = 'inverse'
-        else:
-            mode = 'delta'
+
+        if mode is None:
+            if self.context_mode is None or self.context_mode['choose_m']:
+                mode = 'inverse'
+            else:
+                mode = 'delta'
+
         self.evaluation = Evaluation(self.ag, self.env, testcases, mode=mode)
         for test in testcases:
             self.log.add('testcases', test)
@@ -180,5 +187,5 @@ class Experiment(Observer):
             agent = Agent.from_classes(im_cls, im_configs[settings.interest_model_config], expl_dims,
                           sm_cls, sm_configs[settings.sensorimotor_model_config], inf_dims,
                           env.conf.m_mins, env.conf.m_maxs, env.conf.s_mins, env.conf.s_maxs, context_mode=settings.context_mode)
-            
+
         return cls(env, agent, settings.context_mode)

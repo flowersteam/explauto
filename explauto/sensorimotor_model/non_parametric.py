@@ -7,6 +7,7 @@ from ..exceptions import ExplautoBootstrapError
 from .sensorimotor_model import SensorimotorModel
 from .learner import Learner
 from explauto.utils import bounds_min_max
+from explauto.utils import rand_bounds
 
 
 class NonParametric(SensorimotorModel):
@@ -28,6 +29,7 @@ class NonParametric(SensorimotorModel):
 
         self.model = Learner(mfeats, sfeats, mbounds, fwd, inv, **learner_kwargs)
         self.t = 0
+        self.bootstrapped_s = False
 
     def infer(self, in_dims, out_dims, x):
         if self.t < max(self.model.imodel.fmodel.k, self.model.imodel.k):
@@ -37,42 +39,53 @@ class NonParametric(SensorimotorModel):
             return array(self.model.predict_effect(tuple(x)))
         
         elif in_dims == self.s_dims and out_dims == self.m_dims:  # inverse
-            if self.mode == 'explore':
-                self.mean_explore = array(self.model.infer_order(tuple(x)))
-                r = self.mean_explore
-                r[self.sigma_expl > 0] = np.random.normal(r[self.sigma_expl > 0], self.sigma_expl[self.sigma_expl > 0])
-                res = bounds_min_max(r, self.m_mins, self.m_maxs)
-                return res
-            else:  # exploit'
-                return array(self.model.infer_order(tuple(x)))                
+            if not self.bootstrapped_s:
+                # If only one distinct point has been observed in the sensory space, then we output a random motor command
+                return rand_bounds(np.array([self.m_mins, 
+                                             self.m_maxs]))
+            else:
+                if self.mode == 'explore':
+                    self.mean_explore = array(self.model.infer_order(tuple(x)))
+                    r = self.mean_explore
+                    r[self.sigma_expl > 0] = np.random.normal(r[self.sigma_expl > 0], self.sigma_expl[self.sigma_expl > 0])
+                    res = bounds_min_max(r, self.m_mins, self.m_maxs)
+                    return res
+                else:  # exploit'
+                    return array(self.model.infer_order(tuple(x)))                
             
         elif out_dims == self.m_dims[len(self.m_dims)/2:]:  # dm = i(M, S, dS)
-            assert len(x) == len(in_dims)
-            m = x[:self.m_ndims/2]
-            s = x[self.m_ndims/2:][:self.s_ndims/2]
-            ds = x[self.m_ndims/2:][self.s_ndims/2:]
-            self.mean_explore = array(self.model.imodel.infer_dm(m, s, ds))               
-            if self.mode == 'explore': 
-                r = np.random.normal(self.mean_explore, self.sigma_expl[out_dims])
-                res = bounds_min_max(r, self.m_mins[out_dims], self.m_maxs[out_dims])                
-                return res       
+            if not self.bootstrapped_s:
+                # If only one distinct point has been observed in the sensory space, then we output a random motor command
+                return rand_bounds(np.array([self.m_mins[self.m_ndims/2:], self.m_maxs[self.m_ndims/2:]]))
             else:
-                return self.mean_explore
+                assert len(x) == len(in_dims)
+                m = x[:self.m_ndims/2]
+                s = x[self.m_ndims/2:][:self.s_ndims/2]
+                ds = x[self.m_ndims/2:][self.s_ndims/2:]
+                self.mean_explore = array(self.model.imodel.infer_dm(m, s, ds))               
+                if self.mode == 'explore': 
+                    r = np.random.normal(self.mean_explore, self.sigma_expl[out_dims])
+                    res = bounds_min_max(r, self.m_mins[out_dims], self.m_maxs[out_dims])                
+                    return res       
+                else:
+                    return self.mean_explore
         else:
             raise NotImplementedError
-                
-                
-
+                                
     def predict_given_context(self, x, c, c_dims):
         return self.model.imodel.fmodel.predict_given_context(x, c, c_dims)
 
     def update(self, m, s):
         self.model.add_xy(tuple(m), tuple(s))
         self.t += 1
-
+        if not self.bootstrapped_s and self.t > 1:
+            if not list(s) == list(self.model.imodel.fmodel.dataset.get_y(self.t - 2)):
+                self.bootstrapped_s = True
+                
     def update_batch(self, m_list, s_list):
         self.model.add_xy_batch(m_list, s_list)
         self.t += len(m_list)
+        self.bootstrapped_s = True
         
     def size(self):
         return self.t
@@ -82,6 +95,6 @@ sensorimotor_models = {
     'nearest_neighbor': (NonParametric, {'default': {'fwd': 'NN', 'inv': 'NN', 'sigma_explo_ratio':0.1, 'mode':'explore'},
                                          'exact': {'fwd': 'NN', 'inv': 'NN', 'sigma_explo_ratio':0., 'mode':'exploit'}}),
     'WNN': (NonParametric, {'default': {'fwd': 'WNN', 'inv': 'WNN', 'k':20, 'sigma':0.1}}),
-    'LWLR-BFGS': (NonParametric, {'default': {'fwd': 'LWLR', 'k':10, 'inv': 'L-BFGS-B', 'maxfun':50}}),
-    'LWLR-CMAES': (NonParametric, {'default': {'fwd': 'LWLR', 'k':10, 'inv': 'CMAES', 'cmaes_sigma':0.05, 'maxfevals':20}}),
+    'LWLR-BFGS': (NonParametric, {'default': {'fwd': 'LWLR', 'k':10, 'sigma':0.1, 'inv': 'L-BFGS-B', 'maxfun':50}}),
+    'LWLR-CMAES': (NonParametric, {'default': {'fwd': 'LWLR', 'k':10, 'sigma':0.1, 'inv': 'CMAES', 'cmaes_sigma':0.05, 'maxfevals':20}}),
 }

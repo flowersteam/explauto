@@ -42,8 +42,7 @@ class MiscRandomInterest(RandomInterest):
         self.competence_measure = competence_measure
         self.win_size = win_size
         self.competence_mode = competence_mode
-        self.competence_min = self.competence_measure(self.bounds[0,:], 
-                                                      self.bounds[1,:])
+        self.dist_max = np.linalg.norm(self.bounds[0,:] - self.bounds[1,:])
         self.k = k
         self.progress_mode = progress_mode
         self.data_xc = Dataset(len(expl_dims), 1)
@@ -54,10 +53,10 @@ class MiscRandomInterest(RandomInterest):
         self.data_xc.add_xy(x, [c])
         
     def update_interest(self, i):
-        self.current_interest += (1. / self.win_size) *(i - self.current_interest)         
+        self.current_interest += (1. / self.win_size) * (i - self.current_interest)
 
     def update(self, xy, ms, x=None):
-        c = - self.competence_measure(xy[self.expl_dims], ms[self.expl_dims]) / self.competence_min
+        c = self.competence_measure(xy[self.expl_dims], ms[self.expl_dims], dist_max=self.dist_max)
         if self.progress_mode == 'local':
             if x is None:
                 self.update_interest(self.interest_xc(xy[self.expl_dims], c))
@@ -101,7 +100,10 @@ class MiscRandomInterest(RandomInterest):
         
         """
         mean_local_comp = self.mean_competence_pt(x)
-        return np.abs(c - mean_local_comp)     
+        if mean_local_comp == 0:
+            return np.abs(c - mean_local_comp)
+        else:
+            return np.abs((c - mean_local_comp)/mean_local_comp)
         
     def interest_pt(self, x):
         if self.n_points() > self.k:
@@ -139,15 +141,9 @@ class MiscRandomInterest(RandomInterest):
         
         
 interest_models = {'random': (RandomInterest, {'default': {}}),
-                   'miscRandom_local': (MiscRandomInterest, {'default': 
+                   'misc_random': (MiscRandomInterest, {'default': 
                        {'competence_measure': competence_dist,
-                                   'win_size': 200,
+                                   'win_size': 100,
                                    'competence_mode': 'knn',
-                                   'k': 20,
-                                   'progress_mode': 'local'}}),
-                   'miscRandom_global': (MiscRandomInterest, {'default': 
-                       {'competence_measure': competence_dist, 
-                                   'win_size': 200,
-                                   'competence_mode': 'knn',
-                                   'k': 20,
-                                   'progress_mode': 'global'}})}
+                                   'k': 100,
+                                   'progress_mode': 'local'}})}
