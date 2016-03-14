@@ -52,7 +52,7 @@ class NonParametric(SensorimotorModel):
                     res = bounds_min_max(r, self.m_mins, self.m_maxs)
                     return res, self.model.imodel.fmodel.dataset.nn_y(x)[1][0]#, self.model.imodel.fmodel.dataset.get_y(self.model.imodel.fmodel.dataset.nn_y(x)[1][0]), array(self.model.predict_effect(res))
                 else:  # exploit'
-                    return array(self.model.infer_order(tuple(x)))                
+                    return array(self.model.infer_order(tuple(x))), -2         
             
         elif out_dims == self.m_dims[len(self.m_dims)/2:]:  # dm = i(M, S, dS)
             if not self.bootstrapped_s:
