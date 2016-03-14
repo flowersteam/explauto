@@ -1,6 +1,7 @@
+import explauto.models.cma
 
 from .optimize import OptimizedInverseModel
-from . import cma
+
     
 
 class CMAESInverseModel(OptimizedInverseModel):
