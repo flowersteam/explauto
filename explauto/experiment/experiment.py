@@ -117,13 +117,21 @@ class Experiment(Observer):
                 env_state = self.env.update(m)
                 self.ag.perceive(env_state)
             else:
-                if 'reset_iterations' in self.context_mode and np.mod(self.current_step, self.context_mode['reset_iterations']) == 0:
+                if self.context_mode.has_key('reset_iterations') and np.mod(self.current_step, self.context_mode['reset_iterations']) == 0:
                     self.env.reset()
-                m = self.env.current_motor_position
-                s = self.env.current_sensori_position
-                mdm = self.ag.produce(list(m) + list(s))
-                sds = self.env.update(mdm, reset=False)
-                self.ag.perceive(sds, context=s)
+                if self.context_mode["mode"] == 'mdmsds':
+                    m = self.env.current_motor_position
+                    s = self.env.current_sensori_position
+                    mdm = self.ag.produce(list(m) + list(s))
+                    sds = self.env.update(mdm, reset=False)
+                    self.ag.perceive(sds, context=s)
+                elif self.context_mode["mode"] == 'mcs':
+                    context = self.env.get_current_context()
+                    m = self.ag.produce(list(context))
+                    s = self.env.update(m, reset=False)
+                    self.ag.perceive(s, context=context)
+                else:
+                    raise NotImplementedError
 
         except ExplautoEnvironmentUpdateError:
             logger.warning('Environment update error at time %d with '
@@ -149,10 +157,11 @@ class Experiment(Observer):
         self.log.eval_at = eval_at
 
         if mode is None:
-            if self.context_mode is None or self.context_mode['choose_m']:
+            if self.context_mode is None or (self.context_mode.has_key('choose_m') and self.context_mode['choose_m']):
                 mode = 'inverse'
             else:
-                mode = 'delta'
+                mode = self.context_mode["mode"]
+                
 
         self.evaluation = Evaluation(self.ag, self.env, testcases, mode=mode)
         for test in testcases:

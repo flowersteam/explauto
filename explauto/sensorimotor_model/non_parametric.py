@@ -42,7 +42,7 @@ class NonParametric(SensorimotorModel):
             if not self.bootstrapped_s:
                 # If only one distinct point has been observed in the sensory space, then we output a random motor command
                 return rand_bounds(np.array([self.m_mins, 
-                                             self.m_maxs]))
+                                             self.m_maxs]))[0]
             else:
                 if self.mode == 'explore':
                     self.mean_explore = array(self.model.infer_order(tuple(x)))
@@ -56,7 +56,7 @@ class NonParametric(SensorimotorModel):
         elif out_dims == self.m_dims[len(self.m_dims)/2:]:  # dm = i(M, S, dS)
             if not self.bootstrapped_s:
                 # If only one distinct point has been observed in the sensory space, then we output a random motor command
-                return rand_bounds(np.array([self.m_mins[self.m_ndims/2:], self.m_maxs[self.m_ndims/2:]]))
+                return rand_bounds(np.array([self.m_mins[self.m_ndims/2:], self.m_maxs[self.m_ndims/2:]]))[0]
             else:
                 assert len(x) == len(in_dims)
                 m = x[:self.m_ndims/2]

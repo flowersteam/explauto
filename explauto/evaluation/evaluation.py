@@ -8,7 +8,7 @@ class Evaluation(object):
         self.env = env
         self.mode = mode
 
-        if mode not in ('inverse', 'forward', 'delta'):
+        if mode not in ('inverse', 'forward', 'mdmsds', 'mcs'):
             raise ValueError('mode should be "inverse" or "forward"',
                              '"general" predictions coming soon)')
         self.testcases = testcases
@@ -22,7 +22,7 @@ class Evaluation(object):
                 m = self.ag.infer(self.ag.conf.s_dims, self.ag.conf.m_dims, s_g).flatten()
                 s = self.env.update(m, log=False, reset=True)
                 errors.append(linalg.norm(s_g - s))
-        elif self.mode == 'delta':
+        elif self.mode == 'mdmsds':
             self.env.reset()
             errors = []
             self.env.reset()
@@ -39,6 +39,21 @@ class Evaluation(object):
                 mdm = np.hstack((m, dm))
                 sds = self.env.update(mdm, reset=False)
                 errors.append(linalg.norm(s_g[len(s_g)/2:] - sds[len(sds)/2:]))
+        elif self.mode == 'mcs':
+            self.env.reset()
+            errors = []
+            self.env.reset()
+            for s_g in self.testcases:
+                self.env.reset()
+                
+                context = self.env.get_current_context()
+                in_dims = range(self.ag.conf.m_ndims, self.ag.conf.m_ndims + self.ag.conf.s_ndims)
+                out_dims = range(self.ag.conf.m_ndims)
+                m = self.ag.infer(in_dims, 
+                                out_dims, 
+                                np.array(context + list(s_g)))
+                s = self.env.update(m, reset=False)
+                errors.append(linalg.norm(s_g - s[len(context):]))
         elif self.mode == 'forward':
             print 'forward prediction tests still in beta version, use with caution'
             if n_tests_forward is not None:
