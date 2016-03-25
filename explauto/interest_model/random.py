@@ -11,6 +11,7 @@ class RandomInterest(InterestModel):
         InterestModel.__init__(self, expl_dims)
 
         self.bounds = conf.bounds[:, expl_dims]
+        self.ndims = self.bounds.shape[1]
 
     def sample(self):
         return rand_bounds(self.bounds).flatten()
@@ -18,6 +19,14 @@ class RandomInterest(InterestModel):
     def update(self, xy, ms):
         pass
 
+    def sample_given_context(self, c, c_dims):
+        '''
+        Sample randomly on dimensions not in context
+            c: context value on c_dims dimensions, not used
+            c_dims: w.r.t sensori space dimensions
+        '''
+        return self.sample()[list(set(range(self.ndims)) - set(c_dims))]
+    
 
 class MiscRandomInterest(RandomInterest):
     """
