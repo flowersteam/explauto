@@ -26,6 +26,12 @@ def bounds_min_max(v, mins, maxs):
     res = np.maximum(res, mins)
     return res
 
+def greedy(v, eps=0.):
+    if np.sum(v) == 0 or np.random.rand() < eps:
+        return np.random.randint(np.size(v))
+    else:
+        return np.array(v).argmax()
+    
 def prop_choice(v, eps=0.):
     if np.sum(v) == 0 or np.random.rand() < eps:
         return np.random.randint(np.size(v))

@@ -137,13 +137,14 @@ class MiscRandomInterest(RandomInterest):
             if self.mode == "sg" or self.mode == "sg_snn":
                 idx_sg_NN = self.data_xc.nn_x(x, k=1)[1][0]
                 sr_NN = self.data_sr.get_x(idx_sg_NN)
-                c_old = self.competence_measure(x, sr_NN, dist_max=self.dist_max)
+                c_old = competence_dist(x, sr_NN, dist_max=self.dist_max)
                     
     #             print 
     #             print "x", x
     #             print "sr_NN", sr_NN
-    #             print "c_old", c_old 
-    #             print "c_new", c
+#                 print "c_old", c_old 
+#                 print "c_new", c
+#                 print "interest", c - c_old
     
                 #return c - c_old
                 return np.abs(c - c_old)
@@ -196,6 +197,111 @@ class MiscRandomInterest(RandomInterest):
         else:
             raise NotImplementedError
         
+        
+        
+
+class ContextRandomInterest(MiscRandomInterest):
+    """
+    Add some features to the RandomInterest random babbling class.
+    
+    Allows to query the recent interest in the whole space,
+    the recent competence on the babbled points in the whole space, 
+    the competence around a given point based on a mean of the knns.   
+    
+    """
+    def __init__(self, 
+                 conf, 
+                 expl_dims,
+                 win_size,
+                 competence_mode,
+                 k,
+                 progress_mode,
+                 mode="sg",
+                 context_mode=None):
+        
+        self.context_mode = context_mode
+        
+        MiscRandomInterest.__init__(self,
+                                     conf, 
+                                     expl_dims,
+                                     self.competence_measure,
+                                     win_size,
+                                     competence_mode,
+                                     k,
+                                     progress_mode,
+                                     mode=mode)
+        
+        self.eps_dist = 0.05
+        
+              
+    def competence_measure(self, msg, ms, dist_max):
+        m = ms[:-len(self.expl_dims)]
+        context = ms[self.expl_dims][:self.context_mode["context_n_dims"]]
+        #print "context", context
+        s = ms[self.expl_dims][-self.context_mode["context_n_dims"]:]
+        #print "s", s
+        obj_moved = abs(s[-1]) > 0.0001
+        if obj_moved:
+            return competence_dist(s, -context, dist_max=dist_max)
+        else:
+            # Find min dist during trajectory between obj and tool (or hand)
+#             print "context dist", competence_dist(s, -context, dist_max=dist_max)
+#             print "hand or tool dists during mov", [competence_dist([m[ix], m[iy]], context, dist_max=dist_max) for (ix, iy) in [(0,3), (1,4), (2,5)]]
+            return competence_dist(s, -context, dist_max=dist_max) - ms[self.expl_dims][2] / dist_max
+        
+    def interest_xc(self, x, c):
+        """
+        Interest of point x with competence c 
+        
+        """
+        if self.n_points() > 0:
+            if self.mode == "sg" or self.mode == "sg_snn":
+                idx_sg_NN = self.data_xc.nn_x(x, k=1)[1][0]
+                dists, idxs = self.data_xc.nn_x(self.data_xc.get_x(idx_sg_NN), radius=0.001, k=10)
+                c_old = min([self.data_xc.get_y(idxs[k])[0] for k in range(len(idxs)) if dists[k] < 0.001])
+    #             print 
+    #             print "x", x
+    #             print "sr_NN", sr_NN
+#                 print "c_old", c_old 
+#                 print "c_new", c
+#                 print "interest", c - c_old
+    
+                #return c - c_old
+                return np.abs(c - c_old)
+        else:
+            return 0.
+                
+    def novelty_bonus(self):
+        return 1.
+    
+    def update(self, xy, ms, snnp=None, sp=None):
+        if self.mode == "sg":
+            c = self.competence_measure(xy, ms, dist_max=self.dist_max)
+            #print "competence:", c
+            if self.progress_mode == 'local':
+                #print xy, self.expl_dims
+                interest = self.interest_xc(xy[self.expl_dims], c)
+                #print "interest", interest
+                self.update_interest(interest)
+                #print 's', ms[self.expl_dims]
+            elif self.progress_mode == 'global':
+                pass
+            
+            self.add_xc(xy[self.expl_dims], c)
+            self.add_sr(ms[self.expl_dims])
+            
+        elif self.mode == "sp":
+            c = self.competence_measure(sp, ms[self.expl_dims], dist_max=self.dist_max)
+            #print "competence", c, sgnnp, ms[self.expl_dims]
+            
+            interest = self.interest_xc(xy[self.expl_dims], c)
+            self.update_interest(interest)
+            self.add_xc(xy[self.expl_dims], c)
+            self.add_sr(sp)
+            
+        return interest
+    
+    
         
 interest_models = {'random': (RandomInterest, {'default': {}}),
                    'misc_random': (MiscRandomInterest, {'default': 

@@ -158,15 +158,25 @@ class Dataset(object):
         
     def get_x(self, index):
         return self.data[0][index]
+        
+    def set_x(self, x, index):
+        self.data[0][index] = x
 
     def get_x_padded(self, index):
         return np.append(1.0,self.data[0][index])
 
     def get_y(self, index):
         return self.data[1][index]
+        
+    def set_y(self, y, index):
+        self.data[1][index] = y
 
     def get_xy(self, index):
         return self.get_x(index), self.get_y(index)
+    
+    def set_xy(self, x, y, index):
+        self.set_x(x, index)
+        self.set_y(y, index)
     
     def get_dims(self, index, dims_x=None, dims_y=None, dims=None):
         if dims is None:
@@ -299,6 +309,12 @@ class BufferedDataset(Dataset):
             return self.buffer.data[0][index-self.size]
         else:
             return self.data[0][index]
+            
+    def set_x(self, x, index):
+        if index >= self.size:
+            self.buffer.set_x(x, index-self.size)
+        else:
+            self.data[0][index] = x
 
     def get_x_padded(self, index):
         if index >= self.size:
@@ -311,6 +327,12 @@ class BufferedDataset(Dataset):
             return self.buffer.data[1][index-self.size]
         else:
             return self.data[1][index]
+            
+    def set_y(self, y, index):
+        if index >= self.size:
+            self.buffer.set_y(y, index-self.size)
+        else:
+            self.data[1][index] = y
         
     def get_dims(self, index, dims_x=None, dims_y=None, dims=None):
         if index >= self.size:
