@@ -105,6 +105,7 @@ class ContextNonParametric(NonParametric):
         self.context_dataset = BufferedDataset(self.context_mode['context_n_dims'], 1)
         self.good_context_dataset = BufferedDataset(self.context_mode['context_n_dims'], 1)
         self.eps_dist = 0.05
+        self.context_was_new = True
         
     
     def is_context_new(self, context):
@@ -146,9 +147,9 @@ class ContextNonParametric(NonParametric):
         if len(idxs) > 1:
             idxs = sorted(idxs)
             v = np.array([self.context_dataset.get_y(idx)[0] for idx in idxs])
-#             print
-#             print "idxs", idxs
-#             print "comp", v
+            print
+            print "idxs", idxs
+            print "comp", v
             n = len(v)
             comp_beg = np.mean(v[:int(float(n)/2.)])
             comp_end = np.mean(v[int(float(n)/2.):])
@@ -156,7 +157,7 @@ class ContextNonParametric(NonParametric):
         else:
             if len(self.good_context_dataset) > 0:
                 i = self.nn_good_context(context)
-                #print "nn good context", self.context_dataset.get_x(i)
+                print "nn good context", self.context_dataset.get_x(i), " of context ", context, "comp dist", competence_dist(context, self.context_dataset.get_x(i))
                 return max(1. + competence_dist(context, self.context_dataset.get_x(i)), 0) 
             else:
                 return 1.
@@ -195,6 +196,7 @@ class ContextNonParametric(NonParametric):
                 context = x[:self.context_mode["context_n_dims"]]
                 #print "nn_context dist", nn_context_dist
                 if self.is_context_new(context):
+                    self.context_was_new = True
                     #print "context is new"
                     if len(self.good_context_dataset) > 0:
                         i = self.nn_good_context(context)
@@ -202,6 +204,7 @@ class ContextNonParametric(NonParametric):
                     else:
                         return self.random_motor_command()
                 else:
+                    self.context_was_new = False
                     #print "context is known"
                     i,_ = self.min_cost_context(context)
                     return self.add_explo_noise(self.model.imodel.fmodel.dataset.get_x(i))   
