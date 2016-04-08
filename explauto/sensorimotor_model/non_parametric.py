@@ -216,7 +216,9 @@ class ContextNonParametric(NonParametric):
         if self.is_context_new(context):
             if len(self.good_context_dataset) > 0:
                 idx = self.good_context_dataset.nn_x(context)[1][0]
-                return self.context_dataset.get_y(self.good_context_dataset.get_y(idx)[0])[0] + competence_dist(context, self.good_context_dataset.get_x(idx), dist_max=self.dist_max)  
+                #print "competence for context. cost of best good context:", self.context_dataset.get_y(self.good_context_dataset.get_y(idx)[0])[0], " distance of context ", competence_dist(context, self.good_context_dataset.get_x(idx), dist_max=self.dist_max)  
+                #return self.context_dataset.get_y(self.good_context_dataset.get_y(idx)[0])[0] + competence_dist(context, self.good_context_dataset.get_x(idx), dist_max=self.dist_max) 
+                return competence_dist(context, self.good_context_dataset.get_x(idx), dist_max=self.dist_max) 
             else:
                 return -1.
         else:
