@@ -158,7 +158,10 @@ class ContextNonParametric(NonParametric):
             if len(self.good_context_dataset) > 0:
                 i = self.nn_good_context(context)
                 print "nn good context", self.context_dataset.get_x(i), " of context ", context, "comp dist", competence_dist(context, self.context_dataset.get_x(i))
-                return max(1. + competence_dist(context, self.context_dataset.get_x(i)), 0) 
+                c = competence_dist(context, self.context_dataset.get_x(i))
+                if c == 0.:
+                    return 100.
+                return - 1. / c
             else:
                 return 1.
         
