@@ -213,18 +213,22 @@ class ContextNonParametric(NonParametric):
                     return self.add_explo_noise(self.model.imodel.fmodel.dataset.get_x(i))   
     
     def competence_for_context(self, context):
-        if self.is_context_new(context):
-            if len(self.good_context_dataset) > 0:
-                idx = self.good_context_dataset.nn_x(context)[1][0]
-                #print "competence for context. cost of best good context:", self.context_dataset.get_y(self.good_context_dataset.get_y(idx)[0])[0], " distance of context ", competence_dist(context, self.good_context_dataset.get_x(idx), dist_max=self.dist_max)  
-                #return self.context_dataset.get_y(self.good_context_dataset.get_y(idx)[0])[0] + competence_dist(context, self.good_context_dataset.get_x(idx), dist_max=self.dist_max) 
-                return competence_dist(context, self.good_context_dataset.get_x(idx), dist_max=self.dist_max) 
+        if len(self.good_context_dataset) > 0:
+            #print "good context known"
+            idx = self.good_context_dataset.nn_x(context)[1][0]
+            #print "competence for context. cost of best good context:", self.context_dataset.get_y(self.good_context_dataset.get_y(idx)[0])[0], " distance of context ", competence_dist(context, self.good_context_dataset.get_x(idx), dist_max=self.dist_max)  
+            #return self.context_dataset.get_y(self.good_context_dataset.get_y(idx)[0])[0] + competence_dist(context, self.good_context_dataset.get_x(idx), dist_max=self.dist_max) 
+            dist_nn_good = competence_dist(context, self.good_context_dataset.get_x(idx), dist_max=self.dist_max) 
+            if self.is_context_new(context):
+                #print "context is new"
+                return dist_nn_good
             else:
-                return -1.
+                #print "context is known"
+                _,c = self.min_cost_context(context)
+                return c + dist_nn_good
         else:
-            #print "context is known"
-            _,c = self.min_cost_context(context)
-            return c
+            #print "no good context known"
+            return -1.
 
 
     def update(self, m, s):
