@@ -225,7 +225,8 @@ class ContextNonParametric(NonParametric):
             else:
                 #print "context is known"
                 _,c = self.min_cost_context(context)
-                return c + dist_nn_good
+                #return c + dist_nn_good
+                return dist_nn_good
         else:
             #print "no good context known"
             return -1.
