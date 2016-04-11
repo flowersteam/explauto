@@ -36,7 +36,14 @@ def prop_choice(v, eps=0.):
     if np.sum(v) == 0 or np.random.rand() < eps:
         return np.random.randint(np.size(v))
     else:
-        probas = np.array(v) / np.sum(v)
+        s = np.sum(v)
+        if s > 0:
+            probas = np.array(v, dtype=np.float) / np.sum(v)
+        else:
+            if (np.array(v)==0.).any():
+                return np.where(np.array(v)==0.)[0][0]
+            rectified = 1. / np.array(v)
+            probas = rectified / np.sum(rectified)
         return np.where(np.random.multinomial(1, probas) == 1)[0][0]
     
 def softmax_choice(v, temperature=1.):
