@@ -142,7 +142,7 @@ class ContextNonParametric(NonParametric):
         context = s[:self.context_mode["context_n_dims"]]
         if len(self.context_dataset) == 0:
             return 1.
-        dists, idxs = self.context_dataset.nn_x(context, radius=0.001, k=50)
+        dists, idxs = self.context_dataset.nn_x(context, radius=0.001, k=100)
         idxs = [idxs[k] for k in range(len(idxs)) if dists[k] < 0.001]
         if len(idxs) > 1:
             idxs = sorted(idxs)
@@ -157,7 +157,7 @@ class ContextNonParametric(NonParametric):
         else:
             if len(self.good_context_dataset) > 0:
                 i = self.nn_good_context(context)
-                print "nn good context", self.context_dataset.get_x(i), " of context ", context, "comp dist", competence_dist(context, self.context_dataset.get_x(i))
+                #print "nn good context", self.context_dataset.get_x(i), " of context ", context, "comp dist", competence_dist(context, self.context_dataset.get_x(i))
                 c = competence_dist(context, self.context_dataset.get_x(i))
                 if c == 0.:
                     return 100.
