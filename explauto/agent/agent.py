@@ -66,13 +66,16 @@ class Agent(Observable):
             if self.context_mode is None:
                 x = self.interest_model.sample()
             else:
-                if self.expl_dims == self.conf.s_dims:
-                    x = np.hstack((context_ms[self.conf.m_ndims/2:], self.interest_model.sample_given_context(context_ms[self.conf.m_ndims/2:], range(self.conf.s_ndims/2))))
-                else:
-                    if self.context_mode['choose_m']:
-                        x = self.interest_model.sample()
+                if self.context_mode["mode"] == 'mdmsds':
+                    if self.expl_dims == self.conf.s_dims:
+                        x = np.hstack((context_ms[self.conf.m_ndims/2:], self.interest_model.sample_given_context(context_ms[self.conf.m_ndims/2:], range(self.conf.s_ndims/2))))
                     else:
-                        x = np.hstack((context_ms[:self.conf.m_ndims/2], self.interest_model.sample_given_context(context_ms[:self.conf.m_ndims/2], range(self.conf.m_ndims/2))))
+                        if self.context_mode['choose_m']:
+                            x = self.interest_model.sample()
+                        else:
+                            x = np.hstack((context_ms[:self.conf.m_ndims/2], self.interest_model.sample_given_context(context_ms[:self.conf.m_ndims/2], range(self.conf.m_ndims/2))))                
+                elif self.context_mode["mode"] == 'mcs':
+                    x = np.hstack((context_ms, self.interest_model.sample_given_context(context_ms, range(self.context_mode["context_n_dims"]))))
         except ExplautoBootstrapError:
             logger.warning('Interest model not bootstrapped yet')
             x = rand_bounds(self.conf.bounds[:, self.expl_dims]).flatten()
@@ -132,18 +135,22 @@ class Agent(Observable):
             self.x = self.choose()
             self.y = self.infer(self.expl_dims, self.inf_dims, self.x)
         else:
-            self.x = self.choose(context_ms) 
-            if self.expl_dims == self.conf.s_dims and not self.context_mode['choose_m']:
-                m = context_ms[:self.conf.m_ndims/2]
-                in_dims = range(self.conf.m_ndims/2) + range(self.conf.m_ndims, self.conf.m_ndims + self.conf.s_ndims)
-                out_dims = range(self.conf.m_ndims/2, self.conf.m_ndims)
-                dm = self.infer(in_dims, 
-                                out_dims, 
-                                np.array(m + list(self.x)))
-                self.y = np.hstack((m, dm))
-            else:
+            if self.context_mode["mode"] == 'mdmsds':
+                self.x = self.choose(context_ms) 
+                if self.expl_dims == self.conf.s_dims and not self.context_mode['choose_m']:
+                    m = context_ms[:self.conf.m_ndims/2]
+                    in_dims = range(self.conf.m_ndims/2) + range(self.conf.m_ndims, self.conf.m_ndims + self.conf.s_ndims)
+                    out_dims = range(self.conf.m_ndims/2, self.conf.m_ndims)
+                    dm = self.infer(in_dims, 
+                                    out_dims, 
+                                    np.array(m + list(self.x)))
+                    self.y = np.hstack((m, dm))
+                else:
+                    self.y = self.infer(self.expl_dims, self.inf_dims, self.x)
+            elif self.context_mode["mode"] == 'mcs':
+                self.x = self.choose(context_ms) 
                 self.y = self.infer(self.expl_dims, self.inf_dims, self.x)
-                    
+                
 
         self.m, self.s = self.extract_ms(self.x, self.y)
 
@@ -168,13 +175,19 @@ class Agent(Observable):
         if context is None:                
             self.sensorimotor_model.update(self.m, s)
             self.interest_model.update(np.hstack((self.m, self.s)), np.hstack((self.m, s)))
-        else:            
-            m = self.m[:len(self.m)/2]
-            dm = self.m[len(self.m)/2:]
-            ds = s[len(s)/2:]
-            s = s[:len(s)/2]
-            ds_g = self.s[:len(self.s)/2]
-            self.sensorimotor_model.update(np.hstack((m, dm)), np.hstack((s, ds)))
-            self.interest_model.update(np.hstack((m, dm, context, ds_g)), np.hstack((m, dm, s, ds)))
-            
+        else:       
+            if self.context_mode["mode"] == 'mdmsds':  
+                m = self.m[:len(self.m)/2]
+                dm = self.m[len(self.m)/2:]
+                ds = s[len(s)/2:]
+                s = s[:len(s)/2]
+                ds_g = self.s[:len(self.s)/2]
+                self.sensorimotor_model.update(np.hstack((m, dm)), np.hstack((s, ds)))
+                self.interest_model.update(np.hstack((m, dm, context, ds_g)), np.hstack((m, dm, s, ds)))
+            elif self.context_mode["mode"] == 'mcs':
+                s = s[len(context):]
+                s_g = self.s[len(context):]
+                self.sensorimotor_model.update(self.m, np.hstack((context, s)))
+                self.interest_model.update(np.hstack((self.m, context, s_g)), np.hstack((self.m, context, s)))
+                
         self.t += 1
