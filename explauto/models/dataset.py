@@ -250,7 +250,7 @@ class Dataset(object):
                      if equal to DATA_Y, build output data tree.
         """
         if not self.nn_ready[side]:
-            self.kdtree[side]   = scipy.spatial.cKDTree(self.data[side])
+            self.kdtree[side]   = scipy.spatial.cKDTree(self.data[side], compact_nodes=False, balanced_tree=False) # Those options are useful with scipy >= 0.16
             self.nn_ready[side] = True
 
 
