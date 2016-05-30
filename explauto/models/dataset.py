@@ -5,6 +5,7 @@ try:
 except:
     print("Can't import scipy.spatial (or numpy). Is scipy (or numpy) correctly installed ?")
     exit(1)
+import time
 
 DATA_X = 0
 DATA_Y = 1
@@ -262,7 +263,7 @@ class Dataset(object):
                      if equal to DATA_Y, build output data tree.
         """
         if not self.nn_ready[side]:
-            self.kdtree[side]   = scipy.spatial.cKDTree(self.data[side])
+            self.kdtree[side]   = scipy.spatial.cKDTree(self.data[side], compact_nodes=False, balanced_tree=False) # Those options are required with scipy >= 0.16
             self.nn_ready[side] = True
 
 
@@ -371,9 +372,10 @@ class BufferedDataset(Dataset):
         if dims is None:
             assert len(y) == self.dim_y
             k_y = min(k, self.__len__())
-            return self._nn(DATA_Y, y, k=k_y, radius=radius, eps=eps, p=p)
+            res =  self._nn(DATA_Y, y, k=k_y, radius=radius, eps=eps, p=p)
         else:
-            return self.nn_y_sub(y, dims, k, radius, eps, p)
+            res =  self.nn_y_sub(y, dims, k, radius, eps, p)
+        return res
         
     def nn_dims(self, x, y, dims_x, dims_y, k=1, radius=np.inf, eps=0.0, p=2):
         """Find the k nearest neighbors of a subset of dims of x and y in the observed output data
