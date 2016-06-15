@@ -53,8 +53,10 @@ class DMPs_discrete(DMPs):
         # desired spacings along x
         # need to be spaced evenly between 1 and exp(-ax)
         # lowest number should be only as far as x gets 
-        first = np.exp(-self.cs.ax*self.cs.run_time) 
-        last = 1.05 - first
+        first = 0.4 # MODIFIED to handle a small number of basis (e.g. 3)
+        last = 0.8
+        #first = np.exp(-self.cs.ax*self.cs.run_time) 
+        #last = 1.05 - first
         des_c = np.linspace(first,last,self.bfs) 
 
         self.c = np.ones(len(des_c)) 
@@ -69,10 +71,7 @@ class DMPs_discrete(DMPs):
         x float: the current value of the canonical system
         dmp_num int: the index of the current dmp
         """
-		if self.goal[dmp_num] == self.y0[dmp_num]:
-			return x
-		else:
-			return x * (self.goal[dmp_num] - self.y0[dmp_num])
+        return x# * (self.goal[dmp_num] - self.y0[dmp_num])
 
     def gen_goal(self, y_des): 
         """Generate the goal for path imitation. 
@@ -83,15 +82,6 @@ class DMPs_discrete(DMPs):
         """
 
         return y_des[:,-1].copy()
-    
-    def gen_psi(self, x):
-        """Generates the activity of the basis functions for a given 
-        state of the canonical system.
-
-        x float: the current state of the canonical system
-        """
-        
-        return np.exp(-self.h * (x - self.c)**2)
         
     def gen_psi(self, x):
         """Generates the activity of the basis functions for a given 
