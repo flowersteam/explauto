@@ -2,7 +2,7 @@ import numpy as np
 
 
 def competence_dist(target, reached, dist_min=0., dist_max=1.):
-    return (min(- dist_min, - np.linalg.norm(target - reached))) / dist_max
+    return max(- dist_max, min(- dist_min, - np.linalg.norm(target - reached)))
 
 
 def competence_exp(target, reached, dist_min=0., dist_max=1., power=1.):
