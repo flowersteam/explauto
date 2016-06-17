@@ -42,6 +42,8 @@ class DynamicEnvironment(Environment):
             self.init_sensori_DMP(optim_initial_position, optim_end_position, default_sensori_initial_position, default_sensori_end_position)
         elif self.sensori_traj_type == "samples":
             self.samples = np.array(np.linspace(-1, self.move_steps-1, self.n_sensori_traj_points + 1), dtype=int)[1:]
+        elif self.sensori_traj_type == "end_point":
+            self.end_point = self.move_steps-1
         else:
             raise NotImplementedError
             
@@ -116,6 +118,8 @@ class DynamicEnvironment(Environment):
         elif self.sensori_traj_type == "samples":
             w = y[self.samples,:]
             s_ag = list(np.transpose(w).flatten())
+        elif self.sensori_traj_type == "end_point":
+            s_ag = y[self.end_point,:].flatten()
         else:
             raise NotImplementedError  
         s = s_ag
