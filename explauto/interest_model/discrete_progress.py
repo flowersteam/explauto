@@ -17,20 +17,27 @@ class DiscretizedProgress(InterestModel):
         card = [int(x_card ** (1./len(expl_dims)))] * len(expl_dims)
         self.space = Space(numpy.hstack((conf.m_mins, conf.s_mins))[expl_dims],
                            numpy.hstack((conf.m_maxs, conf.s_maxs))[expl_dims], card)
-
-        self.dist_min = numpy.sqrt(sum(self.space.bin_widths ** 2)) / 10.
+        
+        max_dist_in_cell = numpy.sqrt(sum(self.space.bin_widths ** 2))
+        self.dist_min = max_dist_in_cell / 10.
+        self.dist_max = max_dist_in_cell
+        # dist_max and comp_min are used to avoid random fluctuations of progress due to random choices in the cell and not to competence variations
 
         self.comp_max = measure(numpy.array([0.]), numpy.array([0.]), dist_min=self.dist_min)
-        self.comp_min = measure(numpy.array([0.]), numpy.array([numpy.linalg.norm(conf.s_mins - conf.s_maxs)]), dist_min=self.dist_min)
+        self.comp_min = measure(numpy.array([0.]), numpy.array([numpy.linalg.norm(conf.s_mins - conf.s_maxs)]), dist_max=self.dist_max)
         self.discrete_progress = DiscreteProgress(0, self.space.card,
-                                                  win_size, measure, self.comp_min)
-
+                                                  win_size, measure)
+#         print self.space.card, self.space.bin_widths 
+#         print "dist_min", self.dist_min
+#         print "dist_max", self.dist_max
+#         print "comp_min", self.comp_min
+#         print "comp_max", self.comp_max
 
     def normalize_measure(self, measure):
         return (measure - self.comp_min)/(self.comp_max - self.comp_min)
 
     def sample(self):
-        index = self.discrete_progress.sample(temp=self.space.card)[0]
+        index = self.discrete_progress.sample()[0]
         return self.space.rand_value(index).flatten()
     
     def sample_given_context(self, c, c_dims):
@@ -43,13 +50,20 @@ class DiscretizedProgress(InterestModel):
         return self.space.rand_value(index).flatten()[list(set(range(len(self.space.cardinalities))) - set(c_dims))]
 
     def update(self, xy, ms):
-        measure = self.measure(xy, ms, dist_min=self.dist_min)
+        comp = self.measure(xy, ms, dist_min=self.dist_min, dist_max=self.dist_max)
         x = xy[self.expl_dims]
         x_index = self.space.index(x)
-        self.discrete_progress.update_from_index_and_competence(x_index, self.normalize_measure(measure))
-        #ms_expl = ms[self.expl_dims]
-        #ms_index = self.space.index(ms_expl)
-        #self.discrete_progress.update_from_index_and_competence(ms_index, self.normalize_measure(self.comp_max)) # Suitable only in deterministic environments
+        #if comp > self.comp_min:
+        self.discrete_progress.update_from_index_and_competence(x_index, self.normalize_measure(comp))
+        # Suitable only in deterministic environments:
+#         ms_expl = ms[self.expl_dims]
+#         ms_index = self.space.index(ms_expl)
+#         self.discrete_progress.update_from_index_and_competence(ms_index, self.normalize_measure(self.comp_max)) 
+        # Novelty bonus: if novel cell is reached, give it competence (progress for win_size iterations)
+#         ms_expl = ms[self.expl_dims]
+#         ms_index = self.space.index(ms_expl)
+#         if sum([qi for qi in self.discrete_progress.queues[ms_index]]) == 0.:
+#             self.discrete_progress.update_from_index_and_competence(ms_index, self.normalize_measure(self.comp_max)) 
 
 
 class DiscreteProgress(InterestModel):
@@ -63,13 +77,20 @@ class DiscreteProgress(InterestModel):
         self.queues = [deepcopy(queue) for _ in range(x_card)]
 
     def progress(self):
-        return numpy.array([numpy.cov(zip(range(self.win_size), q), rowvar=0)[0, 1]
+        return numpy.array([numpy.mean([q[i] for i in range(0,self.win_size/2)]) - numpy.mean([q[i] for i in range(self.win_size/2,self.win_size)])
                             for q in self.queues])
 
-    def sample(self, temp=3.):
-        self.w = abs(self.progress())
-        self.w = numpy.exp(temp * self.w - temp * self.w.max())  # / numpy.exp(3.)
-        return discrete_random_draw(self.w)
+    def sample(self):
+        if numpy.random.random() < 0.3:
+            # pick random cell
+            return [numpy.random.randint(len(self.queues))]
+        else:
+            # pick with probability proportional to absolute progress
+            self.w = abs(self.progress())
+            #self.w = numpy.exp(temp * self.w - temp * self.w.max())
+            if numpy.sum(self.w) > 0:
+                self.w = self.w / numpy.sum(self.w)
+            return discrete_random_draw(self.w)
     
     def sample_given_context(self, c, c_dims, space):
         free_dims = list(set(range(len(space.cardinalities))) - set(c_dims))
