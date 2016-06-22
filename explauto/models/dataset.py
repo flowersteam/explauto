@@ -140,11 +140,13 @@ class Dataset(object):
         self.kdtree   = [None, None]   # KDTreeX, KDTreeY
         self.nn_ready = [False, False] # if True, the tree is up-to-date.
         self.kdtree_y_sub = None
-
-    def add_xy(self, x, y):
-        assert len(x) == self.dim_x and len(y) == self.dim_y, (len(x), len(y), self.dim_x, self.dim_y)
+        
+    def add_xy(self, x, y=None):
+        assert len(x) == self.dim_x, (len(x), self.dim_x)
+        assert self.dim_y == 0 or len(y) == self.dim_y, (len(y), self.dim_y)
         self.data[0].append(np.array(x))
-        self.data[1].append(np.array(y))
+        if self.dim_y > 0:
+            self.data[1].append(np.array(y))
         self.size += 1
         self.nn_ready = [False, False]
 
@@ -156,6 +158,9 @@ class Dataset(object):
         
     def get_x(self, index):
         return self.data[0][index]
+    
+    def set_x(self, x, index):
+        self.data[0][index] = x
 
     def get_x_padded(self, index):
         return np.append(1.0,self.data[0][index])
@@ -163,9 +168,16 @@ class Dataset(object):
     def get_y(self, index):
         return self.data[1][index]
 
+    def set_y(self, y, index):
+        self.data[1][index] = y
+
     def get_xy(self, index):
         return self.get_x(index), self.get_y(index)
     
+    def set_xy(self, x, y, index):
+        self.set_x(x, index)
+        self.set_y(y, index)
+        
     def get_dims(self, index, dims_x=None, dims_y=None, dims=None):
         if dims is None:
             return np.hstack((np.array(self.data[0][index])[dims_x], np.array(self.data[1][index])[np.array(dims_y) - self.dim_x]))
@@ -250,7 +262,7 @@ class Dataset(object):
                      if equal to DATA_Y, build output data tree.
         """
         if not self.nn_ready[side]:
-            self.kdtree[side]   = scipy.spatial.cKDTree(self.data[side], compact_nodes=False, balanced_tree=False) # Those options are useful with scipy >= 0.16
+            self.kdtree[side]   = scipy.spatial.cKDTree(self.data[side], compact_nodes=False, balanced_tree=False) # Those options are required with scipy >= 0.16
             self.nn_ready[side] = True
 
 
@@ -273,12 +285,13 @@ class BufferedDataset(Dataset):
         self.buffer.reset()
         Dataset.reset(self)
         
-    def add_xy(self, x, y):
+    def add_xy(self, x, y=None):
         if self.buffer.size < self.buffer_size:
             self.buffer.add_xy(x, y)
         else:
             self.data[0] = self.data[0] + self.buffer.data[0]
-            self.data[1] = self.data[1] + self.buffer.data[1]
+            if self.dim_y > 0:
+                self.data[1] = self.data[1] + self.buffer.data[1]
             self.size += self.buffer.size
             self.buffer = Dataset(self.dim_x, self.dim_y)
             self.nn_ready = [False, False]
@@ -296,6 +309,12 @@ class BufferedDataset(Dataset):
             return self.buffer.data[0][index-self.size]
         else:
             return self.data[0][index]
+        
+    def set_x(self, x, index):
+        if index >= self.size:
+            self.buffer.set_x(x, index-self.size)
+        else:
+            self.data[0][index] = x
 
     def get_x_padded(self, index):
         if index >= self.size:
@@ -308,6 +327,12 @@ class BufferedDataset(Dataset):
             return self.buffer.data[1][index-self.size]
         else:
             return self.data[1][index]
+        
+    def set_y(self, y, index):
+        if index >= self.size:
+            self.buffer.set_y(y, index-self.size)
+        else:
+            self.data[1][index] = y
         
     def get_dims(self, index, dims_x=None, dims_y=None, dims=None):
         if index >= self.size:
