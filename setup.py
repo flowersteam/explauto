@@ -35,8 +35,8 @@ setup(name='explauto',
 
       zip_safe=True,
 
-      author='Clement Moulin-Frier, Pierre Rouanet',
-      author_email='clement.moulinfrier@gmail.com',
+      author='Clement Moulin-Frier, Pierre Rouanet, Sébastien Forestier',
+      author_email='sebastien.forestier@inria.fr',
       description='Python Library for Autonomous Exploration',
       url='https://github.com/flowersteam/explauto',
       license='GNU GENERAL PUBLIC LICENSE Version 3',

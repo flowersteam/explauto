@@ -13,7 +13,7 @@ from explauto.utils import rand_bounds
 class NonParametric(SensorimotorModel):
     """ This class wraps the non-parametric forward and inverse models implemented by Fabien Benureau, in order to fit into the Explauto framework. 
         Original code available at https://github.com/humm/models
-        Adapted by Sebastien Forestier at https://github.com/sebastien-forestier/models
+        Adapted by Sebastien Forestier
     """
     def __init__(self, conf, sigma_explo_ratio=0.1, fwd='LWLR', inv='L-BFGS-B', **learner_kwargs):
 
