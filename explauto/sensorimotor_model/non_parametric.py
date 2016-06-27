@@ -15,14 +15,14 @@ class NonParametric(SensorimotorModel):
         Original code available at https://github.com/humm/models
         Adapted by Sebastien Forestier
     """
-    def __init__(self, conf, sigma_explo_ratio=0.1, fwd='LWLR', inv='L-BFGS-B', **learner_kwargs):
+    def __init__(self, conf, sigma_explo_ratio=0.1, fwd='LWLR', inv='L-BFGS-B', mode = 'explore', **learner_kwargs):
 
         SensorimotorModel.__init__(self, conf)
         for attr in ['m_ndims', 's_ndims', 'm_dims', 's_dims', 'bounds', 'm_mins', 'm_maxs']:
             setattr(self, attr, getattr(conf, attr))
 
         self.sigma_expl = (conf.m_maxs - conf.m_mins) * float(sigma_explo_ratio)
-        self.mode = 'explore'
+        self.mode = mode
         mfeats = tuple(range(self.m_ndims))
         sfeats = tuple(range(-self.s_ndims, 0))
         mbounds = tuple((self.bounds[0, d], self.bounds[1, d]) for d in range(self.m_ndims))
@@ -92,8 +92,8 @@ class NonParametric(SensorimotorModel):
 
 
 sensorimotor_models = {
-    'nearest_neighbor': (NonParametric, {'default': {'fwd': 'NN', 'inv': 'NN', 'sigma_explo_ratio':0.1},
-                                         'exact': {'fwd': 'NN', 'inv': 'NN', 'sigma_explo_ratio':0.}}),
+    'nearest_neighbor': (NonParametric, {'default': {'fwd': 'NN', 'inv': 'NN', 'sigma_explo_ratio':0.1, 'mode':'explore'},
+                                         'exact': {'fwd': 'NN', 'inv': 'NN', 'sigma_explo_ratio':0., 'mode':'exploit'}}),
     'WNN': (NonParametric, {'default': {'fwd': 'WNN', 'inv': 'WNN', 'k':20, 'sigma':0.1}}),
     'LWLR-BFGS': (NonParametric, {'default': {'fwd': 'LWLR', 'k':10, 'sigma':0.1, 'inv': 'L-BFGS-B', 'maxfun':50}}),
     'LWLR-CMAES': (NonParametric, {'default': {'fwd': 'LWLR', 'k':10, 'sigma':0.1, 'inv': 'CMAES', 'cmaes_sigma':0.05, 'maxfevals':20}}),
