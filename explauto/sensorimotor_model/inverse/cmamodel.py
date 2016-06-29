@@ -12,7 +12,7 @@ class CMAESInverseModel(OptimizedInverseModel):
     name = 'CMAES'
     desc = 'CMA-ES, Covariance Matrix Adaptation Evolution Strategy'
 
-    def __init__(self, dim_x=None, dim_y=None, fmodel=None, cmaes_sigma=0.05, maxfevals=20, seed=0, **kwargs):
+    def __init__(self, dim_x=None, dim_y=None, fmodel=None, cmaes_sigma=0.05, maxfevals=20, seed=None, **kwargs):
         self.cmaes_sigma = cmaes_sigma
         self.maxfevals = maxfevals
         self.seed = seed
@@ -24,7 +24,8 @@ class CMAESInverseModel(OptimizedInverseModel):
         self.lower = list(c[0] for c in self.constraints)
 
     def _increment_seed(self):
-        self.seed += 1
+        if self.seed is not None:
+            self.seed += 1
 
     def infer_x(self, y):
         """Infer probable x from input y

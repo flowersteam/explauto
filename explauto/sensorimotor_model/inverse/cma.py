@@ -2886,12 +2886,9 @@ class CMAEvolutionStrategy(OOOptimizer):
         self.noiseS = 0  # noise "signal"
         self.hsiglist = []
 
-        if opts['seed'] is None:
-            np.random.seed()
-            six_decimals = (time.time() - 1e6 * (time.time() // 1e6))
-            opts['seed'] = 1e5 * np.random.rand() + six_decimals + 1e5 * (time.time() % 1)
-        opts['seed'] = int(opts['seed'])
-        np.random.seed(opts['seed'])  # CAVEAT: this only seeds np.random
+        if opts['seed'] is not None:
+            opts['seed'] = int(opts['seed'])
+            np.random.seed(opts['seed'])  # CAVEAT: this only seeds np.random
 
         self.sent_solutions = CMASolutionDict()
         self.archive = CMASolutionDict()
@@ -7963,8 +7960,6 @@ class Rotation(object):
             rstate = np.random.get_state()
             if self.seed is not None:
                 np.random.seed(self.seed)
-            else:
-                np.random.seed()
             B = np.random.randn(N, N)
             for i in xrange(N):
                 for j in xrange(0, i):
@@ -8195,7 +8190,8 @@ class FFWrapper(object):
             self.count_evaluations = 0
         def _x_opt(self, dim):
             rstate = np.random.get_state()
-            np.random.seed(self.seed)
+            if self.seed is not None:
+                np.random.seed(self.seed)
             x = self._x_opt_.setdefault(dim,
                                         0 * 3 * np.random.randn(dim))
             np.random.set_state(rstate)
