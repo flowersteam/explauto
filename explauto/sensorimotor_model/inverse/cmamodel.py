@@ -23,10 +23,6 @@ class CMAESInverseModel(OptimizedInverseModel):
         self.upper = list(c[1] for c in self.constraints)
         self.lower = list(c[0] for c in self.constraints)
 
-    def _increment_seed(self):
-        if self.seed is not None:
-            self.seed += 1
-
     def infer_x(self, y):
         """Infer probable x from input y
         @param y  the desired output for infered x.
@@ -47,8 +43,6 @@ class CMAESInverseModel(OptimizedInverseModel):
                            'maxfevals':self.maxfevals,
                            'seed': self.seed})
             result.append((res[1], res[0]))
-
-        self._increment_seed()
 
         return [xi for fi, xi in sorted(result)]
 
@@ -73,7 +67,5 @@ class CMAESInverseModel(OptimizedInverseModel):
                                'maxfevals':self.maxfevals,
                                'seed': self.seed})
                 result.append((res[1], res[0]))
-
-            self._increment_seed()
 
             return sorted(result)[0][1]
