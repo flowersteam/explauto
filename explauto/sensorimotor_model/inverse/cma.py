@@ -2886,7 +2886,7 @@ class CMAEvolutionStrategy(OOOptimizer):
         self.noiseS = 0  # noise "signal"
         self.hsiglist = []
 
-        if not opts['seed']:
+        if opts['seed'] is None:
             np.random.seed()
             six_decimals = (time.time() - 1e6 * (time.time() // 1e6))
             opts['seed'] = 1e5 * np.random.rand() + six_decimals + 1e5 * (time.time() % 1)
@@ -7961,7 +7961,10 @@ class Rotation(object):
         N = x.shape[0]  # can be an array or matrix, TODO: accept also a list of arrays?
         if str(N) not in self.dicMatrices:  # create new N-basis for once and all
             rstate = np.random.get_state()
-            np.random.seed(self.seed) if self.seed else np.random.seed()
+            if self.seed is not None:
+                np.random.seed(self.seed)
+            else:
+                np.random.seed()
             B = np.random.randn(N, N)
             for i in xrange(N):
                 for j in xrange(0, i):
