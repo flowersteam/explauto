@@ -11,7 +11,7 @@ class DynamicEnvironment(Environment):
     def __init__(self, env_cls, env_cfg, 
                  m_mins, m_maxs, s_mins, s_maxs,
                  n_bfs, move_steps, 
-                 n_dynamic_motor_dims, n_dynamic_sensori_dims, max_params,
+                 n_dynamic_motor_dims, n_dynamic_sensori_dims, max_params, n_sensori_traj_points=None,
                  motor_traj_type="DMP", sensori_traj_type="samples", 
                  optim_initial_position=False, optim_end_position=False, default_motor_initial_position=None, default_motor_end_position=None,
                  default_sensori_initial_position=None, default_sensori_end_position=None):
@@ -19,8 +19,8 @@ class DynamicEnvironment(Environment):
         self.env = env_cls(**env_cfg)
         
         self.n_bfs = n_bfs
-        self.n_motor_traj_points = self.n_bfs
-        self.n_sensori_traj_points = self.n_bfs 
+        self.n_motor_traj_points = self.n_bfs + optim_initial_position + optim_end_position
+        self.n_sensori_traj_points = n_sensori_traj_points or self.n_bfs
         self.move_steps = move_steps
         self.n_dynamic_motor_dims = n_dynamic_motor_dims
         self.n_dynamic_sensori_dims = n_dynamic_sensori_dims
@@ -122,7 +122,7 @@ class DynamicEnvironment(Environment):
             s_ag = y[self.end_point,:].flatten()
         else:
             raise NotImplementedError  
-        s = s_ag
+        s = s_ag + s[self.move_steps:]
         return bounds_min_max(s, self.conf.s_mins, self.conf.s_maxs)    
         
     def update(self, m_ag, reset=True, log=False):
