@@ -13,7 +13,7 @@ def gaussian_kernel(d, sigma_sq):
     @param d         the euclidean distance
     @param sigma_sq  sigma of the gaussian, squared.
     """
-    return math.exp(-(d*d)/(2*sigma_sq))
+    return math.exp(-(d*d)/(2.*sigma_sq))
 
 
 def rand_bounds(bounds, n=1):
