@@ -92,7 +92,6 @@ class NSNNInverseModel(inverse.InverseModel):
         wt = np.fromiter((gaussian_kernel(max_index - idx, self.sigma_t_sq)
                          for idx in index), np.float, len(dists))
         w = w * wt    
-        print dists, index, w, wt
         wsum = w.sum()
         if wsum == 0:
             return 1.0/len(dists)*np.ones((len(dists),))
