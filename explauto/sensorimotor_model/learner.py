@@ -13,6 +13,7 @@ fwdclass = {'NN'     : forward.NNForwardModel,
 
 from . import inverse
 invclass = {'NN'       : inverse.NNInverseModel,
+            'NSNN'     : inverse.NSNNInverseModel,
             'WNN'      : inverse.WeightedNNInverseModel,
             'ES-WNN'   : inverse.ESWNNInverseModel,
             'BFGS'     : inverse.BFGSInverseModel,
