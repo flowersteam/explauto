@@ -65,9 +65,8 @@ class ContextEnvironment(Environment):
             return np.hstack((s, ds))
         elif self.context_mode["mode"] == 'mcs':
             # Only sensory context
-            action = m_
+            self.current_motor_position = m_
             context = self.get_current_context()
-            self.current_motor_position = self.env.compute_motor_command(action)
             new_sensori_position = np.array(self.env.update(self.current_motor_position, reset=False))
             self.current_sensori_position = new_sensori_position
             return np.hstack((context, new_sensori_position))
