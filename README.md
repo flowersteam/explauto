@@ -30,7 +30,7 @@ Most of Explauto's documentation is written as [IPython notebooks](http://ipytho
 * More specific tutorials
     * [Setting environments](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/setting_environments.ipynb)
     * [Learning sensorimotor models](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/learning_sensorimotor_models.ipynb)
-    * [Summary of available sensorimotor and interest models](https://github.com/flowersteam/explauto/blob/master/notebook/summary_available_models.ipynb)
+    * [Summary of available sensorimotor and interest models](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/summary_available_models.ipynb)
     * [Learning sensorimotor models with sensorimotor context](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/learning_with_sensorimotor_context.ipynb)
     * [Learning sensorimotor models with context provided by environment](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/learning_with_environment_context.ipynb)
     * Comming soon: Autonomous exploration using interest models
