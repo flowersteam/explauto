@@ -1,8 +1,8 @@
-# Explauto: A library to study, model and simulate curiosity-driven learning and exploration in virtual and robotic agents #
+# Explauto: A library to study, model and simulate intrinsically motivated multitask learning and exploration in virtual and robotic agents #
 
-Explauto is a framework developed in the [Inria FLOWERS](https://flowers.inria.fr/) research team which provides a common interface for the implementation of active and online sensorimotor learning algorithms. It is designed and maintained by [Clément Moulin-Frier](https://flowers.inria.fr/clement_mf/), [Pierre Rouanet](https://github.com/pierre-rouanet), and [Sébastien Forestier](http://sforestier.com/).
+Explauto is a framework developed in the [Inria FLOWERS](https://flowers.inria.fr/) research team which provides a common interface for the implementation and benchmarking of active and online sensorimotor learning algorithms. In particular, this framework considers algorithms where exploration is driven by models of intrinsic motivation/curiosity at multiple levels of abstraction (from the active choice of parameterized motor primitives to the choice of parameterized problems/goals to the choice of learning strategies - e.g. deciding when to self-explore or ask input from an external expert). It is designed and maintained by [Clément Moulin-Frier](https://flowers.inria.fr/clement_mf/), [Pierre Rouanet](https://github.com/pierre-rouanet), and [Sébastien Forestier](http://sforestier.com/).
 
-Explauto provides a high-level API for an easy definition of:
+Explauto provides a high-level API for an easy definition, use and evaluation of:
 
 * Virtual and robotics setups (Environment level)
 * Sensorimotor learning iterative models (Sensorimotor level)
