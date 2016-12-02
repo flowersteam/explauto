@@ -122,7 +122,7 @@ class DynamicEnvironment(Environment):
             s_ag = y[self.end_point,:].flatten()
         else:
             raise NotImplementedError
-        s = s_ag + list(s[self.move_steps:])
+        s = list(s_ag) + list(s[self.move_steps:])
         return bounds_min_max(s, self.conf.s_mins, self.conf.s_maxs)    
         
     def update(self, m_ag, reset=True, log=False):
