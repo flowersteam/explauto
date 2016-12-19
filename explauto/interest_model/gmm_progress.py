@@ -9,7 +9,7 @@ from .interest_model import InterestModel
 
 
 class GmmInterest(InterestModel):
-    def __init__(self, conf, expl_dims, measure, n_samples=40, n_components=6):
+    def __init__(self, conf, expl_dims, measure, n_samples=40, n_components=6, update_frequency=10):
         InterestModel.__init__(self, expl_dims)
 
         self.measure = measure
@@ -24,6 +24,7 @@ class GmmInterest(InterestModel):
         self.data = numpy.zeros((n_samples, len(expl_dims) + 2))
         self.n_samples = n_samples
         self.scaler = StandardScaler()
+        self.update_frequency = update_frequency
 
         for _ in range(n_samples):
             self.update(rand_bounds(conf.bounds), rand_bounds(conf.bounds))
@@ -42,8 +43,9 @@ class GmmInterest(InterestModel):
         self.data[self.t % self.n_samples, 1:-1] = xy.flatten()[self.expl_dims]
 
         self.t += self.scale_t
-        if abs(self.t % (self.n_samples * self.scale_t / 4.)) < self.scale_t:
-            self.update_gmm()
+        if self.t >= 0:
+            if self.t % self.update_frequency == 0:
+                self.update_gmm()
 
         return self.t, xy.flatten()[self.expl_dims], measure
 
