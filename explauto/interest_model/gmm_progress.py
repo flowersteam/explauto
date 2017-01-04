@@ -3,13 +3,15 @@ import numpy
 from sklearn.preprocessing import StandardScaler
 
 from ..utils import rand_bounds
+from ..utils import bounds_min_max
+from ..utils import is_within_bounds
 from ..models.gmminf import GMM
 from .competences import competence_exp
 from .interest_model import InterestModel
 
 
 class GmmInterest(InterestModel):
-    def __init__(self, conf, expl_dims, measure, n_samples=40, n_components=6, update_frequency=10):
+    def __init__(self, conf, expl_dims, measure, n_samples=40, n_components=6, update_frequency=10, resample_if_out_of_bounds=False):
         InterestModel.__init__(self, expl_dims)
 
         self.measure = measure
@@ -25,16 +27,29 @@ class GmmInterest(InterestModel):
         self.n_samples = n_samples
         self.scaler = StandardScaler()
         self.update_frequency = update_frequency
+        self.resample_if_out_of_bounds = resample_if_out_of_bounds
 
         for _ in range(n_samples):
             self.update(rand_bounds(conf.bounds), rand_bounds(conf.bounds))
 
     def sample(self):
-        x = self.gmm_choice.sample()
-        x = self.scaler.inverse_transform(numpy.hstack(([0.], x.flatten(), [0.])))[1:-1]
-        x = numpy.maximum(x, self.bounds[0, :])
-        x = numpy.minimum(x, self.bounds[1, :])
-        return x.T
+        out_of_bounds = True
+        while out_of_bounds:
+            # sample from gmm
+            x = self.gmm_choice.sample()
+            # inverse the transform applied on data
+            x = self.scaler.inverse_transform(numpy.hstack(([0.], x.flatten(), [0.])))[1:-1]
+            # if resample_if_out_of_bounds is True, we check if x is in bounds and resample while not within bounds
+            if self.resample_if_out_of_bounds:
+                # if within bound let go out of the while loop
+                if is_within_bounds(x, self.bounds[0, :], self.bounds[1, :]):
+                    out_of_bounds = False
+                #else we keep out_of_bounds to True
+            else:
+                # just bound the result and let go out of while loop
+                x = bounds_min_max(x, self.bounds[0, :], self.bounds[1, :])
+                out_of_bounds = False
+        return x
 
     def update(self, xy, ms):
         measure = self.measure(xy, ms)
