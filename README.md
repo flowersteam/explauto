@@ -41,6 +41,8 @@ Most of Explauto's documentation is written as [IPython notebooks](http://ipytho
     * [Poppy environment](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/poppy_environment.ipynb)
     * [Fast-forward a previous experiment](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/fast_forward_experiment.ipynb)
     * [Tutorial on Active Model Babbling and a comparison with Motor Babbling and Goal Babbling](http://nbviewer.jupyter.org/github/sebastien-forestier/ExplorationAlgorithms/blob/master/main.ipynb)
+    * [Goal Babbling with direct optimization](http://nbviewer.ipython.org/github/flowersteam/explauto/blob/master/notebook/goal_babbling_direct_optimization.ipynb)
+
 
 ### API ###
 
