@@ -33,7 +33,10 @@ class DMPs_discrete(DMPs):
 
         # set variance of Gaussian basis functions
         # trial and error to find this spacing
-        self.h = np.ones(self.bfs) * self.bfs**1.5 / self.c
+        if self.bfs >= 4:
+            self.h = np.ones(self.bfs) * self.bfs**1.5 / self.c
+        else:
+            self.h = np.ones(self.bfs) * 8. * self.bfs**2 / self.c**1.5
 
         self.check_offset()
         
@@ -53,8 +56,15 @@ class DMPs_discrete(DMPs):
         # desired spacings along x
         # need to be spaced evenly between 1 and exp(-ax)
         # lowest number should be only as far as x gets 
-        first = 0.4 # MODIFIED to handle a small number of basis (e.g. 3)
-        last = 0.8
+        if self.bfs == 2:
+            first = 0.5 # MODIFIED to handle a small number of basis (e.g. 3)
+            last = 0.8
+        elif self.bfs == 3:
+            first = 0.4
+            last = 0.8
+        else:
+            first = 0.2
+            last = 0.8
         #first = np.exp(-self.cs.ax*self.cs.run_time) 
         #last = 1.05 - first
         des_c = np.linspace(first,last,self.bfs) 
@@ -63,6 +73,7 @@ class DMPs_discrete(DMPs):
         for n in range(len(des_c)): 
             # x = exp(-c), solving for c
             self.c[n] = -np.log(des_c[n])
+
 
     def gen_front_term(self, x, dmp_num):
         """Generates the diminishing front term on 
