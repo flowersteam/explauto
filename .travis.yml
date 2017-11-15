@@ -6,6 +6,7 @@ python:
   - "3.6"
 install:
   - pip install codecov pytest-cov setuptools
+  - pip install scipy
   - python setup.py build
   - python setup.py develop
 script: pytest --cov=./
