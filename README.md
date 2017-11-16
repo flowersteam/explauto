@@ -1,7 +1,7 @@
 # Explauto: A library to study, model and simulate intrinsically motivated multitask learning and exploration in virtual and robotic agents #
 
-[![Build Status](https://travis-ci.org/wschuell/explauto.svg?branch=master)](https://travis-ci.org/wschuell/explauto)
-[![codecov](https://codecov.io/gh/wschuell/explauto/branch/master/graph/badge.svg)](https://codecov.io/gh/wschuell/explauto)
+[![Build Status](https://travis-ci.org/flowersteam/explauto.svg?branch=master)](https://travis-ci.org/flowersteam/explauto)
+[![codecov](https://codecov.io/gh/flowersteam/explauto/branch/master/graph/badge.svg)](https://codecov.io/gh/flowersteam/explauto)
 
 Explauto is a framework developed in the [Inria FLOWERS](https://flowers.inria.fr/) research team which provides a common interface for the implementation and benchmarking of active and online sensorimotor learning algorithms. In particular, this framework considers algorithms where exploration is driven by models of intrinsic motivation/curiosity at multiple levels of abstraction (from the active choice of parameterized motor primitives to the choice of parameterized problems/goals to the choice of learning strategies - e.g. deciding when to self-explore or ask input from an external expert). It is designed and maintained by [Clément Moulin-Frier](https://flowers.inria.fr/clement_mf/), [Pierre Rouanet](https://github.com/pierre-rouanet), and [Sébastien Forestier](http://sforestier.com/).
 

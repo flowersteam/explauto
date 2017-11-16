@@ -11,8 +11,8 @@ def version():
         return re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", f.read()).group(1)
 
 extra = {}
-#if sys.version_info >= (3,):
-#    extra['use_2to3'] = True
+if sys.version_info >= (3,):
+    extra['use_2to3'] = True
 
 setup(name='explauto',
       version=version(),
