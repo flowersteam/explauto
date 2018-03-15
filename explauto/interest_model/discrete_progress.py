@@ -122,7 +122,7 @@ class DiscreteProgress(InterestModel):
     
     def update_from_index_and_competence(self, index, competence):
         self.queues[index].append(competence)
-        self.current_progress[index] = numpy.mean([self.queues[index][i] for i in range(0,self.win_size/2)]) - numpy.mean([self.queues[index][i] for i in range(self.win_size/2,self.win_size)])
+        self.current_progress[index] = numpy.mean([self.queues[index][i] for i in range(0, self.win_size // 2)]) - numpy.mean([self.queues[index][i] for i in range(self.win_size // 2, self.win_size)])
                             
 
 

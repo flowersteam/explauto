@@ -152,7 +152,7 @@ class Tree(object):
                  progress_win_size, 
                  progress_measure, 
                  sampling_mode, 
-                 idxs=[], 
+                 idxs=None, 
                  split_dim=0):
         
         self.get_data_x = get_data_x
@@ -169,7 +169,10 @@ class Tree(object):
         self.split_value = None
         self.lower = None
         self.greater = None
-        self.idxs = idxs
+        if idxs == None:
+            self.idxs = []
+        else:
+            self.idxs = idxs
         self.children = len(self.idxs)
         self.volume = np.prod(self.bounds_x[1,:] - self.bounds_x[0,:])
         
