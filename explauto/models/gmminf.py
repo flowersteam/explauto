@@ -29,14 +29,14 @@ def conditional(mean, covar, dims_in, dims_out, covariance_type='full'):
     return lambda x: [cond_mean(x), cond_covar]
 
 
-class GMM(sklearn.mixture.GMM):
+class GMM(sklearn.mixture.GaussianMixture):
     def __init__(self, **kwargs):
-        sklearn.mixture.GMM.__init__(self, **kwargs)
+        sklearn.mixture.GaussianMixture.__init__(self, **kwargs)
         self.in_dims = array([])
         self.out_dims = array([])
 
     def __iter__(self):
-        for weight, mean, covar in zip(self.weights_, self.means_, self.covars_):
+        for weight, mean, covar in zip(self.weights_, self.means_, self.covariances_):
             yield (weight, mean, covar)
 
     def probability(self, value):
@@ -48,9 +48,9 @@ class GMM(sklearn.mixture.GMM):
     def sub_gmm(self, inds_k):
         gmm = GMM(n_components=len(inds_k), covariance_type=self.covariance_type)
 
-        gmm.weights_, gmm.means_, gmm.covars_ = (self.weights_[inds_k],
+        gmm.weights_, gmm.means_, gmm.covariances_ = (self.weights_[inds_k],
                                                 self.means_[inds_k, :],
-                                                self.covars_[inds_k, :, :])
+                                                self.covariances_[inds_k, :, :])
         gmm.weights_ = gmm.weights_ / gmm.weights_.sum()
         return gmm
 
@@ -163,16 +163,16 @@ class GMM(sklearn.mixture.GMM):
         else:
             means = self.means_[:, out_dims]
             if self.covariance_type == 'full':
-                covars = self.covars_[ix_(range(self.n_components), out_dims, out_dims)]
+                covars = self.covariances_[ix_(range(self.n_components), out_dims, out_dims)]
             if self.covariance_type == 'diag':
-                covars = self.covars_[ix_(range(self.n_components), out_dims)]
+                covars = self.covariances_[ix_(range(self.n_components), out_dims)]
             weights = self.weights_
 
         res = GMM(n_components=self.n_components,
                   covariance_type=self.covariance_type)
         res.weights_ = weights
         res.means_ = means
-        res.covars_ = covars
+        res.covariances_ = covars
         return res
 
     def ellipses2D(self, colors):

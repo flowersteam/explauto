@@ -55,7 +55,7 @@ class GmmInterest(InterestModel):
         self.gmm_choice = self.gmm_interest()
 
     def gmm_interest(self):
-        cov_t_c = numpy.array([self.gmm.covars_[k, 0, -1]
+        cov_t_c = numpy.array([self.gmm.covariances_[k, 0, -1]
                                for k in range(self.gmm.n_components)])
         cov_t_c = numpy.exp(cov_t_c)
         # cov_t_c[cov_t_c <= 1e-100] = 1e-100
