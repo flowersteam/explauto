@@ -8,7 +8,7 @@ for mod_name in ['random', 'gmm_progress', 'discrete_progress', 'tree']:
 
     models = getattr(module, 'interest_models')
 
-    for name, (im, conf) in models.iteritems():
+    for name, (im, conf) in models.items():
         interest_models[name] = (im, conf)
 
 def available_configurations(model):

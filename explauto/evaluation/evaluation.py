@@ -1,3 +1,4 @@
+from __future__ import print_function
 import numpy as np
 from numpy import linalg
 
@@ -55,9 +56,9 @@ class Evaluation(object):
                 s = self.env.update(m, reset=False)
                 errors.append(linalg.norm(s_g - s[len(context):]))
         elif self.mode == 'forward':
-            print 'forward prediction tests still in beta version, use with caution'
+            print('forward prediction tests still in beta version, use with caution')
             if n_tests_forward is not None:
-                print "Generating ", n_tests_forward, " uniform random motor tests ..."
+                print("Generating ", n_tests_forward, " uniform random motor tests ...")
                 testcases = self.env.random_motors(n=n_tests_forward)
             elif testcases_forward is not None:
                 testcases = testcases_forward

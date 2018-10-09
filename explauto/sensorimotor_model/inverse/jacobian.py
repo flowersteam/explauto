@@ -1,7 +1,7 @@
 
 import numpy as np
  
-import inverse
+from . import inverse
 
  
 class JacobianInverseModel(inverse.InverseModel):

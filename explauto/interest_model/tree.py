@@ -1,5 +1,6 @@
-import time
+from __future__ import print_function
 
+import time
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -824,7 +825,7 @@ if __name__ == '__main__':
 ######################################
 
     if True:
-        print "\n########## TEST TREE #################"
+        print("\n########## TEST TREE #################")
         n = 100000
         k = 2
          
@@ -852,16 +853,16 @@ if __name__ == '__main__':
                     sampling_mode, 
                     range(n))
           
-        print "Sampling", tree.sample()
-        print "Progress", tree.progress
+        print("Sampling", tree.sample())
+        print("Progress", tree.progress)
         tree.add(42)
           
           
         ####### FIND Neighrest Neighbors (might be useful)
         t = time.time()
         dist, idx = tree.nn([0.5, 0.5], k=20)
-        print "Time to find neighrest neighbors:", time.time() - t
-        print data_x[idx]
+        print("Time to find neighrest neighbors:", time.time() - t)
+        print(data_x[idx])
          
 
 ######################################
@@ -869,7 +870,7 @@ if __name__ == '__main__':
 ######################################
 
     if True:
-        print "\n########## TEST InterestTree #########"
+        print("\n########## TEST InterestTree #########")
         
         np.random.seed(1)
         
@@ -926,9 +927,9 @@ if __name__ == '__main__':
         plt.title('R-IAC tiling')
         riac.tree.plot(ax, True, True, True, riac.progress())
           
-        print "Max nb of children:", riac.tree.fold_up(lambda n,fl,fg:max(fl,fg), lambda leaf:leaf.children)
+        print("Max nb of children:", riac.tree.fold_up(lambda n,fl,fg:max(fl,fg), lambda leaf:leaf.children))
                
-        print "Max leaf progress: ", riac.max_leaf_progress()
+        print("Max leaf progress: ", riac.max_leaf_progress())
 #         import matplotlib.colorbar as cbar
 #         cax, _ = cbar.make_axes(ax) 
 #         cb = cbar.ColorbarBase(cax, cmap=plt.cm.jet) 
@@ -943,7 +944,7 @@ if __name__ == '__main__':
 
          
     if True:
-        print "\n###### TEST PROGRESSING SAMPLING #####"
+        print("\n###### TEST PROGRESSING SAMPLING #####")
         
         np.random.seed(1)
         
@@ -1049,7 +1050,7 @@ if __name__ == '__main__':
             
             # UPDATE PLOT
             if np.mod(i + 1, 100) == 0:
-                print "Iteration:", i + 1, " Tree depth:", riac.tree.depth(), " Progress:", riac.progress(), "Max leaf progress", riac.max_leaf_progress()
+                print("Iteration:", i + 1, " Tree depth:", riac.tree.depth(), " Progress:", riac.progress(), "Max leaf progress", riac.max_leaf_progress())
                 ax.clear()
                 riac.tree.plot(ax, False, True, True, 10., 12)#riac.progress())
                 plt.draw()
@@ -1061,9 +1062,9 @@ if __name__ == '__main__':
         ax.set_ylim((riac.tree.bounds_x[0, 1], riac.tree.bounds_x[1, 1]))
         plt.draw()
     
-        print "Sampling in max progress region: ", riac.tree.sample({'mode':'greedy', 'multiscale':True})
+        print("Sampling in max progress region: ", riac.tree.sample({'mode':'greedy', 'multiscale':True}))
         dists, idxs = riac.tree.nn(center, 10)
-        print "Nearest Neighbors:", riac.data_x[idxs]
+        print("Nearest Neighbors:", riac.data_x[idxs])
         
         plt.ioff()
     plt.show()

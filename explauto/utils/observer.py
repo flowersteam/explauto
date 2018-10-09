@@ -1,7 +1,14 @@
+from __future__ import print_function
+
 import logging
 
 from collections import defaultdict
-from Queue import Queue
+
+try:
+    import queue
+except ImportError:
+    # Python 2
+    import Queue as queue
 
 
 logger = logging.getLogger(__name__)
@@ -28,7 +35,7 @@ class Observable(object):
 
 class Observer(object):
     def __init__(self):
-        self.notifications = Queue()
+        self.notifications = queue.Queue()
 
     def _wrapped_handle_notification(self, topic, message):
         logger.info('Get message %s from topic %s', message, topic)
@@ -48,7 +55,7 @@ if __name__ == '__main__':
 
     class EventManager(Observer):
         def handle_notification(self, topic, message):
-            print 'new event on topic "{}": "{}"'.format(topic, message)
+            print('new event on topic "{}": "{}"'.format(topic, message))
 
     object_tracker = ObjectTracker()
     event_manager = EventManager()

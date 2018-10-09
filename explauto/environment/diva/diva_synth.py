@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import os
 
 from numpy import array, hstack, float32, zeros, linspace, shape, mean, log2, transpose, sum, isnan
@@ -33,9 +35,10 @@ class DivaMatlabSynth(object):
 class DivaOctaveSynth(object):
     def __init__(self, diva_path=None):
         import oct2py
+        self.oct2py = oct2py
         self.diva_path = diva_path or os.path.join(os.getenv("HOME"), 'software/DIVAsimulink/')
         assert os.path.exists(self.diva_path)
-        self.octave = oct2py.Oct2Py()
+        self.octave = self.oct2py.Oct2Py()
         self.restart_iter = 500
         self.init_oct()
 
@@ -45,13 +48,13 @@ class DivaOctaveSynth(object):
         
     def execute(self, art):
         try:
-            self.aud, self.som, self.vt = self.octave.diva_synth(art, 'audsom')
+            self.aud = self.octave.diva_synth(art, 'audsom')
         except:
             self.reboot()
-            print "Warning: Oct2Py crashed, Oct2Py restarted"
-            self.aud, self.som, self.vt = self.octave.diva_synth(art, 'audsom')
+            print("Warning: Oct2Py crashed, Oct2Py restarted")
+            self.aud = self.octave.diva_synth(art, 'audsom')
         self.add_iter()
-        return self.aud, self.som, self.vt
+        return self.aud
 
     def sound_wave(self, art):
         wave = self.octave.diva_synth(art, 'sound')
@@ -65,7 +68,7 @@ class DivaOctaveSynth(object):
             self.iter += 1
             
     def reboot(self):
-        self.octave = Oct2Py()
+        self.octave = self.oct2py.Oct2Py()
         self.init_oct()
         
     def restart(self):

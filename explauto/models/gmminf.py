@@ -1,3 +1,4 @@
+from __future__ import print_function
 import sklearn.mixture
 from numpy.linalg import inv, eig
 from numpy import ix_, array, inf, sqrt, linspace, zeros, arctan2, matrix, pi
@@ -231,7 +232,7 @@ class GMM(sklearn.mixture.GaussianMixture):
             for x, y, z in ellipsoids:
                 ax.plot_wireframe(x, y, z,  rstride=4, cstride=4, color='b', alpha=0.2)
         else:
-            print "Can only print 2D or 3D ellipses"
+            print("Can only print 2D or 3D ellipses")
         if label:
             for k, (w, m, c) in enumerate(gmm_proj):
                 ax.text(* tuple(m), s=str(k))
