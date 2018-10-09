@@ -56,7 +56,7 @@ class DivaEnvironment(Environment):
         if len(array(m).shape) == 1:
             self.art[self.m_used] = m
             self.art_traj = array([self.art]*20).T
-            res = self.synth.execute(2.*(self.art.reshape(-1,1)))[0]
+            res = self.synth.execute(2.*(self.art.reshape(-1,1)))
             formants = log2(transpose(res[self.s_used]))
             formants[isnan(formants)] = 0.
             return formants[0]
@@ -67,7 +67,7 @@ class DivaEnvironment(Environment):
             self.art_traj[12, :] = self.voicing
             self.art_traj[self.m_used,:] = transpose(m)
             
-            res = self.synth.execute(2.*(self.art_traj))[0]
+            res = self.synth.execute(2.*(self.art_traj))
             formants = log2(transpose(res[self.s_used,:]))
             formants[isnan(formants)] = 0.
             return formants
@@ -148,7 +148,7 @@ class DivaDMPEnvironment(Environment):
         self.art_traj[12, :] = self.voicing
         self.art_traj[self.m_used,:] = transpose(m)
         
-        res = self.synth.execute(2.*(self.art_traj))[0]
+        res = self.synth.execute(2.*(self.art_traj))
         formants = log2(transpose(res[self.s_used,:]))
         formants[isnan(formants)] = 0.
         self.formants_traj = formants
