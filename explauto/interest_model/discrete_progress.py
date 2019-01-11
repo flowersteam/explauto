@@ -113,7 +113,7 @@ class DiscreteProgress(InterestModel):
         multi_new = numpy.unravel_index(index_new, free_cardinalities)
         multi_old = numpy.zeros(len(space.cardinalities), dtype=numpy.int64)
         multi_old[c_dims] = multi_context
-        multi_old[free_dims] = list(multi_new)
+        multi_old[free_dims] = [d[0] for d in multi_new]
         index = space.multi2index(tuple(multi_old))
         return index
         
