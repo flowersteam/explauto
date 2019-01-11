@@ -53,15 +53,15 @@ class NonParametric(SensorimotorModel):
                 else:  # exploit'
                     return array(self.model.infer_order(tuple(x)))
 
-        elif out_dims == self.m_dims[len(self.m_dims)/2:]:  # dm = i(M, S, dS)
+        elif out_dims == self.m_dims[len(self.m_dims)//2:]:  # dm = i(M, S, dS)
             if not self.bootstrapped_s:
                 # If only one distinct point has been observed in the sensory space, then we output a random motor command
-                return rand_bounds(np.array([self.m_mins[self.m_ndims/2:], self.m_maxs[self.m_ndims/2:]]))[0]
+                return rand_bounds(np.array([self.m_mins[self.m_ndims//2:], self.m_maxs[self.m_ndims//2:]]))[0]
             else:
                 assert len(x) == len(in_dims)
-                m = x[:self.m_ndims/2]
-                s = x[self.m_ndims/2:][:self.s_ndims/2]
-                ds = x[self.m_ndims/2:][self.s_ndims/2:]
+                m = x[:self.m_ndims//2]
+                s = x[self.m_ndims//2:][:self.s_ndims//2]
+                ds = x[self.m_ndims//2:][self.s_ndims//2:]
                 self.mean_explore = array(self.model.imodel.infer_dm(m, s, ds))
                 if self.mode == 'explore':
                     r = np.random.normal(self.mean_explore, self.sigma_expl[out_dims])
@@ -70,6 +70,7 @@ class NonParametric(SensorimotorModel):
                 else:
                     return self.mean_explore
         else:
+            print(in_dims, out_dims, self.m_dims, self.s_dims, self.m_dims[len(self.m_dims)//2:])
             raise NotImplementedError
 
     def predict_given_context(self, x, c, c_dims):

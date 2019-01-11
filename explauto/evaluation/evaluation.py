@@ -32,14 +32,14 @@ class Evaluation(object):
                 
                 m = self.env.current_motor_position
                 s = self.env.current_sensori_position
-                in_dims = range(self.ag.conf.m_ndims/2) + range(self.ag.conf.m_ndims, self.ag.conf.m_ndims + self.ag.conf.s_ndims)
-                out_dims = range(self.ag.conf.m_ndims/2, self.ag.conf.m_ndims)
+                in_dims = range(self.ag.conf.m_ndims//2) + range(self.ag.conf.m_ndims, self.ag.conf.m_ndims + self.ag.conf.s_ndims)
+                out_dims = range(self.ag.conf.m_ndims//2, self.ag.conf.m_ndims)
                 dm = self.ag.infer(in_dims, 
                                 out_dims, 
-                                np.array(list(m) + list(np.hstack((s, s_g[len(s_g)/2:])))))
+                                np.array(list(m) + list(np.hstack((s, s_g[len(s_g)//2:])))))
                 mdm = np.hstack((m, dm))
                 sds = self.env.update(mdm, reset=False)
-                errors.append(linalg.norm(s_g[len(s_g)/2:] - sds[len(sds)/2:]))
+                errors.append(linalg.norm(s_g[len(s_g)//2:] - sds[len(sds)//2:]))
         elif self.mode == 'mcs':
             self.env.reset()
             errors = []

@@ -41,7 +41,7 @@ class ContextEnvironment(Environment):
             self.env.reset()
     
     def random_dm(self, n=1):
-        return rand_bounds(self.conf.bounds[:, len(self.conf.m_dims)/2:len(self.conf.m_dims)], n)
+        return rand_bounds(self.conf.bounds[:, len(self.conf.m_dims)//2:len(self.conf.m_dims)], n)
     
     def compute_motor_command(self, ag_state):
         return bounds_min_max(ag_state, self.conf.m_mins, self.conf.m_maxs)
@@ -49,8 +49,8 @@ class ContextEnvironment(Environment):
     def compute_sensori_effect(self, m_):
         if self.context_mode["mode"] == 'mdmsds':
             # Motor and sensory contexts
-            m = m_[:len(m_)/2]
-            dm = m_[len(m_)/2:]
+            m = m_[:len(m_)//2]
+            dm = m_[len(m_)//2:]
             if self.context_mode['choose_m']:
                 s = self.env.update(m, reset=False)
                 self.current_motor_position = m
